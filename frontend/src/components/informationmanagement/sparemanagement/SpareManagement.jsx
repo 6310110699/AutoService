@@ -1,0 +1,254 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import './SpareManagement.scss';
+
+const SpareManagement = () => {
+    const [spares, setSpares] = useState([]);
+    const [spareName, setSpareName] = useState('');
+    const [spareType, setSpareType] = useState('');
+    const [sparePrice, setSparePrice] = useState('');
+    const [editingSpareId, setEditingSpareId] = useState(null);
+    const [message, setMessage] = useState('');
+
+    const [searchText, setSearchText] = useState(''); // สร้าง state เพื่อเก็บข้อความที่ใช้ค้นหา
+
+    const filteredSpares = spares.filter((spare) => {
+        // กรองข้อมูลพนักงานที่ต้องการแสดงโดยใช้ชื่อเป็นเงื่อนไขในการค้นหา
+        return spare.spareName.toLowerCase().includes(searchText.toLowerCase()) ||
+        spare.spareType.toLowerCase().includes(searchText.toLowerCase())
+    });
+
+    useEffect(() => {
+        // โหลดข้อมูลพนักงานทั้งหมดเมื่อ Component ถูกโหลดครั้งแรก
+        loadSpares();
+    }, []);
+
+    const loadSpares = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/spares');
+            setSpares(response.data);
+            setMessage('');
+        } catch (error) {
+            console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลอะไหล่:', error);
+            setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลอะไหล่');
+        }
+    };
+
+    const handleAddSpare = async () => {
+        try {
+            await axios.post('http://localhost:3001/spares', {
+                spareName,
+                spareType,
+                sparePrice,
+            });
+            loadSpares();
+            clearForm();
+        } catch (error) {
+            console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลอะไหล่:', error);
+            setMessage('เกิดข้อผิดพลาดในการเพิ่มข้อมูลอะไหล่');
+        }
+    };
+
+    const handleUpdateSpare = async (id) => {
+        try {
+            await axios.put(`http://localhost:3001/spares/${id}`, {
+                spareName,
+                spareType,
+                sparePrice,
+            });
+            loadSpares();
+            clearForm();
+        } catch (error) {
+            console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูลอะไหล่:', error);
+            setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูลอะไหล่');
+        }
+    };
+
+    const handleDeleteSpare = async (id) => {
+        try {
+            await axios.delete(`http://localhost:3001/spares/${id}`);
+            loadSpares();
+            setMessage('ลบข้อมูลอะไหล่เรียบร้อยแล้ว');
+        } catch (error) {
+            console.error('เกิดข้อผิดพลาดในการลบข้อมูลอะไหล่:', error);
+            setMessage('เกิดข้อผิดพลาดในการลบข้อมูลอะไหล่');
+        }
+    };
+
+    const clearForm = () => {
+        setSpareName('');
+        setSpareType('');
+        setSparePrice('');
+        setEditingSpareId(null);
+        setMessage('');
+    };
+
+    const handleEditSpare = (spare) => {
+        setSpareName(spare.spareName);
+        setSpareType(spare.spareType)
+        setSparePrice(spare.sparePrice);
+        setEditingSpareId(spare._id);
+    };
+
+    return (
+        <div className='container'>
+            <h2 className='sparemanagement-title'>จัดการข้อมูลอะไหล่</h2>
+            {message && <div>{message}</div>}
+            <form>
+                <label>ชื่ออะไหล่:</label>
+                <input type="text" value={spareName} onChange={(e) => setSpareName(e.target.value)} />
+                <label>ประเภท:</label>
+                <input type="text" value={spareType} onChange={(e) => setSpareType(e.target.value)} />
+                <label>ราคา:</label>
+                <input type="text" value={sparePrice} onChange={(e) => setSparePrice(e.target.value)} />
+                <div>
+                    <button type="button" onClick={editingSpareId ? () =>
+                        handleUpdateSpare(editingSpareId) : handleAddSpare}>
+                        {editingSpareId ? 'แก้ไข' : 'เพิ่ม'}
+                    </button>
+                </div>
+            </form>
+            <form>
+                {/* ตัวแปร searchText เก็บข้อความที่ใช้ค้นหา */}
+                <input type="text" value={searchText} onChange={(e) => setSearchText(e.target.value)} placeholder="ค้นหาอะไหล่" />
+            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ชื่ออะไหล่</th>
+                        <th>ประเภท</th>
+                        <th>ราคา</th>
+                        <th>การดำเนินการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filteredSpares.map((spare) => (
+                        <tr key={spare._id}>
+                            <td>{spare.spareName}</td>
+                            <td>{spare.spareType}</td>
+                            <td>{spare.sparePrice}</td>
+                            <td>
+                                <button className='edit-button' onClick={() => handleEditSpare(spare)}>แก้ไข</button>
+                                <button className='delete-button' onClick={() => handleDeleteSpare(spare._id)}>ลบ</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
+export default SpareManagement;
+
+
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
+
+// const SpareManagement = () => {
+//     const [spares, setSpares] = useState([]);
+//     const [spareName, setSpareName] = useState('');
+//     const [editingSpareId, setEditingSpareId] = useState(null);
+//     const [message, setMessage] = useState('');
+
+//     useEffect(() => {
+//         loadSpares();
+//     }, []);
+
+//     const loadSpares = async () => {
+//         try {
+//             const response = await axios.get('http://localhost:3001/spares');
+//             setSpares(response.data);
+//             setMessage('');
+//         } catch (error) {
+//             console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลอะไหล่:', error);
+//             setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลอะไหล่');
+//         }
+//     };
+
+//     const handleAddSpare = async () => {
+//         try {
+//             await axios.post('http://localhost:3001/spares', {
+//                 spareName,
+//             });
+//             loadSpares();
+//             clearForm();
+//         } catch (error) {
+//             console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลอะไหล่:', error);
+//             setMessage('เกิดข้อผิดพลาดในการเพิ่มข้อมูลอะไหล่');
+//         }
+//     };
+
+//     const handleUpdateSpare = async (id) => {
+//         try {
+//             await axios.put(`http://localhost:3001/spares/${id}`, {
+//                 spareName,
+//             });
+//             loadSpares();
+//             clearForm();
+//         } catch (error) {
+//             console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูลอะไหล่:', error);
+//             setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูลอะไหล่');
+//         }
+//     };
+
+//     const handleDeleteSpare = async (id) => {
+//         try {
+//             await axios.delete(`http://localhost:3001/spares/${id}`);
+//             loadSpares();
+//             setMessage('ลบข้อมูลอะไหล่เรียบร้อยแล้ว');
+//         } catch (error) {
+//             console.error('เกิดข้อผิดพลาดในการลบข้อมูลอะไหล่:', error);
+//             setMessage('เกิดข้อผิดพลาดในการลบข้อมูลอะไหล่');
+//         }
+//     };
+
+//     const clearForm = () => {
+//         setSpareName('');
+//         setEditingSpareId(null);
+//         setMessage('');
+//     };
+
+//     const handleEditSpare = (spare) => {
+//         setSpareName(spare.spareName);
+//         setEditingSpareId(spare._id);
+//     };
+
+//     return (
+//         <div className='container'>
+//             <h2>จัดการข้อมูลอะไหล่</h2>
+//             {message && <div className='message'>{message}</div>}
+//             <form>
+//                 <label>ชื่ออะไหล่:</label>
+//                 <input type='text' value={spareName} onChange={(e) => setSpareName(e.target.value)} />
+//                 <div>
+//                     <button type="button" onClick={editingSpareId ? () =>
+//                         handleUpdateSpare(editingSpareId) : handleAddSpare}>
+//                         {editingSpareId ? 'แก้ไข' : 'เพิ่ม'}
+//                     </button>
+//                 </div>
+//             </form>
+//             <table>
+//                 <thead>
+//                     <tr>
+//                         <th>ชื่ออะไหล่</th>
+//                         <th>การดำเนินการ</th>
+//                     </tr>
+//                 </thead>
+//                 <tbody>
+//                     {spares.map((spare) => (
+//                         <tr key={spare._id}>
+//                             <td>{spare.spareName}</td>
+//                             <td>
+//                                 <button onClick={() => handleEditSpare(spare)}>แก้ไข</button>
+//                                 <button onClick={() => handleDeleteSpare(spare._id)}>ลบ</button>
+//                             </td>
+//                         </tr>
+//                     ))}
+//                 </tbody>
+//             </table>
+//         </div>
+//     );
+// };
+
+// export default SpareManagement;

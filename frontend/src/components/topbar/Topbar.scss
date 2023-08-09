@@ -1,0 +1,80 @@
+// Topbar.scss
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #3D5A80;
+  color: #f5f5f5;
+  height: 70px;
+  padding: 10px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+
+  img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    margin: 0px 15px;
+  }
+}
+
+.webname {
+  font-size: 20px;
+}
+
+.login-button {
+  font-size: 16px;
+  background-color: #86B358;
+  color: #ffffff;
+  text-decoration: none;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.logout {
+  display: inline-block;
+  text-align: center;
+  width: 90%;
+  font-size: 16px;
+  background-color: #86B358;
+  border: none;
+  border-radius: 10px;
+  padding: 8px;
+  margin: 5px 10px;
+  cursor: pointer;
+}
+
+.menu {
+  margin: 0px 15px;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.menu-active {
+  color: #000000;
+  background-color: #D7A421;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.user {
+  display: inline-block;
+
+  button,
+  button ::after {
+    background-color: transparent;
+  border: none;
+  }
+}
+
+.user-icon {
+  font-size: 40px;
+}
+
