@@ -1,18 +1,18 @@
-.login {
+.register {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-.title-login {
+.title-register {
     text-align: center;
     font-size: 50px;
     font-weight: bold;
     margin-bottom: 15px;
 }
 
-.login-form {
+.register-form {
     label {
         font-weight: bold;
         font-size: 22px;
@@ -26,20 +26,29 @@
         margin: 10px 0px;
     }
 
+    select {
+        background-color: #C2C0BB;
+        border-radius: 15px;
+        width: 500px;
+        padding: 17px;
+        margin: 10px 0px;
+    }
+
     .error-form {
         color: red;
         font-size: 18px;
     }
 }
 
-.button-login {
+.button-register {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 200px;
     font-size: 25px;
     font-weight: bold;
-    background-color: #D7A421;
+    background-color: #317857;
+    color: white;
     border-radius: 30px;
     margin: 20px auto;
 }

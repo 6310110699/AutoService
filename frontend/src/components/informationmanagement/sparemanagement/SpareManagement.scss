@@ -39,7 +39,7 @@
     }
 }
 
-.sparemanagement-data {
+.servicemanagement-data {
     margin: 50px 100px;
 
     .search-title {
@@ -60,14 +60,22 @@
 
         th {
             background-color: #ffed67;
-            padding: 15px;
+            padding: 15px 0px;
+            font-size: 20px;
+            border-bottom: 1px solid #ddd;
         }
 
         th:last-child {
             text-align: center;
         }
 
+        td {
+            font-size: 18px;
+            border-bottom: 1px solid #ddd;
+        }
+
         td:last-child {
+            text-align: center;
 
             .edit-button {
                 width: 70px;

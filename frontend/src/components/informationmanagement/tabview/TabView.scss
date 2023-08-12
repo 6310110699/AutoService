@@ -1,16 +1,15 @@
-button {
-  font-size: 18px;
-  font-weight: bold;
-  background-color: #aeaeae;
-  color: rgb(0, 0, 0);
-  padding: 15px;
-  margin: 20px;
-  border: none;
-  border-radius: 20px;
-}
- 
-button.active {
-    background-color: #46ab4a;
+  button {
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #c2c1c1;
+    color: rgb(0, 0, 0);
+    padding: 15px;
+    margin: 25px 20px;
+    border: none;
+    border-radius: 20px;
+  }
+
+  button.active {
+    background-color: #32b937;
     color: white;
   }
-   

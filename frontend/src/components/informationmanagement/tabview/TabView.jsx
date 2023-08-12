@@ -21,7 +21,7 @@ const TabView = () => {
           จัดการข้อมูลอะไหล่
         </button>
         <button onClick={() => handleTabClick('service')} className={activeTab === 'service' ? 'active' : ''}>
-          จัดการข้อมูลรายการซ่อม
+          จัดการข้อมูลบริการ
         </button>
       </div>
       <div>
