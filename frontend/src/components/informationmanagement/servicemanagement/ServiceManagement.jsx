@@ -141,6 +141,8 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Select from 'react-select';
+import './ServiceManagement.scss';
 
 const ServiceManagement = () => {
   const [services, setServices] = useState([]);
@@ -149,6 +151,7 @@ const ServiceManagement = () => {
   const [spares, setSpares] = useState([]);
   const [sparesByCategory, setSparesByCategory] = useState([]);
   const [sparePrices, setSparePrices] = useState({});
+  const [editingServiceId, setEditingServiceId] = useState(null);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -226,9 +229,9 @@ const ServiceManagement = () => {
     }
   };
 
-  const handleUpdateService = async (id) => {
+  const handleUpdateService = async () => {
     try {
-      await axios.put(`http://localhost:3001/services/${id}`, {
+      await axios.put(`http://localhost:3001/services/${editingServiceId}`, {
         serviceName,
         spares: selectedSpares,
       });
@@ -239,6 +242,7 @@ const ServiceManagement = () => {
       setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูลบริการ');
     }
   };
+  
 
   const handleDeleteService = async (id) => {
     try {
@@ -254,8 +258,17 @@ const ServiceManagement = () => {
   const clearForm = () => {
     setServiceName('');
     setSelectedSpares([]);
+    setEditingServiceId(null);
     setMessage('');
   };
+
+  
+    const handleEditService = (service) => {
+      setServiceName(service.serviceName);
+      setSelectedSpares(service.spares);
+      setEditingServiceId(service._id);
+    };
+    
 
   return (
     <div className='container'>
@@ -263,26 +276,38 @@ const ServiceManagement = () => {
       {message && <div className='message'>{message}</div>}
       <form>
         <label>ชื่อบริการ:</label>
-        <input type='text' value={serviceName} onChange={(e) => setServiceName(e.target.value)} />
+        <input
+          type='text'
+          value={serviceName}
+          onChange={(e) => setServiceName(e.target.value)}
+        />
         <label>อะไหล่ที่ใช้ในบริการ:</label>
-        <select
-          multiple
-          value={selectedSpares}
-          onChange={(e) => setSelectedSpares(Array.from(e.target.selectedOptions, (option) => option.value))}
-        >
-          {sparesByCategory.map((category) => (
-            <optgroup key={category.categoryName} label={category.categoryName}>
-              {category.spares.map((spare) => (
-                <option key={spare._id} value={spare._id}>
-                  {spare.spareName}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
-        <button type='button' onClick={handleAddService}>
-          เพิ่ม
-        </button>
+        <Select
+  isMulti
+  value={selectedSpares.map((spareId) => ({
+    value: spareId,
+    label: spares.find((spare) => spare._id === spareId)?.spareName || 'อะไหล่ไม่ถูกพบ',
+  }))}
+  options={sparesByCategory.flatMap((category) =>
+    category.spares.map((spare) => ({
+      value: spare._id,
+      label: spare.spareName,
+    }))
+  )}
+  onChange={(selectedOptions) =>
+    setSelectedSpares(selectedOptions.map((option) => option.value))
+  }
+/>
+
+        <div>
+          <button
+            type="button"
+            onClick={editingServiceId ? () =>
+              handleUpdateService(editingServiceId) : handleAddService}
+          >
+            {editingServiceId ? 'แก้ไข' : 'เพิ่ม'}
+          </button>
+        </div>
       </form>
       <table>
         <thead>
@@ -318,7 +343,7 @@ const ServiceManagement = () => {
                 })}
               </td>
               <td>
-                <button onClick={() => handleUpdateService(service._id)}>แก้ไข</button>
+                <button onClick={() => handleEditService(service)}>แก้ไข</button>
                 <button onClick={() => handleDeleteService(service._id)}>ลบ</button>
               </td>
             </tr>

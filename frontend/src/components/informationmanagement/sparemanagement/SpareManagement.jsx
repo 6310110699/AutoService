@@ -15,7 +15,7 @@ const SpareManagement = () => {
     const filteredSpares = spares.filter((spare) => {
         // กรองข้อมูลพนักงานที่ต้องการแสดงโดยใช้ชื่อเป็นเงื่อนไขในการค้นหา
         return spare.spareName.toLowerCase().includes(searchText.toLowerCase()) ||
-        spare.spareType.toLowerCase().includes(searchText.toLowerCase())
+            spare.spareType.toLowerCase().includes(searchText.toLowerCase())
     });
 
     useEffect(() => {
@@ -91,50 +91,85 @@ const SpareManagement = () => {
     };
 
     return (
-        <div className='container'>
-            <h2 className='sparemanagement-title'>จัดการข้อมูลอะไหล่</h2>
-            {message && <div>{message}</div>}
-            <form>
+        <div className=''>
+            <div className='sparemanagement-title'>
+                จัดการข้อมูลอะไหล่
+            </div>
+
+            <form className='sparemanagement-form'>
                 <label>ชื่ออะไหล่:</label>
-                <input type="text" value={spareName} onChange={(e) => setSpareName(e.target.value)} />
+                <input
+                    type="text"
+                    value={spareName}
+                    onChange={(e) => setSpareName(e.target.value)}
+                />
                 <label>ประเภท:</label>
-                <input type="text" value={spareType} onChange={(e) => setSpareType(e.target.value)} />
+                <input
+                    type="text"
+                    value={spareType}
+                    onChange={(e) => setSpareType(e.target.value)}
+                />
                 <label>ราคา:</label>
-                <input type="text" value={sparePrice} onChange={(e) => setSparePrice(e.target.value)} />
+                <input
+                    type="text"
+                    value={sparePrice}
+                    onChange={(e) => setSparePrice(e.target.value)}
+                />
+
+                {message &&
+                    <div className='error-form'>
+                        {message}
+                    </div>
+                }
+
                 <div>
-                    <button type="button" onClick={editingSpareId ? () =>
-                        handleUpdateSpare(editingSpareId) : handleAddSpare}>
+                    <button
+                        type="button"
+                        onClick={editingSpareId ? () =>
+                            handleUpdateSpare(editingSpareId) : handleAddSpare}
+                    >
                         {editingSpareId ? 'แก้ไข' : 'เพิ่ม'}
                     </button>
                 </div>
             </form>
-            <form>
-                {/* ตัวแปร searchText เก็บข้อความที่ใช้ค้นหา */}
-                <input type="text" value={searchText} onChange={(e) => setSearchText(e.target.value)} placeholder="ค้นหาอะไหล่" />
-            </form>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ชื่ออะไหล่</th>
-                        <th>ประเภท</th>
-                        <th>ราคา</th>
-                        <th>การดำเนินการ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredSpares.map((spare) => (
-                        <tr key={spare._id}>
-                            <td>{spare.spareName}</td>
-                            <td>{spare.spareType}</td>
-                            <td>{spare.sparePrice}</td>
-                            <td>
-                                <button className='edit-button' onClick={() => handleEditSpare(spare)}>แก้ไข</button>
-                                <button className='delete-button' onClick={() => handleDeleteSpare(spare._id)}>ลบ</button>
-                            </td>
+
+            <div className='sparemanagement-data'>
+                <div className='search-title'>
+                    ค้นหาอะไหล่
+                </div>
+
+                <input
+                    type="text"
+                    class='form-control'
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    placeholder="ค้นหาอะไหล่"
+                />
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่ออะไหล่</th>
+                            <th>ประเภท</th>
+                            <th>ราคา</th>
+                            <th>การดำเนินการ</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {filteredSpares.map((spare) => (
+                            <tr key={spare._id}>
+                                <td>{spare.spareName}</td>
+                                <td>{spare.spareType}</td>
+                                <td>{spare.sparePrice}</td>
+                                <td>
+                                    <button className='edit-button' onClick={() => handleEditSpare(spare)}>แก้ไข</button>
+                                    <button className='delete-button' onClick={() => handleDeleteSpare(spare._id)}>ลบ</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     );
 };

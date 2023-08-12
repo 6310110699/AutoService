@@ -62,7 +62,7 @@ router.put('/:id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการแก้ไขข้อมูลพนักงาน' });
   }
-});
+}); 
 
 // ลบข้อมูลพนักงาน
 router.delete('/:id', async (req, res) => {

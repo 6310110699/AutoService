@@ -1,41 +1,36 @@
-.container {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-
-
-}
-
 .employeemanagement-title {
-    margin-bottom: 20px;
+    text-align: center;
+    font-size: 40px;
 }
 
-form {
-    margin-bottom: 20px;
-    // display: grid;
-    // grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    align-items: center;
+.employeemanagement-form {
+    margin: 20px auto;
+    width: 40%;
+
+    .error-form {
+        color: red;
+        font-size: 18px;
+    }
 
     label {
         font-weight: bold;
+        font-size: 20px;
     }
 
     input {
-        padding: 8px;
-        width: 100%;
         border: 1px solid #ccc;
-        border-radius: 4px;
-        outline: none;
+        padding: 10px;
+        border-radius: 8px;
+        margin: 5px 0px;
     }
 
-    button {
+    .save-button {
         display: flex;
         justify-content: center;
         align-items: center;
         width: 200px;
         padding: 10px 20px;
-        background-color: #007bff;
+        background-color: #0064f9;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -44,55 +39,56 @@ form {
     }
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
+.employeemanagement-data {
+    margin: 50px 100px;
 
-    th,
-    td {
-        padding: 8px;
-        border-bottom: 1px solid #ccc;
+    .search-title {
+        font-size: 22px;
+        font-weight: 600;
     }
 
-    th {
-        text-align: left;
-        background-color: #ffed67;
+    input {
+        margin: 10px 0px;
+        width: 600px;
+        padding: 10px;
+        border-radius: 8px;
     }
 
-    tr:hover {
-        background-color: #f9f9f9;
-    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
 
-    td:last-child {
-        text-align: center;
-
-        .edit-button {
-            margin-right: 5px;
-            padding: 5px 10px;
-            background-color: #3a7f5c;
-            color: #ffffff;
-            border: 1px solid #007bff;
-            border-radius: 4px;
-            cursor: pointer;
-
-            &:hover {
-                background-color: #3a7f5c;
-                color: #fff;
-            }
+        th {
+            background-color: #ffed67;
+            padding: 15px;
         }
 
-        .delete-button {
-            margin-right: 5px;
-            padding: 5px 10px;
-            background-color: rgb(223, 23, 23);
-            color: #ffffff;
-            border: 1px solid #007bff;
-            border-radius: 4px;
-            cursor: pointer;
+        th:last-child {
+            text-align: center;
+        }
 
-            &:hover {
+        td:last-child {
+
+            .edit-button {
+                width: 70px;
+                margin-right: 5px;
+                padding: 10px;
+                background-color: #3a7f5c;
+                color: #ffffff;
+                border: 1px solid #007bff;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            .delete-button {
+                width: 70px;
+                margin-right: 5px;
+                padding: 10px;
                 background-color: rgb(223, 23, 23);
-                color: #fff;
+                color: #ffffff;
+                border: 1px solid #007bff;
+                border-radius: 4px;
+                cursor: pointer;
             }
         }
     }

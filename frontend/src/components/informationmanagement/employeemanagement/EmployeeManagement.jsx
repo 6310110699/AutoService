@@ -13,11 +13,11 @@ const EmployeeManagement = () => {
     const [editingEmployeeId, setEditingEmployeeId] = useState(null);
     const [message, setMessage] = useState('');
 
-    const [searchText, setSearchText] = useState(''); 
+    const [searchText, setSearchText] = useState('');
 
     const filteredEmployees = employees.filter((employee) => {
         return employee.name.toLowerCase().includes(searchText.toLowerCase()) ||
-        employee.nickname.toLowerCase().includes(searchText.toLowerCase())
+            employee.nickname.toLowerCase().includes(searchText.toLowerCase())
     });
 
     useEffect(() => {
@@ -104,57 +104,129 @@ const EmployeeManagement = () => {
     };
 
     return (
-        <div className='container'>
-            <h2 className='employeemanagement-title'>จัดการข้อมูลพนักงาน</h2>
-            {message && <div>{message}</div>}
-            <form>
-                <label>ชื่อ-นามสกุล:</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-                <label>ชื่อเล่น:</label>
-                <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} />
-                <label>เบอร์โทร:</label>
-                <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                <label>ตำบล:</label>
-                <input type="text" value={subdistrict} onChange={(e) => setSubdistrict(e.target.value)} />
-                <label>อำเภอ:</label>
-                <input type="text" value={district} onChange={(e) => setDistrict(e.target.value)} />
-                <label>จังหวัด:</label>
-                <input type="text" value={province} onChange={(e) => setProvince(e.target.value)} />
+        <div className=''>
+            <div className='employeemanagement-title'>
+                จัดการข้อมูลพนักงาน
+            </div>
+
+            <form className='employeemanagement-form'>
                 <div>
-                    <button type="button" onClick={editingEmployeeId ? () =>
-                        handleUpdateEmployee(editingEmployeeId) : handleAddEmployee}>
+                    <label>ชื่อ-นามสกุล:</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                </div>
+                <div className='row'>
+                    <div className='col col-6'>
+                        <label>ชื่อเล่น:</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            value={nickname}
+                            onChange={(e) => setNickname(e.target.value)}
+                        />
+                    </div>
+                    <div className='col col-6'>
+                        <label>เบอร์โทร:</label>
+                        <input
+                            type="number"
+                            class="form-control"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                        />
+                    </div>
+                </div>
+                <div className='row'>
+                    <div className='col'>
+                        <label>ตำบล:</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            value={subdistrict}
+                            onChange={(e) => setSubdistrict(e.target.value)}
+                        />
+                    </div>
+                    <div className='col'>
+                        <label>อำเภอ:</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            value={district}
+                            onChange={(e) => setDistrict(e.target.value)}
+                        />
+                    </div>
+                    <div className='col'>
+                        <label>จังหวัด:</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            value={province}
+                            onChange={(e) => setProvince(e.target.value)}
+                        />
+                    </div>
+                </div>
+
+                {message &&
+                    <div className='error-form'>
+                        {message}
+                    </div>
+                }
+
+                <div>
+                    <button
+                        className='save-button'
+                        type="button"
+                        onClick={editingEmployeeId ? () =>
+                            handleUpdateEmployee(editingEmployeeId) : handleAddEmployee}
+                    >
                         {editingEmployeeId ? 'แก้ไข' : 'เพิ่ม'}
                     </button>
                 </div>
             </form>
-            <form>
-                <input type="text" value={searchText} onChange={(e) => setSearchText(e.target.value)} placeholder="ค้นหาชื่อพนักงาน" />
-            </form>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ชื่อ-นามสกุล</th>
-                        <th>ชื่อเล่น</th>
-                        <th>เบอร์โทร</th>
-                        <th>ที่อยู่</th>
-                        <th>การดำเนินการ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredEmployees.map((employee) => (
-                        <tr key={employee._id}>
-                            <td>{employee.name}</td>
-                            <td>{employee.nickname}</td>
-                            <td>{employee.phone}</td>
-                            <td>{employee.address.subdistrict}, {employee.address.district}, {employee.address.province}</td>
-                            <td>
-                                <button className='edit-button' onClick={() => handleEditEmployee(employee)}>แก้ไข</button>
-                                <button className='delete-button' onClick={() => handleDeleteEmployee(employee._id)}>ลบ</button>
-                            </td>
+
+            <div className='employeemanagement-data'>
+                <div className='search-title'>
+                    ค้นหาพนักงาน
+                </div>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    placeholder="ค้นหาชื่อพนักงาน"
+                />
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อ-นามสกุล</th>
+                            <th>ชื่อเล่น</th>
+                            <th>เบอร์โทร</th>
+                            <th>ที่อยู่</th>
+                            <th>การดำเนินการ</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {filteredEmployees.map((employee) => (
+                            <tr key={employee._id}>
+                                <td>{employee.name}</td>
+                                <td>{employee.nickname}</td>
+                                <td>{employee.phone}</td>
+                                <td>{employee.address.subdistrict}, {employee.address.district}, {employee.address.province}</td>
+                                <td>
+                                    <button className='edit-button' onClick={() => handleEditEmployee(employee)}>แก้ไข</button>
+                                    <button className='delete-button' onClick={() => handleDeleteEmployee(employee._id)}>ลบ</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     );
 };

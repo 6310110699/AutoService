@@ -1,12 +1,18 @@
-const mongoose = require('mongoose');
+// // models/vehicleModel.js
 
-const customerSchema = new mongoose.Schema({
-  customerName: {
-    type: String,
-    required: true,
-  },
-});
+// const mongoose = require('mongoose');
 
-const Customer = mongoose.model('Customer', customerSchema);
+// const customerSchema = new mongoose.Schema({
+//   customerName: {
+//     type: String,
+//     required: true,
+//   },
+//   phoneNumber: {
+//     type: String,
+//     required: true,
+//   },
+// });
 
-module.exports = Customer;
+// const Customer = mongoose.model('Customer', customerSchema);
+
+// module.exports = Customer;

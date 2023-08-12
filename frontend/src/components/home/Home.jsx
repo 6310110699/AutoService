@@ -78,180 +78,136 @@ import Modal from 'react-modal';
 
 const RepairManagement = () => {
   const [customers, setCustomers] = useState([]);
-  const [customerName, setCustomerName] = useState('');
 
-  const [services, setServices] = useState([]);
-  const [selectedServices, setSelectedServices] = useState([]);
+  const [customerName, setCustomerName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  
+  const [editingCustomerId, setEditingCustomerId] = useState(null)  
 
   const [message, setMessage] = useState('');
-  const [repairs, setRepairs] = useState([]);
-
-  const [modalCustomerForm, setModalCustomerForm] = useState(false);
-  const [modalRepairForm, setModalRepairForm] = useState(false);
 
   useEffect(() => {
     loadCustomers();
-    loadServices();
-    loadRepairs();
   }, []);
 
   const loadCustomers = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/customers');
+      const response = await axios.get('http://localhost:3001/repairs');
       setCustomers(response.data);
       setMessage('');
     } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลลูกค้า:', error);
-      setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลลูกค้า');
-    }
-  };
-
-  const loadServices = async () => {
-    try {
-      const response = await axios.get('http://localhost:3001/services');
-      setServices(response.data);
-      setMessage('');
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลบริการ:', error);
-      setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลบริการ');
-    }
-  };
-
-  const loadRepairs = async () => {
-    try {
-      const response = await axios.get('http://localhost:3001/repairs');
-      setRepairs(response.data);
-      setMessage('');
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลการซ่อม:', error);
-      setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลการซ่อม');
+      console.error('Error loading customer data:', error);
+      setMessage('Error loading customer data');
     }
   };
 
   const handleAddCustomer = async () => {
     try {
-      await axios.post('http://localhost:3001/customers', {
-        customerName: customerName,
-      });
-      setCustomerName('');
-      loadCustomers();
-      setMessage('เพิ่มข้อมูลลูกค้าเรียบร้อยแล้ว');
-      setModalCustomerForm(false);
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลลูกค้า:', error);
-      setMessage('เกิดข้อผิดพลาดในการเพิ่มข้อมูลลูกค้า');
-    }
-  };
-
-  const handleAddRepair = async () => {
-    try {
       await axios.post('http://localhost:3001/repairs', {
-        serviceIds: selectedServices,
+        customerName,
+        phoneNumber,
       });
-      setSelectedServices([]);
-      loadRepairs();
-      setMessage('เพิ่มข้อมูลการซ่อมเรียบร้อยแล้ว');
-      setModalRepairForm(false);
+      clearForm();
+      setShowModal(false);
+      loadCustomers();
     } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลการซ่อม:', error);
-      setMessage('เกิดข้อผิดพลาดในการเพิ่มข้อมูลการซ่อม');
+      console.error('Error adding customer:', error);
+      setMessage('ลงทะเบียนรถไม่สำเร็จ');
     }
   };
 
-  const editRepair = async (id, repairData) => {
+  const handleUpdateCustomer = async (id) => {
     try {
-      await axios.put(`http://localhost:3001/repairs/${id}`, repairData);
-      loadRepairs();
-      setMessage('แก้ไขข้อมูลการซ่อมเรียบร้อยแล้ว');
+      await axios.put(`http://localhost:3001/repairs/${id}`, {
+        customerName,
+        phoneNumber,
+      });
+      clearForm();
+      setShowModal(false);
+      loadCustomers();
     } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูลการซ่อม:', error);
-      setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูลการซ่อม');
+      console.error('Error updating customer:', error);
+      setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูล customer');
     }
   };
 
-  const deleteRepair = async (id) => {
+  const handleEditCustomer = (customer) => {
+    setCustomerName(customer.customer.customerName);
+    setPhoneNumber(customer.customer.phoneNumber);
+    setEditingCustomerId(customer._id);
+    setShowModal(true);
+  };
+
+  const handleDeleteCustomer = async (id) => {
     try {
       await axios.delete(`http://localhost:3001/repairs/${id}`);
-      loadRepairs();
-      setMessage('ลบข้อมูลการซ่อมเรียบร้อยแล้ว');
+      loadCustomers();
     } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการลบข้อมูลการซ่อม:', error);
-      setMessage('เกิดข้อผิดพลาดในการลบข้อมูลการซ่อม');
+      console.error('Error deleting customer:', error);
+      setMessage('เกิดข้อผิดพลาดในการลบข้อมูลลูกค้า');
     }
+  };
+
+  const clearForm = () => {
+    setCustomerName('');
+    setPhoneNumber('');
+    setMessage('');
+    setEditingCustomerId(null);
+  };
+
+  const [showModal, setShowModal] = useState(false);
+  const handleAddCustomerModal = () => {
+    setShowModal(true);
+  };
+  const handleAddCustomerModalClose = () => {
+    setShowModal(false);
+    clearForm();
   };
 
   return (
-    <div className='container'>
-      <h2>จัดการข้อมูลการซ่อม</h2>
-      {message && <div className='message'>{message}</div>}
-      <button onClick={() => setModalCustomerForm(true)}>เพิ่มข้อมูลลูกค้า</button>
-      
-
-      <Modal isOpen={modalCustomerForm} onRequestClose={() => setModalCustomerForm(false)}>
-        <form>
-          <label>ชื่อลูกค้า:</label>
-          <input type='text' value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
-          <button type='button' onClick={handleAddCustomer}>
-            เพิ่ม
-          </button>
-        </form>
-        <button onClick={() => setModalCustomerForm(false)}>ปิด</button>
-      </Modal>
-
-      <Modal isOpen={modalRepairForm} onRequestClose={() => setModalRepairForm(false)}>
-        <form>
-          <label>บริการที่เกี่ยวข้อง:</label>
-          <select
-            multiple
-            value={selectedServices}
-            onChange={(e) => setSelectedServices(Array.from(e.target.selectedOptions, (option) => option.value))}
-          >
-            {services.map((service) => (
-              <option key={service._id} value={service._id}>
-                {service.serviceName}
-              </option>
-            ))}
-          </select>
-          <button type='button' onClick={handleAddRepair}>
-            เพิ่ม
-          </button>
-        </form>
-        <button onClick={() => setModalRepairForm(false)}>ปิด</button>
-      </Modal>
-
+    <div className="container">
+      <h2>ระบบลงทะเบียนรถ</h2>
       <table>
         <thead>
           <tr>
             <th>ชื่อลูกค้า</th>
-            <th>บริการที่เกี่ยวข้อง</th>
-            <th>การจัดการ</th>
+            <th>เบอร์โทรศัพท์</th>
+            <th>การดำเนินการ</th>
           </tr>
         </thead>
         <tbody>
-          {repairs.map((repair) => (
-            <tr key={repair._id}>
-              <td>{repair.customerName}</td>
+          {customers.map((customer, index) => (
+            <tr key={index}>
+              <td onClick={() => handleEditCustomer(customer)}>{customer.customer.customerName}</td>
+              <td>{customer.customer.phoneNumber}</td>
               <td>
-                {repair.services.map((service) => (
-                  <div key={service._id}>
-                    <p>{service.serviceName}</p>
-                    <ul>
-                      {service.parts.map((part) => (
-                        <li key={part._id}>{part.partName}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </td>
-              <td>
-              <button onClick={() => setModalRepairForm(true)}>เพิ่มข้อมูลการซ่อม</button>
-                <button onClick={() => editRepair(repair._id, repair)}>แก้ไข</button>
-                <button onClick={() => deleteRepair(repair._id)}>ลบ</button>
+                <button onClick={() => handleDeleteCustomer(customer._id)}>ลบ</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      
+      <button onClick={handleAddCustomerModal}>ลงทะเบียนรถ</button>
+
+      <Modal isOpen={showModal} onRequestClose={handleAddCustomerModalClose}>
+        <div className="">
+          <div className="">
+            <h3>{editingCustomerId ? 'แก้ไขข้อมูลลูกค้า' : 'ลงทะเบียนรถ'}</h3>
+            {message && <div className="message">{message}</div>}
+            <form>
+              <label>ชื่อลูกค้า:</label>
+              <input type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
+              <label>เบอร์โทรศัพท์:</label>
+              <input type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+              <button type="button" onClick={editingCustomerId ? () => handleUpdateCustomer(editingCustomerId) : handleAddCustomer}>
+                {editingCustomerId ? 'แก้ไข' : 'ลงทะเบียน'}
+              </button>
+              <button type="button" onClick={handleAddCustomerModalClose}>ยกเลิก</button>
+            </form>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

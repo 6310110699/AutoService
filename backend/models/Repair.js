@@ -1,17 +1,21 @@
+// models/vehicleModel.js
+
 const mongoose = require('mongoose');
 
-const repairSchema = new mongoose.Schema({
+const customerSchema = new mongoose.Schema({
   customer: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Customer', // อ้างอิงไปยังโมเดล Customer
-    required: true,
-  },
-  services: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Service', // อ้างอิงไปยังโมเดล Service
-  }],
+    customerName: {
+      type: String,
+      required: true,
+    },
+    phoneNumber: {
+      type: String,
+      required: true,
+    },
+  }
+
 });
 
-const Repair = mongoose.model('Repair', repairSchema);
+const Customer = mongoose.model('Customer', customerSchema);
 
-module.exports = Repair;
+module.exports = Customer;

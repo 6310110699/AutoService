@@ -10,7 +10,7 @@ import History from './components/history/History'
 import Report from './components/report/Report'
 import EmployeeManagement from './components/informationmanagement/employeemanagement/EmployeeManagement'
 import TabView from './components/informationmanagement/tabview/TabView'
-import SpareManagement from './components/informationmanagement/sparemanagement/Sparemanagement'
+import SpareManagement from './components/informationmanagement/sparemanagement/SpareManagement'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('token') !== null);

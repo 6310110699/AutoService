@@ -135,7 +135,7 @@ app.use(cors());
 app.use(cookieParser());
 
 // การเชื่อมต่อฐานข้อมูล MongoDB
-mongoose.connect("mongodb://127.0.0.1:27017/AutoService", {
+mongoose.connect("mongodb+srv://zulfa:Zulfa1234@cluster0.6xnlkvm.mongodb.net/AutoService", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
