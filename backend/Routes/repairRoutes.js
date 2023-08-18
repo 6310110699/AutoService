@@ -1,5 +1,3 @@
-// routes/repairRoutes.js
-
 const express = require('express');
 const router = express.Router();
 const Customer = require('../models/Repair');
@@ -7,9 +5,11 @@ const Customer = require('../models/Repair');
 // สร้างรายการรถใหม่
 router.post('/', async (req, res) => {
   try {
-    const { customerName, phoneNumber } = req.body;
+    const { numPlate, lineId, customerName, phoneNumber, brand, selectedModel, startdate } = req.body;
     const newCustomer = await Customer.create({
-      customer: { customerName, phoneNumber }
+      customer: { lineId, customerName, phoneNumber },
+      car: { numPlate, brand, selectedModel },
+      startdate
     });
     res.status(201).json(newCustomer);
   } catch (error) {
@@ -31,11 +31,13 @@ router.get('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { customerName, phoneNumber } = req.body;
+    const { numPlate, lineId, customerName, phoneNumber, brand, selectedModel, startdate } = req.body;
     const updatedCustomer = await Customer.findByIdAndUpdate(
       id,
       {
-        customer: { customerName, phoneNumber }
+        customer: { lineId, customerName, phoneNumber },
+        car: { numPlate, brand, selectedModel },
+        startdate
       },
       { new: true, useFindAndModify: false }
     );

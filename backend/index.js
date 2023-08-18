@@ -232,6 +232,9 @@ app.use('/spares', spareRoutes);
 const serviceRoutes = require('./Routes/serviceRoutes');
 app.use('/services', serviceRoutes);
 
+const brandmodelRoutes = require('./Routes/brandmodelRoutes');
+app.use('/brandmodels', brandmodelRoutes);
+
 const repairRoutes = require('./Routes/repairRoutes');
 app.use('/repairs', repairRoutes);
 

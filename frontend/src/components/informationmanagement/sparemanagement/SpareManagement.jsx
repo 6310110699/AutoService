@@ -139,7 +139,6 @@ const SpareManagement = () => {
                 <div className='search-title'>
                     ค้นหาอะไหล่
                 </div>
-
                 <input
                     type="text"
                     class='form-control'
@@ -147,7 +146,6 @@ const SpareManagement = () => {
                     onChange={(e) => setSearchText(e.target.value)}
                     placeholder="ค้นหาอะไหล่"
                 />
-                
                 <table>
                     <thead>
                         <tr>

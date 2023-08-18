@@ -210,7 +210,6 @@ const ServiceManagement = () => {
         <div className='search-title'>
           ค้นหาบริกาาร
         </div>
-
         <input
           type="text"
           class='form-control'
@@ -218,7 +217,6 @@ const ServiceManagement = () => {
           onChange={(e) => setSearchText(e.target.value)}
           placeholder="ค้นหาบริการ"
         />
-
         <table>
           <thead>
             <tr>
@@ -261,7 +259,6 @@ const ServiceManagement = () => {
           </tbody>
         </table>
       </div>
-
     </div>
   );
 };

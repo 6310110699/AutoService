@@ -105,10 +105,7 @@ const EmployeeManagement = () => {
 
     return (
         <div className=''>
-            <div className='employeemanagement-title'>
-                จัดการข้อมูลพนักงาน
-            </div>
-
+            <div className='employeemanagement-title'>จัดการข้อมูลพนักงาน</div>
             <form className='employeemanagement-form'>
                 <div>
                     <label>ชื่อ-นามสกุล:</label>
@@ -191,7 +188,6 @@ const EmployeeManagement = () => {
                 <div className='search-title'>
                     ค้นหาพนักงาน
                 </div>
-
                 <input
                     type="text"
                     class="form-control"
@@ -199,7 +195,6 @@ const EmployeeManagement = () => {
                     onChange={(e) => setSearchText(e.target.value)}
                     placeholder="ค้นหาชื่อพนักงาน"
                 />
-
                 <table>
                     <thead>
                         <tr>

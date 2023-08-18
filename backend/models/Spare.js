@@ -19,18 +19,3 @@ const spareSchema = new mongoose.Schema({
 const Spare = mongoose.model('Spare', spareSchema);
 
 module.exports = Spare;
-
-
-
-// const mongoose = require('mongoose');
-
-// const spareSchema = new mongoose.Schema({
-//   spareName: {
-//     type: String,
-//     required: true,
-//   }
-// });
-
-// const Spare = mongoose.model('Spare', spareSchema);
-
-// module.exports = Spare;
