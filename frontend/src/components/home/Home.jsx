@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Repair = () => {
   const [brandmodels, setBrandModels] = useState([]);
@@ -22,6 +23,8 @@ const Repair = () => {
 
   const [message, setMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
+
+  
 
   useEffect(() => {
     loadBrandModels();
@@ -48,70 +51,77 @@ const Repair = () => {
     }
   };
 
-  const handleAddCustomer = async () => {
-    try {
-      let brandId = null;
+  // const handleAddCustomer = async () => {
+  //   try {
+  //     let brandId = null;
 
-      // Check if the entered brand exists in brandmodels
-      const existingBrand = brandmodels.find((brandmodel) => brandmodel.brand === brand);
-      if (!existingBrand) {
-        // If brand doesn't exist, add it to brandmodels
-        const response = await axios.post('http://localhost:3001/brandmodels', {
-          brand,
-          model: selectedModel,
-        });
-        brandId = response.data._id;
-      } else {
-        brandId = existingBrand._id;
-      }
+  //     // Check if the entered brand exists in brandmodels
+  //     const existingBrand = brandmodels.find((brandmodel) => brandmodel.brand === brand);
+  //     if (!existingBrand) {
+  //       // If brand doesn't exist, add it to brandmodels
+  //       const response = await axios.post('http://localhost:3001/brandmodels', {
+  //         brand,
+  //         model: selectedModel,
+  //       });
+  //       brandId = response.data._id;
+  //     } else {
+  //       brandId = existingBrand._id;
+  //     }
 
-      await axios.post('http://localhost:3001/repairs', {
-        numPlate,
-        lineId,
-        brand,
-        customerName,
-        phoneNumber,
-        selectedModel,
-        color,
-        startdate,
-      });
-      clearForm();
-      setShowModal(false);
-      loadCustomers();
-    } catch (error) {
-      console.error('Error adding customer:', error);
-      setMessage('ลงทะเบียนรถไม่สำเร็จ');
-    }
-  };
+  //     await axios.post('http://localhost:3001/repairs', {
+  //       numPlate,
+  //       lineId,
+  //       brand,
+  //       customerName,
+  //       phoneNumber,
+  //       selectedModel,
+  //       color,
+  //       startdate,
+  //     });
+  //     clearForm();
+  //     setShowModal(false);
+  //     loadCustomers();
+  //   } catch (error) {
+  //     console.error('Error adding customer:', error);
+  //     setMessage('ลงทะเบียนรถไม่สำเร็จ');
+  //   }
+  // };
 
   const handleUpdateCustomer = async (id) => {
     try {
-      let brandId = null;
+      // let brandId = null;
 
-      // Check if the entered brand exists in brandmodels
-      const existingBrand = brandmodels.find((brandmodel) => brandmodel.brand === brand);
-      if (!existingBrand) {
-        // If brand doesn't exist, add it to brandmodels
-        const response = await axios.post('http://localhost:3001/brandmodels', {
-          brand,
-          model: selectedModel,
-        });
-        brandId = response.data._id;
-      } else {
-        brandId = existingBrand._id;
-      }
+      // // Check if the entered brand exists in brandmodels
+      // const existingBrand = brandmodels.find((brandmodel) => brandmodel.brand === brand);
+      // if (!existingBrand) {
+      //   // If brand doesn't exist, add it to brandmodels
+      //   const response = await axios.post('http://localhost:3001/brandmodels', {
+      //     brand,
+      //     model: selectedModel,
+      //   });
+      //   brandId = response.data._id;
+      // } else {
+      //   brandId = existingBrand._id;
+      // }
 
       await axios.put(`http://localhost:3001/repairs/${id}`, {
         numPlate,
         lineId,
-        brand: brandId,
+        brand: customBrand || brand,
         customerName,
         phoneNumber,
-        selectedModel,
+        selectedModel: customModel || selectedModel,
         color,
         startdate,
       });
-      clearForm();
+
+      if (customModel) {
+        await axios.post('http://localhost:3001/brandmodels', {
+          brand: customBrand || brand,
+          model: customModel,
+        });
+      }
+      // clearForm();
       setShowModal(false);
       loadCustomers();
     } catch (error) {
@@ -122,14 +132,14 @@ const Repair = () => {
 
 
   const handleEditCustomer = (customer) => {
-    setNumPlate(customer.customer.numPlate);
+    setNumPlate(customer.car.numPlate);
     setLineId(customer.customer.lineId);
-    setBrand(customer.customer.brand);
+    setBrand(customer.car.brand);
     setCustomerName(customer.customer.customerName);
     setPhoneNumber(customer.customer.phoneNumber);
-    setSelectedModel(customer.customer.selectedModel);
-    setColor(customer.customer.color);
-    setStartDate(customer.customer.startdate);
+    setSelectedModel(customer.car.selectedModel);
+    setColor(customer.car.color);
+    setStartDate(customer.startdate);
     setEditingCustomerId(customer._id);
     setShowModal(true);
   };
@@ -144,28 +154,28 @@ const Repair = () => {
     }
   };
 
-  const clearForm = () => {
-    setNumPlate('');
-    setLineId('');
-    setBrand('');
-    setCustomerName('');
-    setPhoneNumber('');
-    setSelectedModel('');
-    setColor('');
-    setStartDate('');
-    setMessage('');
-    setEditingCustomerId(null);
-  };
+  // const clearForm = () => {
+  //   setNumPlate('');
+  //   setLineId('');
+  //   setBrand('');
+  //   setCustomerName('');
+  //   setPhoneNumber('');
+  //   setSelectedModel('');
+  //   setColor('');
+  //   setStartDate('');
+  //   setMessage('');
+  //   setEditingCustomerId(null);
+  // };
 
-  const handleAddCustomerModal = () => {
-    setShowModal(true);
-  };
+  // const handleAddCustomerModal = () => {
+  //   setShowModal(true);
+  // };
 
   const handleAddCustomerModalClose = () => {
     setShowModal(false);
-    clearForm();
-    setBrand('');
-    setSelectedModel('');
+    // clearForm();
+    // setBrand('');
+    // setSelectedModel('');
   };
 
   const handleBrandChange = (e) => {
@@ -182,19 +192,19 @@ const Repair = () => {
     }
   };
 
-  const handleAddBrandModel = async () => {
-    try {
-      const response = await axios.post('http://localhost:3001/brandmodels', {
-        brand: customBrand || brand,
-        model: customModel,
-      });
-      setBrandModels([...brandmodels, response.data]);
-      setSelectedModel(response.data.model);
-      // setShowModal(false);  // ไม่ปิด Modal
-    } catch (error) {
-      console.error('Error adding brand and model:', error);
-    }
-  };
+  // const handleAddBrandModel = async () => {
+  //   try {
+  //     const response = await axios.post('http://localhost:3001/brandmodels', {
+  //       brand: customBrand || brand,
+  //       model: customModel,
+  //     });
+  //     setBrandModels([...brandmodels, response.data]);
+  //     setSelectedModel(response.data.model);
+  //     // setShowModal(false);  // ไม่ปิด Modal
+  //   } catch (error) {
+  //     console.error('Error adding brand and model:', error);
+  //   }
+  // };
 
 
   return (
@@ -204,19 +214,13 @@ const Repair = () => {
         <thead>
           <tr>
             <th>ป้ายทะเบียน</th>
-            <th>LINE ID</th>
-            <th>ชื่อลูกค้า</th>
-            <th>เบอร์โทรศัพท์</th>
             <th>การดำเนินการ</th>
           </tr>
         </thead>
         <tbody>
           {customers.map((customer, index) => (
             <tr key={index}>
-              <td>{customer.customer.numPlate}</td>
-              <td>{customer.customer.lineId}</td>
-              <td onClick={() => handleEditCustomer(customer)}>{customer.customer.customerName}</td>
-              <td>{customer.customer.phoneNumber}</td>
+              <td onClick={() => handleEditCustomer(customer)}>{customer.car.numPlate}</td>
               <td>
                 <button onClick={() => handleDeleteCustomer(customer._id)}>ลบ</button>
               </td>
@@ -224,9 +228,9 @@ const Repair = () => {
           ))}
         </tbody>
       </table>
-
-      <button onClick={handleAddCustomerModal}>ลงทะเบียนรถ</button>
-
+      <Link to="/carregis">
+        <button>ลงทะเบียนรถ</button>
+      </Link>
       <Modal show={showModal} onHide={handleAddCustomerModalClose} backdrop="static" size="xl" centered>
         <Modal.Header closeButton>
           <Modal.Title>{editingCustomerId ? 'แก้ไขข้อมูลลูกค้า' : 'ลงทะเบียนรถ'}</Modal.Title>
@@ -305,8 +309,8 @@ const Repair = () => {
                         onChange={(e) => setCustomModel(e.target.value)}
                         placeholder="กรอกรุ่นรถ"
                       />
-                      <button onClick={handleAddBrandModel}>เพิ่มยี่ห้อและรุ่น</button>
-                      </>
+                      {/* <button onClick={handleAddBrandModel}>เพิ่มยี่ห้อและรุ่น</button> */}
+                    </>
                   )}
                 </div>
                 <label>เบอร์โทรศัพท์:</label>
@@ -317,45 +321,45 @@ const Repair = () => {
                   onChange={(e) => setPhoneNumber(e.target.value)}
                 />
                 <div>
-  <label>สี:</label>
-  <select
-    value={color}
-    onChange={(e) => setColor(e.target.value)}
-    className="form-control"
-  >
-    <option value="">กรุณาเลือก</option>
-    <option value="red">แดง</option>
-    <option value="blue">น้ำเงิน</option>
-    <option value="yellow">เหลือง</option>
-    <option value="white">ขาว</option>
-    <option value="black">ดำ</option>
-    <option value="purple">ม่วง</option>
-    <option value="green">เขียว</option>
-    <option value="orange">ส้ม</option>
-    <option value="brown">น้ำตาล</option>
-    <option value="pink">ชมพู</option>
-    <option value="lightblue">ฟ้า</option>
-    <option value="grey">เทา</option>
-  </select>
-  <div>
-  <label>วันที่:</label>
-  <input
-    type="date"
-    value={startdate}
-    onChange={(e) => setStartDate(e.target.value)}
-    className="form-control"
-  />
-</div>
+                  <label>สี:</label>
+                  <select
+                    value={color}
+                    onChange={(e) => setColor(e.target.value)}
+                    className="form-control"
+                  >
+                    <option value="">กรุณาเลือก</option>
+                    <option value="red">แดง</option>
+                    <option value="blue">น้ำเงิน</option>
+                    <option value="yellow">เหลือง</option>
+                    <option value="white">ขาว</option>
+                    <option value="black">ดำ</option>
+                    <option value="purple">ม่วง</option>
+                    <option value="green">เขียว</option>
+                    <option value="orange">ส้ม</option>
+                    <option value="brown">น้ำตาล</option>
+                    <option value="pink">ชมพู</option>
+                    <option value="lightblue">ฟ้า</option>
+                    <option value="grey">เทา</option>
+                  </select>
+                  <div>
+                    <label>วันที่:</label>
+                    <input
+                      type="date"
+                      value={startdate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="form-control"
+                    />
+                  </div>
 
-</div>
+                </div>
 
               </form>
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" onClick={editingCustomerId ? () => handleUpdateCustomer(editingCustomerId) : handleAddCustomer}>
-            {editingCustomerId ? 'แก้ไข' : 'ลงทะเบียน'}
+          <button type="button" onClick={() => handleUpdateCustomer(editingCustomerId)}>
+            แก้ไข
           </button>
           <button type="button" onClick={handleAddCustomerModalClose}>ยกเลิก</button>
         </Modal.Footer>
@@ -365,3 +369,111 @@ const Repair = () => {
 };
 
 export default Repair;
+
+
+
+
+
+
+
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
+// import { Link, useNavigate } from 'react-router-dom';
+
+// const Repair = () => {
+//     const [brandmodels, setBrandModels] = useState([]);
+//   const [customers, setCustomers] = useState([]);
+
+//   const [numPlate, setNumPlate] = useState('');
+//   const [brand, setBrand] = useState('');
+//   const [customBrand, setCustomBrand] = useState('');
+//   const [lineId, setLineId] = useState('');
+//   const [customerName, setCustomerName] = useState('');
+//   const [selectedModel, setSelectedModel] = useState('');
+//   const [customModel, setCustomModel] = useState('');
+//   const [phoneNumber, setPhoneNumber] = useState('');
+//   const [color, setColor] = useState('');
+//   const [startdate, setStartDate] = useState('');
+
+
+//   const [editingCustomerId, setEditingCustomerId] = useState(null);
+
+//   const [message, setMessage] = useState('');
+
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     loadCustomers();
+//   }, []);
+
+//   const loadCustomers = async () => {
+//     try {
+//       const response = await axios.get('http://localhost:3001/repairs');
+//       setCustomers(response.data);
+//       setMessage('');
+//     } catch (error) {
+//       console.error('Error loading customer data:', error);
+//       setMessage('Error loading customer data');
+//     }
+//   };
+
+//   const handleDeleteCustomer = async (id) => {
+//     try {
+//       await axios.delete(`http://localhost:3001/repairs/${id}`);
+//       loadCustomers();
+//     } catch (error) {
+//       console.error('Error deleting customer:', error);
+//       setMessage('Error deleting customer');
+//     }
+//   };
+
+//   const handleEditCustomer = (customerData) => {
+//     setNumPlate(customerData.car.numPlate);
+//     setLineId(customerData.customer.lineId);
+//     setBrand(customerData.car.brand);
+//     setCustomerName(customerData.customer.customerName);
+//     setPhoneNumber(customerData.customer.phoneNumber);
+//     setSelectedModel(customerData.car.selectedModel);
+//     setColor(customerData.car.color);
+//     setStartDate(customerData.car.startdate);
+//     navigate('/carregis');
+//   };
+
+//   return (
+//     <div className="container">
+//       <h2>ระบบลงทะเบียนรถ</h2>
+//       <table>
+//         <thead>
+//           <tr>
+//             <th>ป้ายทะเบียน</th>
+//             <th>LINE ID</th>
+//             <th>ชื่อลูกค้า</th>
+//             <th>เบอร์โทรศัพท์</th>
+//             <th>การดำเนินการ</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           {customers.map((customer, index) => (
+//             <tr key={index}>
+//               <td onClick={() => handleEditCustomer(customer)}>{customer.car.numPlate}</td>
+//               <td>{customer.customer.lineId}</td>
+//               <td>{customer.customer.customerName}</td>
+//               <td>{customer.customer.phoneNumber}</td>
+//               <td>
+//                 <button onClick={() => handleDeleteCustomer(customer._id)}>ลบ</button>
+//               </td>
+//             </tr>
+//           ))}
+//         </tbody>
+//       </table>
+
+//       <Link to="/carregis">
+//         <button>ลงทะเบียนรถ</button>
+//       </Link>
+//     </div>
+//   );
+// };
+
+// export default Repair;
+
+

@@ -28,7 +28,11 @@ const customerSchema = new mongoose.Schema({
     selectedModel: {
       type: String,
       required: true,
-    }
+    },
+  color: {
+    type: String,
+    required: true,
+  }
   },
   startdate: {
     type: String,

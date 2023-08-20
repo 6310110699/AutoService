@@ -5,10 +5,10 @@ const Customer = require('../models/Repair');
 // สร้างรายการรถใหม่
 router.post('/', async (req, res) => {
   try {
-    const { numPlate, lineId, customerName, phoneNumber, brand, selectedModel, startdate } = req.body;
+    const { numPlate, lineId, customerName, phoneNumber, brand, selectedModel, color, startdate } = req.body;
     const newCustomer = await Customer.create({
       customer: { lineId, customerName, phoneNumber },
-      car: { numPlate, brand, selectedModel },
+      car: { numPlate, brand, selectedModel, color },
       startdate
     });
     res.status(201).json(newCustomer);
@@ -31,12 +31,12 @@ router.get('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { numPlate, lineId, customerName, phoneNumber, brand, selectedModel, startdate } = req.body;
+    const { numPlate, lineId, customerName, phoneNumber, brand, selectedModel, color, startdate } = req.body;
     const updatedCustomer = await Customer.findByIdAndUpdate(
       id,
       {
         customer: { lineId, customerName, phoneNumber },
-        car: { numPlate, brand, selectedModel },
+        car: { numPlate, brand, selectedModel, color },
         startdate
       },
       { new: true, useFindAndModify: false }
