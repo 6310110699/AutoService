@@ -16,7 +16,6 @@ const CarRegistration = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [color, setColor] = useState('');
     const [startdate, setStartDate] = useState('');
-    const [services, setServices] = useState([]);
 
     const [message, setMessage] = useState('');
 
@@ -46,7 +45,8 @@ const CarRegistration = () => {
                 selectedModel: customModel || selectedModel,
                 color,
                 startdate,
-                services:[]
+                services:[],
+                mechanics:[],
             });
 
             if (customModel) {

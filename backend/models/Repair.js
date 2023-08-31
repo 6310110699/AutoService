@@ -37,6 +37,10 @@ const customerSchema = new mongoose.Schema({
     type: String,
       required: true,
   }],
+  mechanics: [{
+    type: String,
+      required: true,
+  }],
   startdate: {
     type: String,
     required: true,

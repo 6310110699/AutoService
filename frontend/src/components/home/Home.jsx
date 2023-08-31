@@ -8,6 +8,7 @@ const Repair = () => {
   const [brandmodels, setBrandModels] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [services, setServices] = useState([]);
+  const [mechanics, setMechanics] = useState([]);
 
   const [message, setMessage] = useState('');
 
@@ -21,17 +22,22 @@ const Repair = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [color, setColor] = useState('');
   const [startdate, setStartDate] = useState('');
+
   const [selectedServices, setSelectedServices] = useState([]);
+
+  const [selectedMechanics, setSelectedMechanics] = useState([]);
 
   const [editingCustomerId, setEditingCustomerId] = useState(null);
 
   const [showCarRigisterModal, setShowCarRigisterModal] = useState(false);
   const [showSelectServiceModal, setShowSelectServiceModal] = useState(false);
+  const [showSelectMechanicModal, setShowSelectMechanicModal] = useState(false);
 
   useEffect(() => {
     loadBrandModels();
     loadCustomers();
     loadServices();
+    loadMechanics();
   }, []);
 
   const loadBrandModels = async () => {
@@ -63,6 +69,15 @@ const Repair = () => {
     }
   };
 
+  const loadMechanics = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/employees');
+      setMechanics(response.data);
+    } catch (error) {
+      console.error('Error loading mechanics:', error);
+    }
+  };
+
   const handleUpdateCustomer = async (id) => {
     try {
       await axios.put(`http://localhost:3001/repairs/${id}`, {
@@ -74,16 +89,15 @@ const Repair = () => {
         selectedModel: customModel || selectedModel,
         color,
         startdate,
-        // services: "",
       });
-  
+
       if (customModel) {
         await axios.post('http://localhost:3001/brandmodels', {
           brand: customBrand || brand,
           model: customModel,
         });
       }
-  
+
       setShowCarRigisterModal(false);
       loadCustomers();
     } catch (error) {
@@ -91,7 +105,7 @@ const Repair = () => {
       setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูล customer');
     }
   };
-  
+
 
   const handleEditCustomer = (customer) => {
     setNumPlate(customer.car.numPlate);
@@ -118,6 +132,21 @@ const Repair = () => {
     setSelectedServices(customer.services);
     setEditingCustomerId(customer._id);
     setShowSelectServiceModal(true);
+  };
+
+  const handleEditMecanics = (customer) => {
+    setNumPlate(customer.car.numPlate);
+    setLineId(customer.customer.lineId);
+    setBrand(customer.car.brand);
+    setCustomerName(customer.customer.customerName);
+    setPhoneNumber(customer.customer.phoneNumber);
+    setSelectedModel(customer.car.selectedModel);
+    setColor(customer.car.color);
+    setStartDate(customer.startdate);
+    setSelectedServices(customer.services);
+    setSelectedMechanics(customer.mechanics);
+    setEditingCustomerId(customer._id);
+    setShowSelectMechanicModal(true);
   };
 
   const handleDeleteCustomer = async (id) => {
@@ -161,7 +190,7 @@ const Repair = () => {
   };
 
   const handleAddService = async (id) => {
-    
+
     try {
       await axios.put(`http://localhost:3001/repairs/${id}`, {
         numPlate,
@@ -172,12 +201,45 @@ const Repair = () => {
         selectedModel: customModel || selectedModel,
         color,
         startdate,
-          services: selectedServices,
-        });
+        services: selectedServices,
+      });
       setShowSelectServiceModal(false);
       window.location.reload();
     } catch (error) {
       setMessage('เกิดข้อผิดพลาดในการเพิ่มบริการ');
+    }
+  };
+
+  const handleSelectMechanicModalClose = () => {
+    setShowSelectMechanicModal(false);
+  };
+
+  const handleSelectMechanic = (mechanicId) => {
+    if (selectedMechanics.includes(mechanicId)) {
+      setSelectedMechanics(selectedMechanics.filter(id => id !== mechanicId));
+    } else {
+      setSelectedMechanics([...selectedMechanics, mechanicId]);
+    }
+  };
+
+  const handleAddMechanic = async (id) => {
+    try {
+      await axios.put(`http://localhost:3001/repairs/${id}`, {
+        numPlate,
+        lineId,
+        brand: customBrand || brand,
+        customerName,
+        phoneNumber,
+        selectedModel: customModel || selectedModel,
+        color,
+        startdate,
+        services: selectedServices,
+        mechanics: selectedMechanics,
+      });
+      setShowSelectMechanicModal(false);
+      window.location.reload();
+    } catch (error) {
+      setMessage('เกิดข้อผิดพลาดในการเพิ่มช่าง');
     }
   };
 
@@ -196,7 +258,7 @@ const Repair = () => {
                 </td>
               </div>
               <td>
-              <button onClick={() => handleEditRepairCar(customer)}>รายการซ่อม</button>
+                <button onClick={() => handleEditRepairCar(customer)}>รายการซ่อม</button>
               </td>
               <td>
                 <button>
@@ -204,7 +266,7 @@ const Repair = () => {
                 </button>
               </td>
               <td>
-                <button>
+                <button onClick={() => handleEditMecanics(customer)}>
                   ชื่อช่าง
                 </button>
               </td>
@@ -220,6 +282,7 @@ const Repair = () => {
       <Link to="/carregis">
         <button>ลงทะเบียนรถ</button>
       </Link>
+
       <Modal
         show={showCarRigisterModal}
         onHide={handleAddCustomerModalClose}
@@ -381,33 +444,69 @@ const Repair = () => {
         size="xl"
         centered
       >
-      <Modal.Header closeButton>
+        <Modal.Header closeButton>
           <Modal.Title>เลือกบริการ</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <div>
-      <h2>เลือกบริการ</h2>
-      <ul>
-        {services.map((service) => (
-          <li key={service._id} value={service.serviceName}>
-            <label>
-              <input
-                type="checkbox"
-                checked={selectedServices.includes(service._id)}
-                onChange={() => handleSelectService(service._id)}
-              />
-              {service.serviceName}
-            </label>
-          </li>
-        ))}
-      </ul>
-    </div>
+          <div>
+            <h2>เลือกบริการ</h2>
+            <ul>
+              {services.map((service) => (
+                <li key={service._id} value={service.serviceName}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={selectedServices.includes(service._id)}
+                      onChange={() => handleSelectService(service._id)}
+                    />
+                    {service.serviceName}
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" onClick={() =>  handleAddService(editingCustomerId)}>
+          <button type="button" onClick={() => handleAddService(editingCustomerId)}>
             เลือก
           </button>
           <button type="button" onClick={handleSelectServiceModalClose}>ยกเลิก</button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={showSelectMechanicModal}
+        onHide={handleSelectMechanicModalClose}
+        backdrop="static"
+        size="xl"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>เลือกช่าง</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
+            <ul>
+              { mechanics.map((mechanic) => (
+                <li key={mechanic._id} value={mechanic.name}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={selectedMechanics.includes(mechanic._id)}
+                      onChange={() => handleSelectMechanic(mechanic._id)}
+                    />
+                    {mechanic.name}
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <button type="button" onClick={() => handleAddMechanic(editingCustomerId)}>
+            เลือก
+          </button>
+          <button type="button" onClick={handleSelectMechanicModalClose}>ยกเลิก</button>
         </Modal.Footer>
       </Modal>
     </div>
