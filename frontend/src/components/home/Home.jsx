@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import "./Home.scss";
 
 const Repair = () => {
   const [brandmodels, setBrandModels] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [services, setServices] = useState([]);
+
+  const [message, setMessage] = useState('');
 
   const [numPlate, setNumPlate] = useState('');
   const [brand, setBrand] = useState('');
@@ -17,15 +21,17 @@ const Repair = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [color, setColor] = useState('');
   const [startdate, setStartDate] = useState('');
+  const [selectedServices, setSelectedServices] = useState([]);
 
   const [editingCustomerId, setEditingCustomerId] = useState(null);
 
-  const [message, setMessage] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [showCarRigisterModal, setShowCarRigisterModal] = useState(false);
+  const [showSelectServiceModal, setShowSelectServiceModal] = useState(false);
 
   useEffect(() => {
     loadBrandModels();
     loadCustomers();
+    loadServices();
   }, []);
 
   const loadBrandModels = async () => {
@@ -48,9 +54,17 @@ const Repair = () => {
     }
   };
 
+  const loadServices = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/services');
+      setServices(response.data);
+    } catch (error) {
+      console.error('Error loading services:', error);
+    }
+  };
+
   const handleUpdateCustomer = async (id) => {
     try {
-
       await axios.put(`http://localhost:3001/repairs/${id}`, {
         numPlate,
         lineId,
@@ -60,23 +74,24 @@ const Repair = () => {
         selectedModel: customModel || selectedModel,
         color,
         startdate,
+        // services: "",
       });
-
+  
       if (customModel) {
         await axios.post('http://localhost:3001/brandmodels', {
           brand: customBrand || brand,
           model: customModel,
         });
       }
-
-      setShowModal(false);
+  
+      setShowCarRigisterModal(false);
       loadCustomers();
     } catch (error) {
       console.error('Error updating customer:', error);
       setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูล customer');
     }
   };
-
+  
 
   const handleEditCustomer = (customer) => {
     setNumPlate(customer.car.numPlate);
@@ -88,7 +103,21 @@ const Repair = () => {
     setColor(customer.car.color);
     setStartDate(customer.startdate);
     setEditingCustomerId(customer._id);
-    setShowModal(true);
+    setShowCarRigisterModal(true);
+  };
+
+  const handleEditRepairCar = (customer) => {
+    setNumPlate(customer.car.numPlate);
+    setLineId(customer.customer.lineId);
+    setBrand(customer.car.brand);
+    setCustomerName(customer.customer.customerName);
+    setPhoneNumber(customer.customer.phoneNumber);
+    setSelectedModel(customer.car.selectedModel);
+    setColor(customer.car.color);
+    setStartDate(customer.startdate);
+    setSelectedServices(customer.services);
+    setEditingCustomerId(customer._id);
+    setShowSelectServiceModal(true);
   };
 
   const handleDeleteCustomer = async (id) => {
@@ -102,7 +131,7 @@ const Repair = () => {
   };
 
   const handleAddCustomerModalClose = () => {
-    setShowModal(false);
+    setShowCarRigisterModal(false);
   };
 
   const handleBrandChange = (e) => {
@@ -119,22 +148,70 @@ const Repair = () => {
     }
   };
 
+  const handleSelectServiceModalClose = () => {
+    setShowSelectServiceModal(false);
+  };
+
+  const handleSelectService = (serviceId) => {
+    if (selectedServices.includes(serviceId)) {
+      setSelectedServices(selectedServices.filter(id => id !== serviceId));
+    } else {
+      setSelectedServices([...selectedServices, serviceId]);
+    }
+  };
+
+  const handleAddService = async (id) => {
+    
+    try {
+      await axios.put(`http://localhost:3001/repairs/${id}`, {
+        numPlate,
+        lineId,
+        brand: customBrand || brand,
+        customerName,
+        phoneNumber,
+        selectedModel: customModel || selectedModel,
+        color,
+        startdate,
+          services: selectedServices,
+        });
+      setShowSelectServiceModal(false);
+      window.location.reload();
+    } catch (error) {
+      setMessage('เกิดข้อผิดพลาดในการเพิ่มบริการ');
+    }
+  };
+
   return (
     <div className="container">
-      <h2>ระบบลงทะเบียนรถ</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ป้ายทะเบียน</th>
-            <th>การดำเนินการ</th>
-          </tr>
-        </thead>
+      <div className="repair-title">
+        <h2>รายการรถที่อยู่ในระบบ</h2>
+      </div>
+      <table className="repair-table">
         <tbody>
           {customers.map((customer, index) => (
             <tr key={index}>
-              <td onClick={() => handleEditCustomer(customer)}>{customer.car.numPlate}</td>
+              <div className="repair-numplate">
+                <td onClick={() => handleEditCustomer(customer)}>
+                  {customer.car.numPlate}
+                </td>
+              </div>
               <td>
-                <button onClick={() => handleDeleteCustomer(customer._id)}>ลบ</button>
+              <button onClick={() => handleEditRepairCar(customer)}>รายการซ่อม</button>
+              </td>
+              <td>
+                <button>
+                  จ่ายแล้ว
+                </button>
+              </td>
+              <td>
+                <button>
+                  ชื่อช่าง
+                </button>
+              </td>
+              <td>
+                <button onClick={() => handleDeleteCustomer(customer._id)}>
+                  ลบ
+                </button>
               </td>
             </tr>
           ))}
@@ -143,7 +220,13 @@ const Repair = () => {
       <Link to="/carregis">
         <button>ลงทะเบียนรถ</button>
       </Link>
-      <Modal show={showModal} onHide={handleAddCustomerModalClose} backdrop="static" size="xl" centered>
+      <Modal
+        show={showCarRigisterModal}
+        onHide={handleAddCustomerModalClose}
+        backdrop="static"
+        size="xl"
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>{editingCustomerId ? 'แก้ไขข้อมูลลูกค้า' : 'ลงทะเบียนรถ'}</Modal.Title>
         </Modal.Header>
@@ -157,102 +240,119 @@ const Repair = () => {
               {message && <div className="message">{message}</div>}
 
               <form>
-                <label>ป้ายทะเบียน เช่น XX 0000 NARATHIWAT</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={numPlate}
-                  onChange={(e) => setNumPlate(e.target.value)}
-                />
-                <label>LINE ID</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={lineId}
-                  onChange={(e) => setLineId(e.target.value)}
-                />
-                <div>
-                  <label>ยี่ห้อรถ:</label>
-                  <select value={brand} onChange={handleBrandChange}>
-                    <option value="">กรุณาเลือก</option>
-                    {Array.from(new Set(brandmodels.map((brandmodel) => brandmodel.brand))).map((uniqueBrand) => (
-                      <option key={uniqueBrand} value={uniqueBrand}>
-                        {uniqueBrand}
-                      </option>
-                    ))}
-                    <option value="other">อื่นๆ</option>
-                  </select>
-                  {brand === 'other' && (
+                <div className='row'>
+                  <div className='col col-6'>
+                    <label>ป้ายทะเบียน เช่น XX 0000 NARATHIWAT</label>
                     <input
                       type="text"
-                      value={customBrand}
-                      onChange={(e) => setCustomBrand(e.target.value)}
-                      placeholder="กรอกยี่ห้อรถ"
+                      className="form-control"
+                      value={numPlate}
+                      onChange={(e) => setNumPlate(e.target.value)}
                     />
-                  )}
+                  </div>
+                  <div className='col col-6'>
+                    <label>LINE ID</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={lineId}
+                      onChange={(e) => setLineId(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <label>ชื่อลูกค้า:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                />
-                <div>
-                  <label>รุ่นรถ:</label>
-                  <select value={selectedModel} onChange={handleModelChange}>
-                    <option value="">กรุณาเลือก</option>
-                    {brandmodels
-                      .filter((brandmodel) => brandmodel.brand === brand)
-                      .map((brandmodel) => (
-                        <option key={brandmodel._id} value={brandmodel.model}>
-                          {brandmodel.model}
+                <div className='row'>
+                  <div className='col col-6'>
+                    <label>ยี่ห้อรถ:</label>
+                    <select className="form-control" value={brand} onChange={handleBrandChange}>
+                      <option value="">กรุณาเลือก</option>
+                      {Array.from(new Set(brandmodels.map((brandmodel) => brandmodel.brand))).map((uniqueBrand) => (
+                        <option key={uniqueBrand} value={uniqueBrand}>
+                          {uniqueBrand}
                         </option>
                       ))}
-                    <option value="custom-model">
-                      {customModel ? customModel : 'กรุณากรอกรุ่นรถ'}
-                    </option>
-                  </select>
-                  {selectedModel === 'custom-model' && (
-                    <>
+                      <option value="other">อื่นๆ</option>
+                    </select>
+                    {brand === 'other' && (
                       <input
                         type="text"
-                        value={customModel}
-                        onChange={(e) => setCustomModel(e.target.value)}
-                        placeholder="กรอกรุ่นรถ"
+                        value={customBrand}
+                        onChange={(e) => setCustomBrand(e.target.value)}
+                        placeholder="กรอกยี่ห้อรถ"
                       />
-                    </>
-                  )}
+                    )}
+                  </div>
+                  <div className='col col-6'>
+                    <label>ชื่อลูกค้า:</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <label>เบอร์โทรศัพท์:</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                />
-                <div>
-                  <label>สี:</label>
-                  <select
-                    value={color}
-                    onChange={(e) => setColor(e.target.value)}
-                    className="form-control"
-                  >
-                    <option value="">กรุณาเลือก</option>
-                    <option value="red">แดง</option>
-                    <option value="blue">น้ำเงิน</option>
-                    <option value="yellow">เหลือง</option>
-                    <option value="white">ขาว</option>
-                    <option value="black">ดำ</option>
-                    <option value="purple">ม่วง</option>
-                    <option value="green">เขียว</option>
-                    <option value="orange">ส้ม</option>
-                    <option value="brown">น้ำตาล</option>
-                    <option value="pink">ชมพู</option>
-                    <option value="lightblue">ฟ้า</option>
-                    <option value="grey">เทา</option>
-                  </select>
-                  <div>
+                <div className='row'>
+                  <div className='col col-6'>
+                    <label>รุ่นรถ:</label>
+                    <select className="form-control" value={selectedModel} onChange={handleModelChange}>
+                      <option value="">กรุณาเลือก</option>
+                      {brandmodels
+                        .filter((brandmodel) => brandmodel.brand === brand)
+                        .map((brandmodel) => (
+                          <option key={brandmodel._id} value={brandmodel.model}>
+                            {brandmodel.model}
+                          </option>
+                        ))}
+                      <option value="custom-model">
+                        {customModel ? customModel : 'กรุณากรอกรุ่นรถ'}
+                      </option>
+                    </select>
+                    {selectedModel === 'custom-model' && (
+                      <>
+                        <input
+                          type="text"
+                          value={customModel}
+                          onChange={(e) => setCustomModel(e.target.value)}
+                          placeholder="กรอกรุ่นรถ"
+                        />
+                      </>
+                    )}
+                  </div>
+                  <div className='col col-6'>
+                    <label>เบอร์โทรศัพท์:</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className='row'>
+                  <div className='col col-6'>
+                    <label>สี:</label>
+                    <select
+                      value={color}
+                      onChange={(e) => setColor(e.target.value)}
+                      className="form-control"
+                    >
+                      <option value="">กรุณาเลือก</option>
+                      <option value="red">แดง</option>
+                      <option value="blue">น้ำเงิน</option>
+                      <option value="yellow">เหลือง</option>
+                      <option value="white">ขาว</option>
+                      <option value="black">ดำ</option>
+                      <option value="purple">ม่วง</option>
+                      <option value="green">เขียว</option>
+                      <option value="orange">ส้ม</option>
+                      <option value="brown">น้ำตาล</option>
+                      <option value="pink">ชมพู</option>
+                      <option value="lightblue">ฟ้า</option>
+                      <option value="grey">เทา</option>
+                    </select>
+
+                  </div>
+                  <div className='col col-6'>
                     <label>วันที่:</label>
                     <input
                       type="date"
@@ -273,8 +373,47 @@ const Repair = () => {
           <button type="button" onClick={handleAddCustomerModalClose}>ยกเลิก</button>
         </Modal.Footer>
       </Modal>
+
+      <Modal
+        show={showSelectServiceModal}
+        onHide={handleSelectServiceModalClose}
+        backdrop="static"
+        size="xl"
+        centered
+      >
+      <Modal.Header closeButton>
+          <Modal.Title>เลือกบริการ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <div>
+      <h2>เลือกบริการ</h2>
+      <ul>
+        {services.map((service) => (
+          <li key={service._id} value={service.serviceName}>
+            <label>
+              <input
+                type="checkbox"
+                checked={selectedServices.includes(service._id)}
+                onChange={() => handleSelectService(service._id)}
+              />
+              {service.serviceName}
+            </label>
+          </li>
+        ))}
+      </ul>
+    </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <button type="button" onClick={() =>  handleAddService(editingCustomerId)}>
+            เลือก
+          </button>
+          <button type="button" onClick={handleSelectServiceModalClose}>ยกเลิก</button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
 
 export default Repair;
+
+

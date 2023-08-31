@@ -16,6 +16,7 @@ const CarRegistration = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [color, setColor] = useState('');
     const [startdate, setStartDate] = useState('');
+    const [services, setServices] = useState([]);
 
     const [message, setMessage] = useState('');
 
@@ -45,6 +46,7 @@ const CarRegistration = () => {
                 selectedModel: customModel || selectedModel,
                 color,
                 startdate,
+                services:[]
             });
 
             if (customModel) {
@@ -79,109 +81,124 @@ const CarRegistration = () => {
         <div className="">
             <div className="">
                 <div className="">
-                    <div>
-                        ลงทะเบียนรถ
-                    </div>
-
+                   
                     {message && <div className="message">{message}</div>}
 
                     <form>
-                        <label>ป้ายทะเบียน เช่น XX 0000 NARATHIWAT</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={numPlate}
-                            onChange={(e) => setNumPlate(e.target.value)}
-                        />
-                        <label>LINE ID</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={lineId}
-                            onChange={(e) => setLineId(e.target.value)}
-                        />
-                        <div>
-                            <label>ยี่ห้อรถ:</label>
-                            <select value={brand} onChange={handleBrandChange}>
-                                <option value="">กรุณาเลือก</option>
-                                {Array.from(new Set(brandmodels.map((brandmodel) => brandmodel.brand))).map((uniqueBrand) => (
-                                    <option key={uniqueBrand} value={uniqueBrand}>
-                                        {uniqueBrand}
-                                    </option>
-                                ))}
-                                <option value="other">อื่นๆ</option>
-                            </select>
-                            {brand === 'other' && (
+                        <div className='row'>
+                            <div className='col col-6'>
+                                <label>ป้ายทะเบียน เช่น XX 0000 NARATHIWAT</label>
                                 <input
                                     type="text"
-                                    value={customBrand}
-                                    onChange={(e) => setCustomBrand(e.target.value)}
-                                    placeholder="กรอกยี่ห้อรถ"
+                                    className="form-control"
+                                    value={numPlate}
+                                    onChange={(e) => setNumPlate(e.target.value)}
                                 />
-                            )}
+                            </div>
+                            <div className='col col-6'>
+                                <label>LINE ID</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={lineId}
+                                    onChange={(e) => setLineId(e.target.value)}
+                                />
+                            </div>
                         </div>
-                        <label>ชื่อลูกค้า:</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={customerName}
-                            onChange={(e) => setCustomerName(e.target.value)}
-                        />
-                        <div>
-                            <label>รุ่นรถ:</label>
-                            <select value={selectedModel} onChange={handleModelChange}>
-                                <option value="">กรุณาเลือก</option>
-                                {brandmodels
-                                    .filter((brandmodel) => brandmodel.brand === brand)
-                                    .map((brandmodel) => (
-                                        <option key={brandmodel._id} value={brandmodel.model}>
-                                            {brandmodel.model}
+                        <div className='row'>
+                            <div className='col col-6'>
+                                <label>ยี่ห้อรถ:</label>
+                                <select className="form-control" value={brand} onChange={handleBrandChange}>
+                                    <option value="">กรุณาเลือก</option>
+                                    {Array.from(new Set(brandmodels.map((brandmodel) => brandmodel.brand))).map((uniqueBrand) => (
+                                        <option key={uniqueBrand} value={uniqueBrand}>
+                                            {uniqueBrand}
                                         </option>
                                     ))}
-                                <option value="custom-model">
-                                    {customModel ? customModel : 'กรุณากรอกรุ่นรถ'}
-                                </option>
-                            </select>
-                            {selectedModel === 'custom-model' && (
-                                <>
+                                    <option value="other">อื่นๆ</option>
+                                </select>
+                                {brand === 'other' && (
                                     <input
                                         type="text"
-                                        value={customModel}
-                                        onChange={(e) => setCustomModel(e.target.value)}
-                                        placeholder="กรอกรุ่นรถ"
+                                        value={customBrand}
+                                        onChange={(e) => setCustomBrand(e.target.value)}
+                                        placeholder="กรอกยี่ห้อรถ"
                                     />
-                                </>
-                            )}
+                                )}
+                            </div>
+                            <div className='col col-6'>
+                                <label>ชื่อลูกค้า:</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={customerName}
+                                    onChange={(e) => setCustomerName(e.target.value)}
+                                />
+                            </div>
+
                         </div>
-                        <label>เบอร์โทรศัพท์:</label>
-                        <input
-                            type="number"
-                            className="form-control"
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                        />
-                        <div>
-                            <label>สี:</label>
-                            <select
-                                value={color}
-                                onChange={(e) => setColor(e.target.value)}
-                                className="form-control"
-                            >
-                                <option value="">กรุณาเลือก</option>
-                                <option value="red">แดง</option>
-                                <option value="blue">น้ำเงิน</option>
-                                <option value="yellow">เหลือง</option>
-                                <option value="white">ขาว</option>
-                                <option value="black">ดำ</option>
-                                <option value="purple">ม่วง</option>
-                                <option value="green">เขียว</option>
-                                <option value="orange">ส้ม</option>
-                                <option value="brown">น้ำตาล</option>
-                                <option value="pink">ชมพู</option>
-                                <option value="lightblue">ฟ้า</option>
-                                <option value="grey">เทา</option>
-                            </select>
-                            <div>
+                        <div className='row'>
+                            <div className='col col-6'>
+                                <label>รุ่นรถ:</label>
+                                <select className="form-control" value={selectedModel} onChange={handleModelChange}>
+                                    <option value="">กรุณาเลือก</option>
+                                    {brandmodels
+                                        .filter((brandmodel) => brandmodel.brand === brand)
+                                        .map((brandmodel) => (
+                                            <option key={brandmodel._id} value={brandmodel.model}>
+                                                {brandmodel.model}
+                                            </option>
+                                        ))}
+                                    <option value="custom-model">
+                                        {customModel ? customModel : 'กรุณากรอกรุ่นรถ'}
+                                    </option>
+                                </select>
+                                {selectedModel === 'custom-model' && (
+                                    <>
+                                        <input
+                                            type="text"
+                                            value={customModel}
+                                            onChange={(e) => setCustomModel(e.target.value)}
+                                            placeholder="กรอกรุ่นรถ"
+                                        />
+                                    </>
+                                )}
+                            </div>
+                            <div className='col col-6'>
+                                <label>เบอร์โทรศัพท์:</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <div className='row'>
+                            <div className='col col-6'>
+                                <label>สี:</label>
+                                <select
+                                    value={color}
+                                    onChange={(e) => setColor(e.target.value)}
+                                    className="form-control"
+                                >
+                                    <option value="">กรุณาเลือก</option>
+                                    <option value="red">แดง</option>
+                                    <option value="blue">น้ำเงิน</option>
+                                    <option value="yellow">เหลือง</option>
+                                    <option value="white">ขาว</option>
+                                    <option value="black">ดำ</option>
+                                    <option value="purple">ม่วง</option>
+                                    <option value="green">เขียว</option>
+                                    <option value="orange">ส้ม</option>
+                                    <option value="brown">น้ำตาล</option>
+                                    <option value="pink">ชมพู</option>
+                                    <option value="lightblue">ฟ้า</option>
+                                    <option value="grey">เทา</option>
+                                </select>
+
+                            </div>
+                            <div className='col col-6'>
                                 <label>วันที่:</label>
                                 <input
                                     type="date"
@@ -194,10 +211,11 @@ const CarRegistration = () => {
                     </form>
                 </div>
             </div>
-
-            <button type="button" onClick={handleAddCustomer}>
+            <div className='button-container'>
+            <button className='button' type="button" onClick={handleAddCustomer}>
                 ลงทะเบียน
             </button>
+            </div>
         </div>
     );
 };

@@ -1,3 +1,5 @@
+@import '../../assets/styles';
+
 .register {
     display: flex;
     justify-content: center;
@@ -19,7 +21,7 @@
     }
 
     input {
-        background-color: #C2C0BB;
+        background-color: $seventh-color;
         border-radius: 15px;
         width: 500px;
         padding: 17px;
@@ -27,7 +29,7 @@
     }
 
     select {
-        background-color: #C2C0BB;
+        background-color: $seventh-color;
         border-radius: 15px;
         width: 500px;
         padding: 17px;
@@ -35,7 +37,7 @@
     }
 
     .error-form {
-        color: red;
+        color:$eighth-color;
         font-size: 18px;
     }
 }
@@ -47,8 +49,8 @@
     width: 200px;
     font-size: 25px;
     font-weight: bold;
-    background-color: #317857;
-    color: white;
+    background-color: $sixth-color;
+    color: $second-color;
     border-radius: 30px;
     margin: 20px auto;
 }

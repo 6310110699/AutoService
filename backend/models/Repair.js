@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const customerSchema = new mongoose.Schema({
   customer: {
-    
     lineId: {
       type: String,
       required: true,
@@ -29,11 +28,15 @@ const customerSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-  color: {
-    type: String,
-    required: true,
-  }
+    color: {
+      type: String,
+      required: true,
+    }
   },
+  services: [{
+    type: String,
+      required: true,
+  }],
   startdate: {
     type: String,
     required: true,

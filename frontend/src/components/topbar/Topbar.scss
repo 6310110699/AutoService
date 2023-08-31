@@ -1,10 +1,11 @@
-// Topbar.scss
+@import '../../assets/styles';
+
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #3D5A80;
-  color: #f5f5f5;
+  background-color: $third-color;
+  color: $second-color;
   height: 70px;
   padding: 10px;
 }
@@ -27,8 +28,8 @@
 
 .login-button {
   font-size: 16px;
-  background-color: #86B358;
-  color: #ffffff;
+  background-color: $fifth-color;
+  color: $second-color;
   text-decoration: none;
   border: none;
   border-radius: 10px;
@@ -42,7 +43,7 @@
   text-align: center;
   width: 90%;
   font-size: 16px;
-  background-color: #86B358;
+  background-color: $fifth-color;
   border: none;
   border-radius: 10px;
   padding: 8px;
@@ -53,12 +54,12 @@
 .menu {
   margin: 0px 15px;
   text-decoration: none;
-  color: #ffffff;
+  color: $second-color;
 }
 
 .menu-active {
-  color: #000000;
-  background-color: #D7A421;
+  color: $first-color;
+  background-color: $fourth-color;
   text-decoration: none;
   padding: 10px;
   border-radius: 20px;
@@ -68,13 +69,35 @@
   display: inline-block;
 
   button,
-  button ::after {
+  button::after {
     background-color: transparent;
-  border: none;
+    border: none;
   }
+  
+  button:hover,
+  button::after:hover {
+    background-color: transparent;
+  }
+  
+  .dropdown-toggle {
+    background-color: transparent;
+  }
+  .dropdown-toggle:hover {
+    background-color: transparent;
+  }
+  .dropdown-toggle:active {
+    background-color: transparent;
+  }
+
+  .dropdown-menu {
+    .dropdown-item:hover {
+      background-color: $fourth-color;
+      color: $second-color;
+    }
+  }
+ 
 }
 
 .user-icon {
   font-size: 40px;
 }
-
