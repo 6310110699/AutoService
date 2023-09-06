@@ -4,20 +4,20 @@ const Spare = require('../models/Spare');
 
 // To Get List Of Spares
 router.get('/', async (req, res) => {
-    try {
-      const Spares = await Spare.find();
-      res.json(Spares);
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลอะไหล่:', error);
-      res.status(500).json({ message: 'เกิดข้อผิดพลาดในการโหลดข้อมูลอะไหล่' });
-    }
-  });
-  
+  try {
+    const Spares = await Spare.find();
+    res.json(Spares);
+  } catch (error) {
+    console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลอะไหล่:', error);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการโหลดข้อมูลอะไหล่' });
+  }
+});
+
 
 // สร้างใหม่
 router.post('/', async (req, res) => {
   try {
-    const { spareName, spareType, sparePrice } = req.body;
+    const { spareName, spareType, sparePrice, compatibleCarModels } = req.body;
 
     const existingSpare = await Spare.findOne({ spareName });
 
@@ -28,6 +28,7 @@ router.post('/', async (req, res) => {
       spareName,
       spareType,
       sparePrice,
+      compatibleCarModels,
     });
     res.status(201).json(newSpare);
   } catch (error) {
@@ -39,7 +40,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { spareName, spareType, sparePrice } = req.body;
+    const { spareName, spareType, sparePrice, compatibleCarModels } = req.body;
 
     const existingSpare = await Spare.findOne({ $and: [{ _id: { $ne: id } }, { spareName }] });
 
@@ -51,8 +52,9 @@ router.put('/:id', async (req, res) => {
       id,
       {
         spareName,
-      spareType,
-      sparePrice,
+        spareType,
+        sparePrice,
+        compatibleCarModels,
       },
       { new: true, useFindAndModify: false }
     );

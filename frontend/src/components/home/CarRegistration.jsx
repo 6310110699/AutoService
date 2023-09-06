@@ -84,7 +84,7 @@ const CarRegistration = () => {
                    
                     {message && <div className="message">{message}</div>}
 
-                    <form>
+                    <form className='customer-form'>
                         <div className='row'>
                             <div className='col col-6'>
                                 <label>ป้ายทะเบียน เช่น XX 0000 NARATHIWAT</label>

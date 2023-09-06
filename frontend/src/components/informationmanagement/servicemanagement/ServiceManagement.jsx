@@ -10,6 +10,7 @@ const ServiceManagement = () => {
   const [spares, setSpares] = useState([]);
   const [sparesByCategory, setSparesByCategory] = useState([]);
   const [sparePrices, setSparePrices] = useState({});
+  
   const [editingServiceId, setEditingServiceId] = useState(null);
   const [message, setMessage] = useState('');
 

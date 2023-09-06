@@ -14,6 +14,10 @@ const spareSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  compatibleCarModels: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'BrandModel',
+  }],
 });
 
 const Spare = mongoose.model('Spare', spareSchema);

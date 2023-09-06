@@ -24,6 +24,8 @@ const Repair = () => {
   const [startdate, setStartDate] = useState('');
 
   const [selectedServices, setSelectedServices] = useState([]);
+  const [spares, setSpares] = useState([]);
+  const [sparePrices, setSparePrices] = useState({});
 
   const [selectedMechanics, setSelectedMechanics] = useState([]);
 
@@ -37,6 +39,7 @@ const Repair = () => {
     loadBrandModels();
     loadCustomers();
     loadServices();
+    loadSpares();
     loadMechanics();
   }, []);
 
@@ -66,6 +69,20 @@ const Repair = () => {
       setServices(response.data);
     } catch (error) {
       console.error('Error loading services:', error);
+    }
+  };
+
+  const loadSpares = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/spares');
+      const prices = {};
+      response.data.forEach((spare) => {
+        prices[spare._id] = spare.sparePrice;
+      });
+      setSparePrices(prices);
+      setSpares(response.data);
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลอะไหล่:', error);
     }
   };
 
@@ -178,6 +195,7 @@ const Repair = () => {
   };
 
   const handleSelectServiceModalClose = () => {
+    setCurrentStep(1);
     setShowSelectServiceModal(false);
   };
 
@@ -243,6 +261,15 @@ const Repair = () => {
     }
   };
 
+  const [currentStep, setCurrentStep] = useState(1);
+  const handleNextStep = () => {
+    setCurrentStep((prevStep) => prevStep + 1);
+  };
+
+  const handlePreviousStep = () => {
+    setCurrentStep((prevStep) => prevStep - 1);
+  };
+
   return (
     <div className="container">
       <div className="repair-title">
@@ -267,7 +294,7 @@ const Repair = () => {
               </td>
               <td>
                 <button onClick={() => handleEditMecanics(customer)}>
-                  ชื่อช่าง
+                  ช่าง
                 </button>
               </td>
               <td>
@@ -302,7 +329,7 @@ const Repair = () => {
 
               {message && <div className="message">{message}</div>}
 
-              <form>
+              <form className='customer-form'>
                 <div className='row'>
                   <div className='col col-6'>
                     <label>ป้ายทะเบียน เช่น XX 0000 NARATHIWAT</label>
@@ -445,32 +472,77 @@ const Repair = () => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>เลือกบริการ</Modal.Title>
+          <Modal.Title>รายการซ่อม</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>
-            <h2>เลือกบริการ</h2>
-            <ul>
-              {services.map((service) => (
-                <li key={service._id} value={service.serviceName}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={selectedServices.includes(service._id)}
-                      onChange={() => handleSelectService(service._id)}
-                    />
-                    {service.serviceName}
-                  </label>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {currentStep === 1 && (
+
+            <div>
+              <ul>
+                {services.map((service) => (
+                  <div key={service._id} value={service.serviceName}>
+                    <span style={{ display: "inline-block" }}>
+                      <input
+                        type="checkbox"
+                        checked={selectedServices.includes(service._id)}
+                        onChange={() => handleSelectService(service._id)}
+                      />
+                    </span>
+                    <span style={{ display: "inline-block" }}>
+                      <label className="form-control">
+                        {service.serviceName}
+                      </label>
+                    </span>
+
+                  </div>
+                ))}
+              </ul>
+              <button type="button" onClick={handleNextStep}>
+                NEXT
+              </button>
+            </div>
+          )}
+          {currentStep === 2 && (
+            <div>
+              <h2>บริการที่เลือก:</h2>
+              <ul>
+                {services
+                  .filter((service) => selectedServices.includes(service._id))
+                  .map((selectedService) => (
+                    <li key={selectedService._id}>
+                      <div>
+                        {selectedService.serviceName}
+                      </div>
+                      <div>
+                        <h5>รายการอะไหล่:</h5>
+                        <ul>
+                          {selectedService.spares.map((spareId) => {
+                            const spare = spares.find((spare) => spare._id === spareId);
+                            if (spare) {
+                              return (
+                                <li key={spare._id}>
+                                  <div>ชื่ออะไหล่: {spare.spareName}</div>
+                                  <div>ราคา: {sparePrices[spare._id]} บาท</div>
+                                </li>
+                              );
+                            }
+                            return null;
+                          })}
+                        </ul>
+                      </div>
+                    </li>
+                  ))}
+              </ul>
+
+              <button type="button" onClick={() => handleAddService(editingCustomerId)}>
+                SAVE
+              </button>
+            </div>
+          )}
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" onClick={() => handleAddService(editingCustomerId)}>
-            เลือก
-          </button>
-          <button type="button" onClick={handleSelectServiceModalClose}>ยกเลิก</button>
+
+          <button type="button" onClick={handleSelectServiceModalClose}>CANCEL</button>
         </Modal.Footer>
       </Modal>
 
@@ -482,31 +554,35 @@ const Repair = () => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>เลือกช่าง</Modal.Title>
+          <Modal.Title>ช่างที่ทำการซ่อม</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
             <ul>
-              { mechanics.map((mechanic) => (
-                <li key={mechanic._id} value={mechanic.name}>
-                  <label>
+              {mechanics.map((mechanic) => (
+                <div key={mechanic._id} value={mechanic.name}>
+                  <span style={{ display: "inline-block" }}>
                     <input
                       type="checkbox"
                       checked={selectedMechanics.includes(mechanic._id)}
                       onChange={() => handleSelectMechanic(mechanic._id)}
                     />
-                    {mechanic.name}
-                  </label>
-                </li>
+                  </span>
+                  <span style={{ display: "inline-block" }}>
+                    <label className="form-control">
+                      {mechanic.name}
+                    </label>
+                  </span>
+                </div>
               ))}
             </ul>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <button type="button" onClick={() => handleAddMechanic(editingCustomerId)}>
-            เลือก
+            SAVE
           </button>
-          <button type="button" onClick={handleSelectMechanicModalClose}>ยกเลิก</button>
+          <button type="button" onClick={handleSelectMechanicModalClose}>cANCEL</button>
         </Modal.Footer>
       </Modal>
     </div>

@@ -8,7 +8,6 @@ const serviceSchema = new mongoose.Schema({
   spares: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Spare',
-    required: true,
   }],
 });
 

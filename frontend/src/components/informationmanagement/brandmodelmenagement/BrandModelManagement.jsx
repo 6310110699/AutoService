@@ -137,7 +137,7 @@ const BrandModelManagement = () => {
                     onChange={(e) => setSearchText(e.target.value)}
                     placeholder="ค้นหารุ่นหรือยี่ห้อรถ"
                 />
-                
+
                 <table>
                     <thead>
                         <tr>
@@ -152,8 +152,17 @@ const BrandModelManagement = () => {
                                 <td>{brandmodel.model}</td>
                                 <td>{brandmodel.brand}</td>
                                 <td>
-                                    <button className='edit-button' onClick={() => handleEditBrandModel(brandmodel)}>แก้ไข</button>
-                                    <button className='delete-button' onClick={() => handleDeleteBrandModel(brandmodel._id)}>ลบ</button>
+                                    <button
+                                        className='edit-button'
+                                        onClick={() => handleEditBrandModel(brandmodel)}
+                                    >
+                                        แก้ไข
+                                    </button>
+                                    <button
+                                        className='delete-button'
+                                        onClick={() => handleDeleteBrandModel(brandmodel._id)}
+                                    >ลบ
+                                    </button>
                                 </td>
                             </tr>
                         ))}

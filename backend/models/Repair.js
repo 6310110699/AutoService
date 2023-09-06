@@ -25,7 +25,8 @@ const customerSchema = new mongoose.Schema({
       required: true,
     },
     selectedModel: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'BrandModel',
       required: true,
     },
     color: {
