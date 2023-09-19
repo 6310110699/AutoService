@@ -15,8 +15,8 @@ const spareSchema = new mongoose.Schema({
     required: true,
   },
   compatibleCarModels: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'BrandModel',
+    type: String, // เปลี่ยนเป็น String
+    required: true,
   }],
 });
 

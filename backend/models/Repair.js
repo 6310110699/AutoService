@@ -25,8 +25,7 @@ const customerSchema = new mongoose.Schema({
       required: true,
     },
     selectedModel: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'BrandModel',
+      type: String,
       required: true,
     },
     color: {
@@ -35,17 +34,23 @@ const customerSchema = new mongoose.Schema({
     }
   },
   services: [{
-    type: String,
-      required: true,
+    serviceName: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Service',
+    },
+    spareParts: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Spare',
+    }],
   }],
   mechanics: [{
     type: String,
-      required: true,
+    required: true,
   }],
   startdate: {
     type: String,
     required: true,
-  }
+  },
 });
 
 const Customer = mongoose.model('Customer', customerSchema);

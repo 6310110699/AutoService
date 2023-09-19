@@ -8,6 +8,7 @@ const Repair = () => {
   const [brandmodels, setBrandModels] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [services, setServices] = useState([]);
+  const [spareParts, setSpareParts] = useState([]);
   const [mechanics, setMechanics] = useState([]);
 
   const [message, setMessage] = useState('');
@@ -24,22 +25,25 @@ const Repair = () => {
   const [startdate, setStartDate] = useState('');
 
   const [selectedServices, setSelectedServices] = useState([]);
-  const [spares, setSpares] = useState([]);
-  const [sparePrices, setSparePrices] = useState({});
+  const [selectedSpareParts, setSelectedSpareParts] = useState([]);
+  const [selectedSparePartsByService, setSelectedSparePartsByService] = useState({});
+  const [selectedSparePartsForService, setSelectedSparePartsForService] = useState({});
 
   const [selectedMechanics, setSelectedMechanics] = useState([]);
 
   const [editingCustomerId, setEditingCustomerId] = useState(null);
+  const [editingSpareParts, setEditingSpareParts] = useState(null);
 
   const [showCarRigisterModal, setShowCarRigisterModal] = useState(false);
   const [showSelectServiceModal, setShowSelectServiceModal] = useState(false);
+  const [showSparePartsModal, setShowSparePartsModal] = useState(false);
   const [showSelectMechanicModal, setShowSelectMechanicModal] = useState(false);
 
   useEffect(() => {
     loadBrandModels();
     loadCustomers();
     loadServices();
-    loadSpares();
+    loadSpareParts();
     loadMechanics();
   }, []);
 
@@ -56,33 +60,40 @@ const Repair = () => {
     try {
       const response = await axios.get('http://localhost:3001/repairs');
       setCustomers(response.data);
+  
+      // หลังจากโหลดรายการลูกค้าแล้ว อัปเดต selectedSparePartsByService
+      const selectedSparePartsByServiceInitial = {};
+      response.data.forEach((customer) => {
+        customer.services.forEach((service) => {
+          selectedSparePartsByServiceInitial[service.serviceName] = service.spareParts;
+        });
+      });
+      setSelectedSparePartsForService(selectedSparePartsByServiceInitial);
+  
       setMessage('');
     } catch (error) {
       console.error('Error loading customer data:', error);
       setMessage('Error loading customer data');
     }
   };
+  
 
   const loadServices = async () => {
     try {
       const response = await axios.get('http://localhost:3001/services');
       setServices(response.data);
+
     } catch (error) {
       console.error('Error loading services:', error);
     }
   };
 
-  const loadSpares = async () => {
+  const loadSpareParts = async () => {
     try {
       const response = await axios.get('http://localhost:3001/spares');
-      const prices = {};
-      response.data.forEach((spare) => {
-        prices[spare._id] = spare.sparePrice;
-      });
-      setSparePrices(prices);
-      setSpares(response.data);
+      setSpareParts(response.data);
     } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลอะไหล่:', error);
+      console.error('Error loading spare parts:', error);
     }
   };
 
@@ -106,6 +117,7 @@ const Repair = () => {
         selectedModel: customModel || selectedModel,
         color,
         startdate,
+        services: selectedServices,
       });
 
       if (customModel) {
@@ -122,7 +134,6 @@ const Repair = () => {
       setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูล customer');
     }
   };
-
 
   const handleEditCustomer = (customer) => {
     setNumPlate(customer.car.numPlate);
@@ -146,9 +157,21 @@ const Repair = () => {
     setSelectedModel(customer.car.selectedModel);
     setColor(customer.car.color);
     setStartDate(customer.startdate);
-    setSelectedServices(customer.services);
-    setEditingCustomerId(customer._id);
-    setShowSelectServiceModal(true);
+    setSelectedServices(customer.services.map(service => service.serviceName));
+     // เซ็ตค่า selectedSpareParts จากค่าเริ่มต้น
+  //    const initialSelectedSpareParts = [...selectedSpareParts];
+
+  // setSelectedSpareParts(initialSelectedSpareParts);
+
+  // เพิ่มโค้ดเพื่อเซ็ตค่า selectedSparePartsByService จากข้อมูลในลูกค้าแต่ละรายการ
+  const selectedSparePartsByServiceInitial = {};
+  customer.services.forEach((service) => {
+    selectedSparePartsByServiceInitial[service.serviceName] = service.spareParts;
+  });
+  setSelectedSparePartsByService(selectedSparePartsByServiceInitial);
+
+  setEditingCustomerId(customer._id);
+  setShowSelectServiceModal(true);
   };
 
   const handleEditMecanics = (customer) => {
@@ -200,16 +223,28 @@ const Repair = () => {
   };
 
   const handleSelectService = (serviceId) => {
-    if (selectedServices.includes(serviceId)) {
-      setSelectedServices(selectedServices.filter(id => id !== serviceId));
-    } else {
-      setSelectedServices([...selectedServices, serviceId]);
+    if (editingCustomerId) {
+      const updatedSelectedServices = [...selectedServices];
+
+      if (updatedSelectedServices.includes(serviceId)) {
+        updatedSelectedServices.splice(updatedSelectedServices.indexOf(serviceId), 1);
+      } else {
+        updatedSelectedServices.push(serviceId);
+      }
+
+      setSelectedServices(updatedSelectedServices);
     }
   };
 
   const handleAddService = async (id) => {
-
     try {
+      const serviceData = selectedServices.map((serviceId) => {
+        return {
+          serviceName: serviceId,
+          spareParts: selectedSparePartsByService[serviceId] || [],
+        };
+      });
+
       await axios.put(`http://localhost:3001/repairs/${id}`, {
         numPlate,
         lineId,
@@ -219,13 +254,60 @@ const Repair = () => {
         selectedModel: customModel || selectedModel,
         color,
         startdate,
-        services: selectedServices,
+        services: serviceData,
       });
+      setCurrentStep(1);
       setShowSelectServiceModal(false);
-      window.location.reload();
+      loadCustomers();
     } catch (error) {
+      console.error('Error adding service:', error);
       setMessage('เกิดข้อผิดพลาดในการเพิ่มบริการ');
     }
+  };
+
+  const handleSelectSparePartModalClose = () => {
+    setShowSparePartsModal(false);
+  };
+
+  const handleAddSpareParts = () => {
+    setShowSparePartsModal(true);
+  };
+
+  const [currentStepServiceId, setCurrentStepServiceId] = useState(null);
+
+  const handleEditSpareParts = (service) => {
+    const initialSelectedSpareParts = selectedSparePartsByService[service._id] || [];
+    setCurrentStepServiceId(service._id);
+    setSelectedSpareParts(initialSelectedSpareParts);
+    setShowSparePartsModal(true);
+  };
+
+  const handleSelectSparePart = (sparepartId) => {
+    if (currentStepServiceId) {
+      const updatedSelectedSpareParts = [...selectedSpareParts];
+  
+      if (updatedSelectedSpareParts.includes(sparepartId)) {
+        updatedSelectedSpareParts.splice(updatedSelectedSpareParts.indexOf(sparepartId), 1);
+      } else {
+        updatedSelectedSpareParts.push(sparepartId);
+      }
+  
+      setSelectedSpareParts(updatedSelectedSpareParts);
+  
+      // อัพเดต selectedSparePartsByService ให้ถูกต้อง
+      const updatedSelectedSparePartsByService = { ...selectedSparePartsByService };
+      updatedSelectedSparePartsByService[currentStepServiceId] = updatedSelectedSpareParts;
+  
+      setSelectedSparePartsByService(updatedSelectedSparePartsByService);
+    }
+  };
+
+  const handleSaveSpareParts = () => {
+    setShowSparePartsModal(false);
+    setCurrentStepServiceId(null);
+    setSelectedSparePartsForService(selectedSparePartsByService);
+    
+    setSelectedSpareParts(selectedSpareParts);
   };
 
   const handleSelectMechanicModalClose = () => {
@@ -506,43 +588,73 @@ const Repair = () => {
             <div>
               <h2>บริการที่เลือก:</h2>
               <ul>
-                {services
-                  .filter((service) => selectedServices.includes(service._id))
-                  .map((selectedService) => (
-                    <li key={selectedService._id}>
-                      <div>
-                        {selectedService.serviceName}
-                      </div>
-                      <div>
-                        <h5>รายการอะไหล่:</h5>
-                        <ul>
-                          {selectedService.spares.map((spareId) => {
-                            const spare = spares.find((spare) => spare._id === spareId);
-                            if (spare) {
-                              return (
-                                <li key={spare._id}>
-                                  <div>ชื่ออะไหล่: {spare.spareName}</div>
-                                  <div>ราคา: {sparePrices[spare._id]} บาท</div>
-                                </li>
-                              );
-                            }
-                            return null;
-                          })}
-                        </ul>
-                      </div>
-                    </li>
-                  ))}
-              </ul>
+  {services
+    .filter((service) => selectedServices.includes(service._id))
+    .map((selectedService) => (
+      <li key={selectedService._id}>
+        <div>
+          {selectedService.serviceName}
+        </div>
+        <ul>
+          {selectedSparePartsForService[selectedService._id]?.map((selectedSparePartId) => {
+            const sparePart = spareParts.find((sparePart) => sparePart._id === selectedSparePartId);
+            return (
+              <li key={sparePart._id}>
+                <div>
+                  {sparePart.spareName}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+        <button onClick={() => handleEditSpareParts(selectedService)}>เพิ่มอะไหล่</button>
+      </li>
+    ))}
+</ul>
 
               <button type="button" onClick={() => handleAddService(editingCustomerId)}>
                 SAVE
               </button>
             </div>
           )}
+
         </Modal.Body>
         <Modal.Footer>
-
           <button type="button" onClick={handleSelectServiceModalClose}>CANCEL</button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={showSparePartsModal}
+        onHide={handleSelectSparePartModalClose}
+        backdrop="static"
+        size="xl"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>รายการอะไหล่</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ul>
+            {spareParts.map((sparePart) => (
+              <li key={sparePart._id}>
+                <input
+                  type="checkbox"
+                  checked={selectedSparePartsByService[currentStepServiceId]?.includes(sparePart._id)}
+                  onChange={() => handleSelectSparePart(sparePart._id)}
+                />
+                {sparePart.spareName}
+              </li>
+            ))}
+          </ul>
+        </Modal.Body>
+        <Modal.Footer>
+          <button type="button" onClick={handleSaveSpareParts}>
+            บันทึก
+          </button>
+          <button type="button" onClick={handleSelectSparePartModalClose}>
+            ยกเลิก
+          </button>
         </Modal.Footer>
       </Modal>
 
@@ -582,7 +694,7 @@ const Repair = () => {
           <button type="button" onClick={() => handleAddMechanic(editingCustomerId)}>
             SAVE
           </button>
-          <button type="button" onClick={handleSelectMechanicModalClose}>cANCEL</button>
+          <button type="button" onClick={handleSelectMechanicModalClose}>CANCEL</button>
         </Modal.Footer>
       </Modal>
     </div>
@@ -590,5 +702,3 @@ const Repair = () => {
 };
 
 export default Repair;
-
-
