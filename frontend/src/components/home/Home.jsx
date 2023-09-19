@@ -3,6 +3,7 @@ import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
 import "./Home.scss";
+import bin from '../../assets/bin.png';
 
 const Repair = () => {
   const [brandmodels, setBrandModels] = useState([]);
@@ -28,11 +29,9 @@ const Repair = () => {
   const [selectedSpareParts, setSelectedSpareParts] = useState([]);
   const [selectedSparePartsByService, setSelectedSparePartsByService] = useState({});
   const [selectedSparePartsForService, setSelectedSparePartsForService] = useState({});
-
   const [selectedMechanics, setSelectedMechanics] = useState([]);
 
   const [editingCustomerId, setEditingCustomerId] = useState(null);
-  const [editingSpareParts, setEditingSpareParts] = useState(null);
 
   const [showCarRigisterModal, setShowCarRigisterModal] = useState(false);
   const [showSelectServiceModal, setShowSelectServiceModal] = useState(false);
@@ -60,8 +59,7 @@ const Repair = () => {
     try {
       const response = await axios.get('http://localhost:3001/repairs');
       setCustomers(response.data);
-  
-      // หลังจากโหลดรายการลูกค้าแล้ว อัปเดต selectedSparePartsByService
+
       const selectedSparePartsByServiceInitial = {};
       response.data.forEach((customer) => {
         customer.services.forEach((service) => {
@@ -69,14 +67,14 @@ const Repair = () => {
         });
       });
       setSelectedSparePartsForService(selectedSparePartsByServiceInitial);
-  
+
       setMessage('');
     } catch (error) {
       console.error('Error loading customer data:', error);
       setMessage('Error loading customer data');
     }
   };
-  
+
 
   const loadServices = async () => {
     try {
@@ -158,20 +156,16 @@ const Repair = () => {
     setColor(customer.car.color);
     setStartDate(customer.startdate);
     setSelectedServices(customer.services.map(service => service.serviceName));
-     // เซ็ตค่า selectedSpareParts จากค่าเริ่มต้น
-  //    const initialSelectedSpareParts = [...selectedSpareParts];
 
-  // setSelectedSpareParts(initialSelectedSpareParts);
+    const selectedSparePartsByServiceInitial = {};
+    customer.services.forEach((service) => {
+      selectedSparePartsByServiceInitial[service.serviceName] = service.spareParts;
+    });
+    setSelectedSparePartsForService(selectedSparePartsByServiceInitial);
+    setSelectedSparePartsByService(selectedSparePartsByServiceInitial);
 
-  // เพิ่มโค้ดเพื่อเซ็ตค่า selectedSparePartsByService จากข้อมูลในลูกค้าแต่ละรายการ
-  const selectedSparePartsByServiceInitial = {};
-  customer.services.forEach((service) => {
-    selectedSparePartsByServiceInitial[service.serviceName] = service.spareParts;
-  });
-  setSelectedSparePartsByService(selectedSparePartsByServiceInitial);
-
-  setEditingCustomerId(customer._id);
-  setShowSelectServiceModal(true);
+    setEditingCustomerId(customer._id);
+    setShowSelectServiceModal(true);
   };
 
   const handleEditMecanics = (customer) => {
@@ -220,6 +214,7 @@ const Repair = () => {
   const handleSelectServiceModalClose = () => {
     setCurrentStep(1);
     setShowSelectServiceModal(false);
+    setSelectedSparePartsForService(selectedSparePartsForService);
   };
 
   const handleSelectService = (serviceId) => {
@@ -265,15 +260,12 @@ const Repair = () => {
     }
   };
 
+  const [currentStepServiceId, setCurrentStepServiceId] = useState(null);
+
   const handleSelectSparePartModalClose = () => {
     setShowSparePartsModal(false);
+    setSelectedSparePartsByService(selectedSparePartsForService);
   };
-
-  const handleAddSpareParts = () => {
-    setShowSparePartsModal(true);
-  };
-
-  const [currentStepServiceId, setCurrentStepServiceId] = useState(null);
 
   const handleEditSpareParts = (service) => {
     const initialSelectedSpareParts = selectedSparePartsByService[service._id] || [];
@@ -285,19 +277,18 @@ const Repair = () => {
   const handleSelectSparePart = (sparepartId) => {
     if (currentStepServiceId) {
       const updatedSelectedSpareParts = [...selectedSpareParts];
-  
+
       if (updatedSelectedSpareParts.includes(sparepartId)) {
         updatedSelectedSpareParts.splice(updatedSelectedSpareParts.indexOf(sparepartId), 1);
       } else {
         updatedSelectedSpareParts.push(sparepartId);
       }
-  
+
       setSelectedSpareParts(updatedSelectedSpareParts);
-  
-      // อัพเดต selectedSparePartsByService ให้ถูกต้อง
+
       const updatedSelectedSparePartsByService = { ...selectedSparePartsByService };
       updatedSelectedSparePartsByService[currentStepServiceId] = updatedSelectedSpareParts;
-  
+
       setSelectedSparePartsByService(updatedSelectedSparePartsByService);
     }
   };
@@ -306,7 +297,6 @@ const Repair = () => {
     setShowSparePartsModal(false);
     setCurrentStepServiceId(null);
     setSelectedSparePartsForService(selectedSparePartsByService);
-    
     setSelectedSpareParts(selectedSpareParts);
   };
 
@@ -355,7 +345,7 @@ const Repair = () => {
   return (
     <div className="container">
       <div className="repair-title">
-        <h2>รายการรถที่อยู่ในระบบ</h2>
+        <h2>รายการรถที่อยู่ในอู่ ณ ขณะนี้</h2>
       </div>
       <table className="repair-table">
         <tbody>
@@ -363,7 +353,7 @@ const Repair = () => {
             <tr key={index}>
               <div className="repair-numplate">
                 <td onClick={() => handleEditCustomer(customer)}>
-                  {customer.car.numPlate}
+                  {customer.car.brand} {customer.car.selectedModel} {customer.car.color} {customer.car.numPlate}
                 </td>
               </div>
               <td>
@@ -380,16 +370,16 @@ const Repair = () => {
                 </button>
               </td>
               <td>
-                <button onClick={() => handleDeleteCustomer(customer._id)}>
-                  ลบ
-                </button>
+                <div className='delete-carregis' onClick={() => handleDeleteCustomer(customer._id)}>
+                  <img src={bin} />
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
       <Link to="/carregis">
-        <button>ลงทะเบียนรถ</button>
+        <div className='carregis-button'>ลงทะเบียนรถ</div>
       </Link>
 
       <Modal
@@ -400,7 +390,7 @@ const Repair = () => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>{editingCustomerId ? 'แก้ไขข้อมูลลูกค้า' : 'ลงทะเบียนรถ'}</Modal.Title>
+          <Modal.Title>แก้ไขข้อมูลลูกค้า</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="">
@@ -554,11 +544,10 @@ const Repair = () => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>รายการซ่อม</Modal.Title>
+          <Modal.Title>สรุปรายการซ่อม</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {currentStep === 1 && (
-
             <div>
               <ul>
                 {services.map((service) => (
@@ -579,48 +568,63 @@ const Repair = () => {
                   </div>
                 ))}
               </ul>
-              <button type="button" onClick={handleNextStep}>
-                NEXT
-              </button>
             </div>
           )}
           {currentStep === 2 && (
             <div>
-              <h2>บริการที่เลือก:</h2>
               <ul>
-  {services
-    .filter((service) => selectedServices.includes(service._id))
-    .map((selectedService) => (
-      <li key={selectedService._id}>
-        <div>
-          {selectedService.serviceName}
-        </div>
-        <ul>
-          {selectedSparePartsForService[selectedService._id]?.map((selectedSparePartId) => {
-            const sparePart = spareParts.find((sparePart) => sparePart._id === selectedSparePartId);
-            return (
-              <li key={sparePart._id}>
-                <div>
-                  {sparePart.spareName}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-        <button onClick={() => handleEditSpareParts(selectedService)}>เพิ่มอะไหล่</button>
-      </li>
-    ))}
-</ul>
-
-              <button type="button" onClick={() => handleAddService(editingCustomerId)}>
-                SAVE
-              </button>
+                {services
+                  .filter((service) => selectedServices.includes(service._id))
+                  .map((selectedService) => (
+                    <li key={selectedService._id}>
+                      <div>
+                        {selectedService.serviceName}
+                      </div>
+                      <ul>
+                        {selectedSparePartsForService[selectedService._id]?.map((selectedSparePartId) => {
+                          const sparePart = spareParts.find((sparePart) => sparePart._id === selectedSparePartId);
+                          return (
+                            <li key={sparePart._id}>
+                              <div>
+                                {sparePart.spareName}
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                      <div className='add-button' onClick={() => handleEditSpareParts(selectedService)}>
+                        เพิ่มอะไหล่
+                      </div>
+                    </li>
+                  ))}
+              </ul>
             </div>
           )}
 
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" onClick={handleSelectServiceModalClose}>CANCEL</button>
+          <div>
+            {currentStep === 1 && (
+              <>
+                <div className="cancel-button" onClick={handleSelectServiceModalClose}>
+                  CANCEL
+                </div>
+                <button className="save-button" onClick={handleNextStep}>
+                  NEXT
+                </button>
+              </>
+            )}
+            {currentStep === 2 && (
+              <>
+                <div className="cancel-button" onClick={handlePreviousStep}>
+                  BACK
+                </div>
+                <div className="save-button" onClick={() => handleAddService(editingCustomerId)}>
+                  SAVE
+                </div>
+              </>
+            )}
+          </div>
         </Modal.Footer>
       </Modal>
 
@@ -632,7 +636,7 @@ const Repair = () => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>รายการอะไหล่</Modal.Title>
+          <Modal.Title>เพิ่มอะไหล่</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <ul>
@@ -649,12 +653,12 @@ const Repair = () => {
           </ul>
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" onClick={handleSaveSpareParts}>
-            บันทึก
-          </button>
-          <button type="button" onClick={handleSelectSparePartModalClose}>
-            ยกเลิก
-          </button>
+          <div className="cancel-button" onClick={handleSelectSparePartModalClose}>
+            CANCEL
+          </div>
+          <div className="save-button" onClick={handleSaveSpareParts}>
+            SAVE
+          </div>
         </Modal.Footer>
       </Modal>
 
