@@ -51,6 +51,28 @@ const customerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  status: {
+    state1: {
+      type: Boolean,
+      default: true,
+    },
+    state2: {
+      type: Boolean,
+      default: false,
+    },
+    state3: {
+      type: Boolean,
+      default: false,
+    },
+    state4: {
+      type: Boolean,
+      default: false,
+    },
+    state5: {
+      type: Boolean,
+      default: false,
+    },
+  },
 });
 
 const Customer = mongoose.model('Customer', customerSchema);

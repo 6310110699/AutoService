@@ -1,9 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Modal from 'react-bootstrap/Modal';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Modal from "react-bootstrap/Modal";
+import { Link } from "react-router-dom";
 import "./Home.scss";
-import bin from '../../assets/bin.png';
+import bin from "../../assets/bin.png";
+import edit_icon from "../../assets/edit.png";
+import state1_img from "../../assets/state1.png";
+import state2_img from "../../assets/state2.png";
+import state3_img from "../../assets/state3.png";
+import state4_img from "../../assets/state4.png";
+import state5_img from "../../assets/state5.png";
 
 const Repair = () => {
   const [brandmodels, setBrandModels] = useState([]);
@@ -12,23 +18,25 @@ const Repair = () => {
   const [spareParts, setSpareParts] = useState([]);
   const [mechanics, setMechanics] = useState([]);
 
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
-  const [numPlate, setNumPlate] = useState('');
-  const [brand, setBrand] = useState('');
-  const [customBrand, setCustomBrand] = useState('');
-  const [lineId, setLineId] = useState('');
-  const [customerName, setCustomerName] = useState('');
-  const [selectedModel, setSelectedModel] = useState('');
-  const [customModel, setCustomModel] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [color, setColor] = useState('');
-  const [startdate, setStartDate] = useState('');
+  const [numPlate, setNumPlate] = useState("");
+  const [brand, setBrand] = useState("");
+  const [customBrand, setCustomBrand] = useState("");
+  const [lineId, setLineId] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [customModel, setCustomModel] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [color, setColor] = useState("");
+  const [startdate, setStartDate] = useState("");
 
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedSpareParts, setSelectedSpareParts] = useState([]);
-  const [selectedSparePartsByService, setSelectedSparePartsByService] = useState({});
-  const [selectedSparePartsForService, setSelectedSparePartsForService] = useState({});
+  const [selectedSparePartsByService, setSelectedSparePartsByService] =
+    useState({});
+  const [selectedSparePartsForService, setSelectedSparePartsForService] =
+    useState({});
   const [selectedMechanics, setSelectedMechanics] = useState([]);
 
   const [editingCustomerId, setEditingCustomerId] = useState(null);
@@ -37,6 +45,13 @@ const Repair = () => {
   const [showSelectServiceModal, setShowSelectServiceModal] = useState(false);
   const [showSparePartsModal, setShowSparePartsModal] = useState(false);
   const [showSelectMechanicModal, setShowSelectMechanicModal] = useState(false);
+  
+  const [state1, setState1] = useState(true);
+  const [state2, setState2] = useState(false);
+  const [state3, setState3] = useState(false);
+  const [state4, setState4] = useState(false);
+  const [state5, setState5] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
 
   useEffect(() => {
     loadBrandModels();
@@ -48,59 +63,58 @@ const Repair = () => {
 
   const loadBrandModels = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/brandmodels');
+      const response = await axios.get("http://localhost:3001/brandmodels");
       setBrandModels(response.data);
     } catch (error) {
-      console.error('Error loading brand models:', error);
+      console.error("Error loading brand models:", error);
     }
   };
 
   const loadCustomers = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/repairs');
+      const response = await axios.get("http://localhost:3001/repairs");
       setCustomers(response.data);
 
       const selectedSparePartsByServiceInitial = {};
       response.data.forEach((customer) => {
         customer.services.forEach((service) => {
-          selectedSparePartsByServiceInitial[service.serviceName] = service.spareParts;
+          selectedSparePartsByServiceInitial[service.serviceName] =
+            service.spareParts;
         });
       });
       setSelectedSparePartsForService(selectedSparePartsByServiceInitial);
 
-      setMessage('');
+      setMessage("");
     } catch (error) {
-      console.error('Error loading customer data:', error);
-      setMessage('Error loading customer data');
+      console.error("Error loading customer data:", error);
+      setMessage("Error loading customer data");
     }
   };
 
-
   const loadServices = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/services');
+      const response = await axios.get("http://localhost:3001/services");
       setServices(response.data);
-
     } catch (error) {
-      console.error('Error loading services:', error);
+      console.error("Error loading services:", error);
     }
   };
 
   const loadSpareParts = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/spares');
+      const response = await axios.get("http://localhost:3001/spares");
       setSpareParts(response.data);
     } catch (error) {
-      console.error('Error loading spare parts:', error);
+      console.error("Error loading spare parts:", error);
     }
   };
 
   const loadMechanics = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/employees');
+      const response = await axios.get("http://localhost:3001/employees");
       setMechanics(response.data);
     } catch (error) {
-      console.error('Error loading mechanics:', error);
+      console.error("Error loading mechanics:", error);
     }
   };
 
@@ -116,10 +130,15 @@ const Repair = () => {
         color,
         startdate,
         services: selectedServices,
+        state1,
+        state2,
+        state3,
+        state4,
+        state5,
       });
 
       if (customModel) {
-        await axios.post('http://localhost:3001/brandmodels', {
+        await axios.post("http://localhost:3001/brandmodels", {
           brand: customBrand || brand,
           model: customModel,
         });
@@ -128,9 +147,53 @@ const Repair = () => {
       setShowCarRigisterModal(false);
       loadCustomers();
     } catch (error) {
-      console.error('Error updating customer:', error);
-      setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูล customer');
+      console.error("Error updating customer:", error);
+      setMessage("เกิดข้อผิดพลาดในการแก้ไขข้อมูล customer");
     }
+  };
+
+  const handleUpdateStatus = async (id) => {
+    try {
+      await axios.put(`http://localhost:3001/repairs/${id}`, {
+        numPlate,
+        lineId,
+        brand: customBrand || brand,
+        customerName,
+        phoneNumber,
+        selectedModel: customModel || selectedModel,
+        color,
+        startdate,
+        state1,
+        state2,
+        state3,
+        state4,
+        state5,
+      });
+
+      setShowStatusModal(false);
+      loadCustomers();
+    } catch (error) {
+      console.error("Error updating status:", error);
+      setMessage("เกิดข้อผิดพลาดในการแก้ไขสถานะ");
+    }
+  };
+
+  const handleEditStatus = (customer) => {
+    setNumPlate(customer.car.numPlate);
+    setLineId(customer.customer.lineId);
+    setBrand(customer.car.brand);
+    setCustomerName(customer.customer.customerName);
+    setPhoneNumber(customer.customer.phoneNumber);
+    setSelectedModel(customer.car.selectedModel);
+    setColor(customer.car.color);
+    setStartDate(customer.startdate);
+    setState1(customer.status.state1);
+    setState2(customer.status.state2);
+    setState3(customer.status.state3);
+    setState4(customer.status.state4);
+    setState5(customer.status.state5);
+    setEditingCustomerId(customer._id);
+    setShowStatusModal(true);
   };
 
   const handleEditCustomer = (customer) => {
@@ -142,8 +205,17 @@ const Repair = () => {
     setSelectedModel(customer.car.selectedModel);
     setColor(customer.car.color);
     setStartDate(customer.startdate);
+    setState1(customer.status.state1);
+    setState2(customer.status.state2);
+    setState3(customer.status.state3);
+    setState4(customer.status.state4);
+    setState5(customer.status.state5);
     setEditingCustomerId(customer._id);
     setShowCarRigisterModal(true);
+  };
+
+  const handleStatusModalClose = () => {
+    setShowStatusModal(false);
   };
 
   const handleEditRepairCar = (customer) => {
@@ -155,11 +227,19 @@ const Repair = () => {
     setSelectedModel(customer.car.selectedModel);
     setColor(customer.car.color);
     setStartDate(customer.startdate);
-    setSelectedServices(customer.services.map(service => service.serviceName));
+    setState1(customer.status.state1);
+    setState2(customer.status.state2);
+    setState3(customer.status.state3);
+    setState4(customer.status.state4);
+    setState5(customer.status.state5);
+    setSelectedServices(
+      customer.services.map((service) => service.serviceName)
+    );
 
     const selectedSparePartsByServiceInitial = {};
     customer.services.forEach((service) => {
-      selectedSparePartsByServiceInitial[service.serviceName] = service.spareParts;
+      selectedSparePartsByServiceInitial[service.serviceName] =
+        service.spareParts;
     });
     setSelectedSparePartsForService(selectedSparePartsByServiceInitial);
     setSelectedSparePartsByService(selectedSparePartsByServiceInitial);
@@ -179,6 +259,11 @@ const Repair = () => {
     setStartDate(customer.startdate);
     setSelectedServices(customer.services);
     setSelectedMechanics(customer.mechanics);
+    setState1(customer.status.state1);
+    setState2(customer.status.state2);
+    setState3(customer.status.state3);
+    setState4(customer.status.state4);
+    setState5(customer.status.state5);
     setEditingCustomerId(customer._id);
     setShowSelectMechanicModal(true);
   };
@@ -188,8 +273,8 @@ const Repair = () => {
       await axios.delete(`http://localhost:3001/repairs/${id}`);
       loadCustomers();
     } catch (error) {
-      console.error('Error deleting customer:', error);
-      setMessage('เกิดข้อผิดพลาดในการลบข้อมูลลูกค้า');
+      console.error("Error deleting customer:", error);
+      setMessage("เกิดข้อผิดพลาดในการลบข้อมูลลูกค้า");
     }
   };
 
@@ -199,15 +284,15 @@ const Repair = () => {
 
   const handleBrandChange = (e) => {
     setBrand(e.target.value);
-    setSelectedModel('');
-    setCustomBrand('');
-    setCustomModel('');
+    setSelectedModel("");
+    setCustomBrand("");
+    setCustomModel("");
   };
 
   const handleModelChange = (e) => {
     setSelectedModel(e.target.value);
-    if (e.target.value === 'custom-model') {
-      setCustomModel('');
+    if (e.target.value === "custom-model") {
+      setCustomModel("");
     }
   };
 
@@ -222,7 +307,10 @@ const Repair = () => {
       const updatedSelectedServices = [...selectedServices];
 
       if (updatedSelectedServices.includes(serviceId)) {
-        updatedSelectedServices.splice(updatedSelectedServices.indexOf(serviceId), 1);
+        updatedSelectedServices.splice(
+          updatedSelectedServices.indexOf(serviceId),
+          1
+        );
       } else {
         updatedSelectedServices.push(serviceId);
       }
@@ -250,13 +338,18 @@ const Repair = () => {
         color,
         startdate,
         services: serviceData,
+        state1,
+        state2,
+        state3,
+        state4,
+        state5,
       });
       setCurrentStep(1);
       setShowSelectServiceModal(false);
       loadCustomers();
     } catch (error) {
-      console.error('Error adding service:', error);
-      setMessage('เกิดข้อผิดพลาดในการเพิ่มบริการ');
+      console.error("Error adding service:", error);
+      setMessage("เกิดข้อผิดพลาดในการเพิ่มบริการ");
     }
   };
 
@@ -268,7 +361,8 @@ const Repair = () => {
   };
 
   const handleEditSpareParts = (service) => {
-    const initialSelectedSpareParts = selectedSparePartsByService[service._id] || [];
+    const initialSelectedSpareParts =
+      selectedSparePartsByService[service._id] || [];
     setCurrentStepServiceId(service._id);
     setSelectedSpareParts(initialSelectedSpareParts);
     setShowSparePartsModal(true);
@@ -279,15 +373,21 @@ const Repair = () => {
       const updatedSelectedSpareParts = [...selectedSpareParts];
 
       if (updatedSelectedSpareParts.includes(sparepartId)) {
-        updatedSelectedSpareParts.splice(updatedSelectedSpareParts.indexOf(sparepartId), 1);
+        updatedSelectedSpareParts.splice(
+          updatedSelectedSpareParts.indexOf(sparepartId),
+          1
+        );
       } else {
         updatedSelectedSpareParts.push(sparepartId);
       }
 
       setSelectedSpareParts(updatedSelectedSpareParts);
 
-      const updatedSelectedSparePartsByService = { ...selectedSparePartsByService };
-      updatedSelectedSparePartsByService[currentStepServiceId] = updatedSelectedSpareParts;
+      const updatedSelectedSparePartsByService = {
+        ...selectedSparePartsByService,
+      };
+      updatedSelectedSparePartsByService[currentStepServiceId] =
+        updatedSelectedSpareParts;
 
       setSelectedSparePartsByService(updatedSelectedSparePartsByService);
     }
@@ -306,7 +406,7 @@ const Repair = () => {
 
   const handleSelectMechanic = (mechanicId) => {
     if (selectedMechanics.includes(mechanicId)) {
-      setSelectedMechanics(selectedMechanics.filter(id => id !== mechanicId));
+      setSelectedMechanics(selectedMechanics.filter((id) => id !== mechanicId));
     } else {
       setSelectedMechanics([...selectedMechanics, mechanicId]);
     }
@@ -325,11 +425,16 @@ const Repair = () => {
         startdate,
         services: selectedServices,
         mechanics: selectedMechanics,
+        state1,
+        state2,
+        state3,
+        state4,
+        state5,
       });
       setShowSelectMechanicModal(false);
       window.location.reload();
     } catch (error) {
-      setMessage('เกิดข้อผิดพลาดในการเพิ่มช่าง');
+      setMessage("เกิดข้อผิดพลาดในการเพิ่มช่าง");
     }
   };
 
@@ -342,6 +447,26 @@ const Repair = () => {
     setCurrentStep((prevStep) => prevStep - 1);
   };
 
+  const handleToggleState = (stateName) => {
+    // สลับค่าของสถานะตามชื่อ state ที่รับเข้ามา
+    switch (stateName) {
+      case "state2":
+        setState2(!state2);
+        break;
+      case "state3":
+        setState3(!state3);
+        break;
+      case "state4":
+        setState4(!state4);
+        break;
+      case "state5":
+        setState5(!state5);
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <div className="container">
       <div className="repair-title">
@@ -352,17 +477,26 @@ const Repair = () => {
           {customers.map((customer, index) => (
             <tr key={index}>
               <div className="repair-numplate">
-                <td onClick={() => handleEditCustomer(customer)}>
-                  {customer.car.brand} {customer.car.selectedModel} {customer.car.color} {customer.car.numPlate}
-                </td>
+                <td>
+                  <div onClick={() => handleEditStatus(customer)}>
+                  {customer.car.brand} {customer.car.selectedModel}{" "}
+                  {customer.car.color} {customer.car.numPlate}  
+                  </div>
+                   <div className="repait-edit" onClick={() => handleEditCustomer(customer)}>
+                    <img src={edit_icon} />
+                  </div>
+                   </td>
               </div>
+              
+                 
+              
               <td>
-                <button onClick={() => handleEditRepairCar(customer)}>รายการซ่อม</button>
+                <button onClick={() => handleEditRepairCar(customer)}>
+                  รายการซ่อม
+                </button>
               </td>
               <td>
-                <button>
-                  จ่ายแล้ว
-                </button>
+                <button>จ่ายแล้ว</button>
               </td>
               <td>
                 <button onClick={() => handleEditMecanics(customer)}>
@@ -379,8 +513,145 @@ const Repair = () => {
         </tbody>
       </table>
       <Link to="/carregis">
-        <div className='carregis-button'>ลงทะเบียนรถ</div>
+        <div className="carregis-button">ลงทะเบียนรถ</div>
       </Link>
+
+      <Modal
+        show={showStatusModal}
+        onHide={handleStatusModalClose}
+        backdrop="static"
+        size="xl"
+        centered
+      >
+        <Modal.Body>
+          <div>
+            {customers.map((customer, index) => (
+              <div key={index}>
+                <div className="status-header-container">
+                  <button className="status-header">
+                  {customer.car.brand} {customer.car.selectedModel}{" "}
+                  {customer.car.color} {customer.car.numPlate}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="status-container">
+            <div className="state">
+              <div className={`state ${state1 ? "status-active" : "status"}`}>
+                <div className="state-circle1"></div>
+                <div className="state-circle2">
+                  <img src={state1_img}></img>
+                </div>
+              </div>
+              <button className="button-true">เรียบร้อย</button>
+            </div>
+            <div className="state">
+              <div className={`state ${state2 ? "status-active" : "status"}`}>
+                <div className="state-circle1"></div>
+                <div className="state-circle2">
+                  <img src={state2_img}></img>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  if (state1) {
+                    handleToggleState("state2");
+                  }
+                  if (state3 || state4 || state5) {
+                    setState2(false);
+                    setState3(false);
+                    setState4(false);
+                    setState5(false);
+                  }
+                }}
+                className={state2 ? "button-true" : "button-false"}
+              >
+                เรียบร้อย
+              </button>
+            </div>
+            <div className="state">
+              <div className={`state ${state3 ? "status-active" : "status"}`}>
+                <div className="state-circle1"></div>
+                <div className="state-circle2">
+                  <img src={state3_img}></img>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  if (state2) {
+                    handleToggleState("state3");
+                  }
+                  if (state4 || state5) {
+                    setState3(false);
+                    setState4(false);
+                    setState5(false);
+                  }
+                }}
+                className={state3 ? "button-true" : "button-false"}
+              >
+                เรียบร้อย
+              </button>
+            </div>
+            <div className="state">
+              <div className={`state ${state4 ? "status-active" : "status"}`}>
+                <div className="state-circle1"></div>
+                <div className="state-circle2">
+                  <img src={state4_img}></img>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  if (state3) {
+                    handleToggleState("state4");
+                  }
+                  if (state5) {
+                    setState4(false);
+                    setState5(false);
+                  }
+                }}
+                className={state4 ? "button-true" : "button-false"}
+              >
+                เรียบร้อย
+              </button>
+            </div>
+            <div className="state">
+              <div className={`state ${state5 ? "status-active" : "status"}`}>
+                <div className="state-circle1"></div>
+                <div className="state-circle2">
+                  <img src={state5_img}></img>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  if (state4) {
+                    handleToggleState("state5");
+                  }
+                }}
+                className={state5 ? "button-true" : "button-false"}
+              >
+                เรียบร้อย
+              </button>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <button
+            type="button"
+            onClick={() => handleUpdateStatus(editingCustomerId)}
+            className="status-save"
+          >
+            SAVE
+          </button>
+          <button
+            type="button"
+            onClick={handleStatusModalClose}
+            className="status-cancel"
+          >
+            CANCEL
+          </button>
+        </Modal.Footer>
+      </Modal>
 
       <Modal
         show={showCarRigisterModal}
@@ -396,14 +667,14 @@ const Repair = () => {
           <div className="">
             <div className="">
               <div>
-                {editingCustomerId ? 'แก้ไขข้อมูลลูกค้า' : 'ลงทะเบียนรถ'}
+                {editingCustomerId ? "แก้ไขข้อมูลลูกค้า" : "ลงทะเบียนรถ"}
               </div>
 
               {message && <div className="message">{message}</div>}
 
-              <form className='customer-form'>
-                <div className='row'>
-                  <div className='col col-6'>
+              <form className="customer-form">
+                <div className="row">
+                  <div className="col col-6">
                     <label>ป้ายทะเบียน เช่น XX 0000 NARATHIWAT</label>
                     <input
                       type="text"
@@ -412,7 +683,7 @@ const Repair = () => {
                       onChange={(e) => setNumPlate(e.target.value)}
                     />
                   </div>
-                  <div className='col col-6'>
+                  <div className="col col-6">
                     <label>LINE ID</label>
                     <input
                       type="text"
@@ -422,19 +693,27 @@ const Repair = () => {
                     />
                   </div>
                 </div>
-                <div className='row'>
-                  <div className='col col-6'>
+                <div className="row">
+                  <div className="col col-6">
                     <label>ยี่ห้อรถ:</label>
-                    <select className="form-control" value={brand} onChange={handleBrandChange}>
+                    <select
+                      className="form-control"
+                      value={brand}
+                      onChange={handleBrandChange}
+                    >
                       <option value="">กรุณาเลือก</option>
-                      {Array.from(new Set(brandmodels.map((brandmodel) => brandmodel.brand))).map((uniqueBrand) => (
+                      {Array.from(
+                        new Set(
+                          brandmodels.map((brandmodel) => brandmodel.brand)
+                        )
+                      ).map((uniqueBrand) => (
                         <option key={uniqueBrand} value={uniqueBrand}>
                           {uniqueBrand}
                         </option>
                       ))}
                       <option value="other">อื่นๆ</option>
                     </select>
-                    {brand === 'other' && (
+                    {brand === "other" && (
                       <input
                         type="text"
                         value={customBrand}
@@ -443,7 +722,7 @@ const Repair = () => {
                       />
                     )}
                   </div>
-                  <div className='col col-6'>
+                  <div className="col col-6">
                     <label>ชื่อลูกค้า:</label>
                     <input
                       type="text"
@@ -453,10 +732,14 @@ const Repair = () => {
                     />
                   </div>
                 </div>
-                <div className='row'>
-                  <div className='col col-6'>
+                <div className="row">
+                  <div className="col col-6">
                     <label>รุ่นรถ:</label>
-                    <select className="form-control" value={selectedModel} onChange={handleModelChange}>
+                    <select
+                      className="form-control"
+                      value={selectedModel}
+                      onChange={handleModelChange}
+                    >
                       <option value="">กรุณาเลือก</option>
                       {brandmodels
                         .filter((brandmodel) => brandmodel.brand === brand)
@@ -466,10 +749,10 @@ const Repair = () => {
                           </option>
                         ))}
                       <option value="custom-model">
-                        {customModel ? customModel : 'กรุณากรอกรุ่นรถ'}
+                        {customModel ? customModel : "กรุณากรอกรุ่นรถ"}
                       </option>
                     </select>
-                    {selectedModel === 'custom-model' && (
+                    {selectedModel === "custom-model" && (
                       <>
                         <input
                           type="text"
@@ -480,7 +763,7 @@ const Repair = () => {
                       </>
                     )}
                   </div>
-                  <div className='col col-6'>
+                  <div className="col col-6">
                     <label>เบอร์โทรศัพท์:</label>
                     <input
                       type="number"
@@ -490,8 +773,8 @@ const Repair = () => {
                     />
                   </div>
                 </div>
-                <div className='row'>
-                  <div className='col col-6'>
+                <div className="row">
+                  <div className="col col-6">
                     <label>สี:</label>
                     <select
                       value={color}
@@ -512,9 +795,8 @@ const Repair = () => {
                       <option value="lightblue">ฟ้า</option>
                       <option value="grey">เทา</option>
                     </select>
-
                   </div>
-                  <div className='col col-6'>
+                  <div className="col col-6">
                     <label>วันที่:</label>
                     <input
                       type="date"
@@ -529,10 +811,15 @@ const Repair = () => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" onClick={() => handleUpdateCustomer(editingCustomerId)}>
+          <button
+            type="button"
+            onClick={() => handleUpdateCustomer(editingCustomerId)}
+          >
             แก้ไข
           </button>
-          <button type="button" onClick={handleAddCustomerModalClose}>ยกเลิก</button>
+          <button type="button" onClick={handleAddCustomerModalClose}>
+            ยกเลิก
+          </button>
         </Modal.Footer>
       </Modal>
 
@@ -564,7 +851,6 @@ const Repair = () => {
                         {service.serviceName}
                       </label>
                     </span>
-
                   </div>
                 ))}
               </ul>
@@ -577,22 +863,26 @@ const Repair = () => {
                   .filter((service) => selectedServices.includes(service._id))
                   .map((selectedService) => (
                     <li key={selectedService._id}>
-                      <div>
-                        {selectedService.serviceName}
-                      </div>
+                      <div>{selectedService.serviceName}</div>
                       <ul>
-                        {selectedSparePartsForService[selectedService._id]?.map((selectedSparePartId) => {
-                          const sparePart = spareParts.find((sparePart) => sparePart._id === selectedSparePartId);
-                          return (
-                            <li key={sparePart._id}>
-                              <div>
-                                {sparePart.spareName}
-                              </div>
-                            </li>
-                          );
-                        })}
+                        {selectedSparePartsForService[selectedService._id]?.map(
+                          (selectedSparePartId) => {
+                            const sparePart = spareParts.find(
+                              (sparePart) =>
+                                sparePart._id === selectedSparePartId
+                            );
+                            return (
+                              <li key={sparePart._id}>
+                                <div>{sparePart.spareName}</div>
+                              </li>
+                            );
+                          }
+                        )}
                       </ul>
-                      <div className='add-button' onClick={() => handleEditSpareParts(selectedService)}>
+                      <div
+                        className="add-button"
+                        onClick={() => handleEditSpareParts(selectedService)}
+                      >
                         เพิ่มอะไหล่
                       </div>
                     </li>
@@ -600,13 +890,15 @@ const Repair = () => {
               </ul>
             </div>
           )}
-
         </Modal.Body>
         <Modal.Footer>
           <div>
             {currentStep === 1 && (
               <>
-                <div className="cancel-button" onClick={handleSelectServiceModalClose}>
+                <div
+                  className="cancel-button"
+                  onClick={handleSelectServiceModalClose}
+                >
                   CANCEL
                 </div>
                 <button className="save-button" onClick={handleNextStep}>
@@ -619,7 +911,10 @@ const Repair = () => {
                 <div className="cancel-button" onClick={handlePreviousStep}>
                   BACK
                 </div>
-                <div className="save-button" onClick={() => handleAddService(editingCustomerId)}>
+                <div
+                  className="save-button"
+                  onClick={() => handleAddService(editingCustomerId)}
+                >
                   SAVE
                 </div>
               </>
@@ -644,7 +939,9 @@ const Repair = () => {
               <li key={sparePart._id}>
                 <input
                   type="checkbox"
-                  checked={selectedSparePartsByService[currentStepServiceId]?.includes(sparePart._id)}
+                  checked={selectedSparePartsByService[
+                    currentStepServiceId
+                  ]?.includes(sparePart._id)}
                   onChange={() => handleSelectSparePart(sparePart._id)}
                 />
                 {sparePart.spareName}
@@ -653,7 +950,10 @@ const Repair = () => {
           </ul>
         </Modal.Body>
         <Modal.Footer>
-          <div className="cancel-button" onClick={handleSelectSparePartModalClose}>
+          <div
+            className="cancel-button"
+            onClick={handleSelectSparePartModalClose}
+          >
             CANCEL
           </div>
           <div className="save-button" onClick={handleSaveSpareParts}>
@@ -685,9 +985,7 @@ const Repair = () => {
                     />
                   </span>
                   <span style={{ display: "inline-block" }}>
-                    <label className="form-control">
-                      {mechanic.name}
-                    </label>
+                    <label className="form-control">{mechanic.name}</label>
                   </span>
                 </div>
               ))}
@@ -695,10 +993,15 @@ const Repair = () => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" onClick={() => handleAddMechanic(editingCustomerId)}>
+          <button
+            type="button"
+            onClick={() => handleAddMechanic(editingCustomerId)}
+          >
             SAVE
           </button>
-          <button type="button" onClick={handleSelectMechanicModalClose}>CANCEL</button>
+          <button type="button" onClick={handleSelectMechanicModalClose}>
+            CANCEL
+          </button>
         </Modal.Footer>
       </Modal>
     </div>
