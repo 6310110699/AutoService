@@ -1,4 +1,4 @@
-@import '../../assets/styles';
+@import "../../assets/styles";
 
 .container {
   max-width: 100%;
@@ -34,7 +34,6 @@
     border-radius: 20px;
     padding: 10px;
     background-color: $fourth-color;
-
     cursor: pointer;
 
     td {
@@ -45,7 +44,16 @@
       align-items: center;
       justify-content: center;
       height: 100%;
+
     }
+
+      img {
+        position: absolute;
+        width: 30px;
+        margin-top: -15px;
+        margin-left: 30px;
+      }
+    
   }
 }
 
@@ -124,21 +132,120 @@
   cursor: pointer;
 }
 
-.delete-carregis{
+.repait-edit {
   img {
     width: 50px;
   }
 }
 
-.carregis-button {
-  width: 500px;
+  .delete-carregis {
+    img {
+      width: 50px;
+    }
+  }
+
+  .carregis-button {
+    width: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    padding: 10px;
+    margin-left: 30px;
+    border-radius: 15px;
+    text-decoration: none;
+    background-color: $seventh-color;
+  }
+
+
+//-- status --//
+.status-header-container {
+  width: 100%;
+  text-align: center;
+}
+
+.status-header {
+  background-color: $fourth-color;
+  // width: 20%;
+}
+
+.status-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
-  padding: 10px;
-  margin-left: 30px;
-  border-radius: 15px;
-  text-decoration: none;
+  justify-content: space-between;
+}
+
+.status {
+  width: 200px;
+  height: 200px;
+
+  .state-circle1 {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 5px solid #c2c1c1;
+    position: absolute;
+  }
+
+  .state-circle2 {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background-color: #c2c1c1;
+    margin: 20px;
+    position: absolute;
+
+    img {
+      width: 120px;
+      margin: 20px;
+    }
+  }
+}
+
+.status-active {
+  width: 200px;
+  height: 200px;
+
+  .state-circle1 {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 5px solid $third-color;
+    position: absolute;
+  }
+
+  .state-circle2 {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background-color: $third-color;
+    margin: 20px;
+    position: absolute;
+
+    img {
+      width: 120px;
+      margin: 20px;
+    }
+  }
+}
+
+.button-true {
+  background-color: $sixth-color;
+  color: white;
+  margin-left: 20%;
+}
+
+.button-false {
   background-color: $seventh-color;
+  color: white;
+  margin-left: 20%;
+}
+
+.status-save {
+  background-color: $sixth-color;
+  width: 120px;
+}
+
+.status-cancel {
+  background-color: $fourth-color;
+  width: 120px;
 }

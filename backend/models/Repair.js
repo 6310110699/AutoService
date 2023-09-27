@@ -28,7 +28,7 @@ const customerSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-    color: {
+    selectedColor: {
       type: String,
       required: true,
     }
@@ -39,10 +39,17 @@ const customerSchema = new mongoose.Schema({
       ref: 'Service',
     },
     spareParts: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Spare',
+      sparePartId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'SparePart',
+      },
+      quantity: {
+        type: Number,
+        // default: 1, // จำนวนอะไหล่เริ่มต้นเป็น 1
+      },
     }],
   }],
+
   mechanics: [{
     type: String,
     required: true,
@@ -50,6 +57,28 @@ const customerSchema = new mongoose.Schema({
   startdate: {
     type: String,
     required: true,
+  },
+  status: {
+    state1: {
+      type: Boolean,
+      default: true,
+    },
+    state2: {
+      type: Boolean,
+      default: false,
+    },
+    state3: {
+      type: Boolean,
+      default: false,
+    },
+    state4: {
+      type: Boolean,
+      default: false,
+    },
+    state5: {
+      type: Boolean,
+      default: false,
+    },
   },
 });
 

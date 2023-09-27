@@ -114,6 +114,9 @@ app.use('/services', serviceRoutes);
 const brandmodelRoutes = require('./Routes/brandmodelRoutes');
 app.use('/brandmodels', brandmodelRoutes);
 
+const colorRoutes = require('./Routes/colorRoutes');
+app.use('/colors', colorRoutes);
+
 const repairRoutes = require('./Routes/repairRoutes');
 app.use('/repairs', repairRoutes);
 

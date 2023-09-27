@@ -5,13 +5,20 @@ const Customer = require('../models/Repair');
 // สร้างรายการรถใหม่
 router.post('/', async (req, res) => {
   try {
-    const { numPlate, lineId, customerName, phoneNumber, brand, selectedModel, color, services, mechanics, startdate } = req.body;
+    const { 
+      numPlate, lineId, customerName, 
+      phoneNumber, brand, selectedModel, 
+      selectedColor, services, mechanics, startdate, 
+      state1, state2, state3, state4, state5 
+    } = req.body;
+    
     const newCustomer = await Customer.create({
       customer: { lineId, customerName, phoneNumber },
-      car: { numPlate, brand, selectedModel, color },
+      car: { numPlate, brand, selectedModel, selectedColor },
       services,
       mechanics,
-      startdate
+      startdate,
+      status: { state1, state2, state3, state4, state5 }
     });
     res.status(201).json(newCustomer);
   } catch (error) {
@@ -33,15 +40,20 @@ router.get('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { numPlate, lineId, customerName, phoneNumber, brand, selectedModel, color, services, mechanics, startdate } = req.body;
+    const { 
+      numPlate, lineId, customerName, 
+      phoneNumber, brand, selectedModel, 
+      selectedColor, services, mechanics, startdate, 
+      state1, state2, state3, state4, state5 } = req.body;
     const updatedCustomer = await Customer.findByIdAndUpdate(
       id,
       {
         customer: { lineId, customerName, phoneNumber },
-        car: { numPlate, brand, selectedModel, color },
+        car: { numPlate, brand, selectedModel, selectedColor },
         services,
         mechanics,
-        startdate
+        startdate,
+        status: { state1, state2, state3, state4, state5 }
       },
       { new: true, useFindAndModify: false }
     );

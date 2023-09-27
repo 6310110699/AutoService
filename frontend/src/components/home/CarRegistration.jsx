@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const CarRegistration = () => {
 
     const [brandmodels, setBrandModels] = useState([]);
+    const [colors, setColors] = useState([]);
 
     const [numPlate, setNumPlate] = useState('');
     const [brand, setBrand] = useState('');
@@ -14,7 +15,8 @@ const CarRegistration = () => {
     const [selectedModel, setSelectedModel] = useState('');
     const [customModel, setCustomModel] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [color, setColor] = useState('');
+    const [selectedColor, setSelectedColor] = useState('');
+    const [customColor, setCustomColor] = useState('');
     const [startdate, setStartDate] = useState('');
 
     const [message, setMessage] = useState('');
@@ -23,6 +25,7 @@ const CarRegistration = () => {
 
     useEffect(() => {
         loadBrandModels();
+        loadColors();
     }, []);
 
     const loadBrandModels = async () => {
@@ -31,6 +34,16 @@ const CarRegistration = () => {
             setBrandModels(response.data);
         } catch (error) {
             console.error('Error loading brand models:', error);
+        }
+    };
+
+    const loadColors = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/colors');
+            setColors(response.data);
+        } catch (error) {
+            console.error('Error loading colors:', error);
+            setMessage('Error loading colors');
         }
     };
 
@@ -43,11 +56,17 @@ const CarRegistration = () => {
                 customerName,
                 phoneNumber,
                 selectedModel: customModel || selectedModel,
-                color,
+                selectedColor: customColor || selectedColor,
                 startdate,
-                services:[],
-                mechanics:[],
+                services: [],
+                mechanics: [],
             });
+
+            if (customColor) {
+                await axios.post('http://localhost:3001/colors', {
+                    colorname: customColor,
+                });
+            }
 
             if (customModel) {
                 await axios.post('http://localhost:3001/brandmodels', {
@@ -77,11 +96,18 @@ const CarRegistration = () => {
         }
     };
 
+    const handleColorChange = (e) => {
+        setSelectedColor(e.target.value);
+        if (e.target.value === 'custom-color') {
+            setCustomColor('');
+        }
+    };
+
     return (
         <div className="">
             <div className="">
                 <div className="">
-                   
+
                     {message && <div className="message">{message}</div>}
 
                     <form className='customer-form'>
@@ -178,25 +204,30 @@ const CarRegistration = () => {
                             <div className='col col-6'>
                                 <label>สี:</label>
                                 <select
-                                    value={color}
-                                    onChange={(e) => setColor(e.target.value)}
                                     className="form-control"
-                                >
+                                    value={selectedColor}
+                                    onChange={handleColorChange}>
                                     <option value="">กรุณาเลือก</option>
-                                    <option value="red">แดง</option>
-                                    <option value="blue">น้ำเงิน</option>
-                                    <option value="yellow">เหลือง</option>
-                                    <option value="white">ขาว</option>
-                                    <option value="black">ดำ</option>
-                                    <option value="purple">ม่วง</option>
-                                    <option value="green">เขียว</option>
-                                    <option value="orange">ส้ม</option>
-                                    <option value="brown">น้ำตาล</option>
-                                    <option value="pink">ชมพู</option>
-                                    <option value="lightblue">ฟ้า</option>
-                                    <option value="grey">เทา</option>
+                                    {colors
+                                        .map((color) => (
+                                            <option key={color._id} value={color.colorname}>
+                                                {color.colorname}
+                                            </option>
+                                        ))}
+                                    <option value="custom-color">
+                                        {customColor ? customColor : 'กรุณากรอกสีรถ'}
+                                    </option>
                                 </select>
-
+                                {selectedColor === 'custom-color' && (
+                                    <>
+                                        <input
+                                            type="text"
+                                            value={customColor}
+                                            onChange={(e) => setCustomColor(e.target.value)}
+                                            placeholder="กรอกสีรถ"
+                                        />
+                                    </>
+                                )}
                             </div>
                             <div className='col col-6'>
                                 <label>วันที่:</label>
@@ -212,9 +243,9 @@ const CarRegistration = () => {
                 </div>
             </div>
             <div className='button-container'>
-            <button className='button' type="button" onClick={handleAddCustomer}>
-                ลงทะเบียน
-            </button>
+                <button className='button' type="button" onClick={handleAddCustomer}>
+                    ลงทะเบียน
+                </button>
             </div>
         </div>
     );
