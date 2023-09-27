@@ -381,6 +381,29 @@ const Repair = () => {
     setSelectedSpareParts(selectedSpareParts);
   };
 
+  const handleDeleteSparePart = (serviceId, sparePartId) => {
+    const updatedSparePartsForService = { ...selectedSparePartsForService };
+    const sparePartIndex = updatedSparePartsForService[serviceId]?.findIndex((sp) => sp.sparePartId === sparePartId);
+
+    if (sparePartIndex !== -1) {
+      updatedSparePartsForService[serviceId].splice(sparePartIndex, 1);
+      setSelectedSparePartsForService(updatedSparePartsForService);
+    }
+  };
+
+
+  const handleQuantityChange = (serviceId, sparePartId, newQuantity) => {
+    const updatedSparePartsForService = { ...selectedSparePartsForService };
+    const sparePartIndex = updatedSparePartsForService[serviceId]?.findIndex((sp) => sp.sparePartId === sparePartId);
+
+    if (sparePartIndex !== -1) {
+      updatedSparePartsForService[serviceId][sparePartIndex].quantity = parseInt(newQuantity, 10);
+      setSelectedSparePartsForService(updatedSparePartsForService);
+    }
+  };
+
+
+
   const handleSelectMechanicModalClose = () => {
     setShowSelectMechanicModal(false);
   };
@@ -756,7 +779,19 @@ const Repair = () => {
                               <div>
                                 {sparePart.spareName}
                               </div>
+                              <input
+                                type="number"
+                                value={selectedSparePartId.quantity}
+                                onChange={(e) => handleQuantityChange(selectedService._id, selectedSparePartId.sparePartId, e.target.value)}
+                              />
+                              <div>
+                                {sparePart.sparePrice}
+                              </div>
+                              <div className='delete-carregis' onClick={() => handleDeleteSparePart(selectedService._id, sparePart._id)}>
+                                <img src='./assets/image/bin.png' />
+                              </div>
                             </li>
+
                           );
                         })}
                       </ul>
