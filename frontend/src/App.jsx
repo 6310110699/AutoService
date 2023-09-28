@@ -12,6 +12,7 @@ import EmployeeManagement from './components/informationmanagement/employeemanag
 import TabView from './components/informationmanagement/tabview/TabView'
 import SpareManagement from './components/informationmanagement/sparemanagement/SpareManagement'
 import CarRegistration from './components/home/CarRegistration'
+import Receipt from './components/home/Receipt'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('token') !== null);
@@ -37,6 +38,8 @@ function App() {
         <Route path='/employee' element={<EmployeeManagement />} />
         <Route path='/spare' element={<SpareManagement />} />
         <Route path='/carregis' element={<CarRegistration />} />
+        <Route path='/receipt/:customerId' element={<Receipt />} />
+
       </Routes>
     </BrowserRouter>
   )

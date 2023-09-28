@@ -45,11 +45,15 @@ const customerSchema = new mongoose.Schema({
       },
       quantity: {
         type: Number,
-        // default: 1, // จำนวนอะไหล่เริ่มต้นเป็น 1
       },
     }],
   }],
-
+  serviceFee: {
+    type: Number,
+  },
+  totalCost: {
+    type: Number,
+  },
   mechanics: [{
     type: String,
     required: true,

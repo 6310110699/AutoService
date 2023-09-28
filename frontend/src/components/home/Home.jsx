@@ -28,6 +28,8 @@ const Repair = () => {
   const [customColor, setCustomColor] = useState('');
   const [startdate, setStartDate] = useState('');
 
+  const [serviceFee, setServiceFee] = useState(0);
+
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedSpareParts, setSelectedSpareParts] = useState([]);
   const [selectedSparePartsByService, setSelectedSparePartsByService] = useState({});
@@ -163,6 +165,7 @@ const Repair = () => {
     setSelectedModel(customer.car.selectedModel);
     setSelectedColor(customer.car.selectedColor);
     setStartDate(customer.startdate);
+    setServiceFee(customer.serviceFee)
     setState1(customer.status.state1);
     setState2(customer.status.state2);
     setState3(customer.status.state3);
@@ -303,18 +306,34 @@ const Repair = () => {
 
   const handleAddService = async (id) => {
     try {
+      // 1. สร้างตัวแปรเพื่อเก็บราคารวมทั้งหมด
+      let totalCost = serviceFee;
+  
+      // 2. สร้างข้อมูลบริการ
       const serviceData = selectedServices.map((serviceId) => {
-        const sparePartsData = selectedSparePartsForService[serviceId]?.map((selectedSparePart) => ({
-          sparePartId: selectedSparePart.sparePartId,
-          quantity: selectedSparePart.quantity,
-        })) || [];
-
+        const sparePartsData = selectedSparePartsForService[serviceId]?.map((selectedSparePart) => {
+          // 3. คำนวณราคารวมของแต่ละรายการอะไหล่
+          const sparePart = spareParts.find((sp) => sp._id === selectedSparePart.sparePartId);
+          const quantity = selectedSparePart.quantity;
+          const partCost = sparePart.sparePrice * quantity;
+          
+          // 4. เพิ่มราคารวมของรายการอะไหล่นี้เข้าไปในราคารวมทั้งหมด
+          totalCost += partCost;
+          
+          return {
+            sparePartId: selectedSparePart.sparePartId,
+            quantity: selectedSparePart.quantity,
+            cost: partCost, // ราคารวมของรายการอะไหล่นี้
+          };
+        }) || [];
+  
         return {
           serviceName: serviceId,
           spareParts: sparePartsData,
         };
       });
-
+  
+      // 5. ส่งข้อมูลราคารวมทั้งหมดไปยัง API
       await axios.put(`http://localhost:3001/repairs/${id}`, {
         numPlate,
         lineId,
@@ -330,7 +349,10 @@ const Repair = () => {
         state3,
         state4,
         state5,
+        serviceFee,
+        totalCost, // ราคารวมทั้งหมด
       });
+  
       setCurrentStep(1);
       setShowSelectServiceModal(false);
       loadCustomers();
@@ -339,6 +361,7 @@ const Repair = () => {
       setMessage('เกิดข้อผิดพลาดในการเพิ่มบริการ');
     }
   };
+  
 
   const handleSelectSparePartModalClose = () => {
     setShowSparePartsModal(false);
@@ -527,9 +550,11 @@ const Repair = () => {
                 <button onClick={() => handleEditRepairCar(customer)}>รายการซ่อม</button>
               </td>
               <td>
-                <button>
-                  จ่ายแล้ว
-                </button>
+                <Link to={`/receipt/${customer._id}`}>
+                  <button>
+                    จ่ายแล้ว
+                  </button>
+                </Link>
               </td>
               <td>
                 <button onClick={() => handleEditMecanics(customer)}>
@@ -773,7 +798,9 @@ const Repair = () => {
                       </div>
                       <ul>
                         {selectedSparePartsForService[selectedService._id]?.map((selectedSparePartId) => {
-                          const sparePart = spareParts.find((sparePart) => sparePart._id === selectedSparePartId || sparePart._id === selectedSparePartId.sparePartId);
+                          const sparePart = spareParts.find((sparePart) =>
+                            sparePart._id === selectedSparePartId
+                            || sparePart._id === selectedSparePartId.sparePartId);
                           return (
                             <li key={sparePart._id}>
                               <div>
@@ -801,6 +828,16 @@ const Repair = () => {
                     </li>
                   ))}
               </ul>
+              <div>
+
+                <label>ค่าบริการ</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={serviceFee}
+                  onChange={(e) => setServiceFee(e.target.value)}
+                />
+              </div>
             </div>
           )}
 

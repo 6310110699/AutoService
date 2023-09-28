@@ -232,7 +232,7 @@ const CarRegistration = () => {
                             <div className='col col-6'>
                                 <label>วันที่:</label>
                                 <input
-                                    type="date"
+                                    type="datetime-local"
                                     value={startdate}
                                     onChange={(e) => setStartDate(e.target.value)}
                                     className="form-control"
