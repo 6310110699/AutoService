@@ -797,30 +797,52 @@ const Repair = () => {
                         {selectedService.serviceName}
                       </div>
                       <ul>
-                        {selectedSparePartsForService[selectedService._id]?.map((selectedSparePartId) => {
+                        <table style={{width: "100%"}}>
+                          <thead>
+                            <tr>
+                              <th>อะไหล่</th>
+                            <th>จำนวน</th>
+                            <th>ราคา</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {selectedSparePartsForService[selectedService._id]?.map((selectedSparePartId) => {
                           const sparePart = spareParts.find((sparePart) =>
                             sparePart._id === selectedSparePartId
                             || sparePart._id === selectedSparePartId.sparePartId);
                           return (
-                            <li key={sparePart._id}>
-                              <div>
+                            <tr key={sparePart._id}>
+                              <td s>
+                                <span>
                                 {sparePart.spareName}
-                              </div>
-                              <input
+                              </span>
+                              </td>
+                              <td>
+                                <input
                                 type="number"
                                 value={selectedSparePartId.quantity}
                                 onChange={(e) => handleQuantityChange(selectedService._id, selectedSparePartId.sparePartId, e.target.value)}
                               />
-                              <div>
+                              </td>
+                              <td>
+                                <span>
                                 {sparePart.sparePrice}
-                              </div>
-                              <div className='delete-carregis' onClick={() => handleDeleteSparePart(selectedService._id, sparePart._id)}>
+                              </span>
+                              </td>
+                              <td>
+                                 <span className='delete-carregis' onClick={() => handleDeleteSparePart(selectedService._id, sparePart._id)}>
                                 <img src='./assets/image/bin.png' />
-                              </div>
-                            </li>
+                              </span>
+                              </td>
+                             
+                            </tr>
 
                           );
                         })}
+                          </tbody>
+                          
+                        </table>
+                        
                       </ul>
                       <div className='add-button' onClick={() => handleEditSpareParts(selectedService)}>
                         เพิ่มอะไหล่
@@ -829,14 +851,24 @@ const Repair = () => {
                   ))}
               </ul>
               <div>
-
-                <label>ค่าบริการ</label>
-                <input
+<table style={{margin: "50px"}}>
+  <tbody>
+    <td style={{width: "40%"}}>
+      <h4>
+        ค่าบริการ
+        </h4></td>
+    <td style={{width: "20%"}}>
+       <input
                   type="number"
                   className="form-control"
                   value={serviceFee}
                   onChange={(e) => setServiceFee(e.target.value)}
                 />
+    </td>
+               
+  </tbody>
+</table>
+                
               </div>
             </div>
           )}
