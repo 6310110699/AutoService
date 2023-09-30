@@ -11,7 +11,7 @@ const spareSchema = new mongoose.Schema({
     required: true,
   },
   sparePrice: {
-    type: String,
+    type: Number,
     required: true,
   },
   compatibleCarModels: [{

@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
 import "./Home.scss";
+import SelectMechanicModal from './selectmechanicmodal/SelectMechanicModal';
+import StatusModal from './statusmodal/StatusModal';
+import SelectSpareModal from './selectsparemodal/SelectSpareModal';
+import SelectServiceModal from './selectservicemodal/SelectServiceModal';
+import EditCarRegistrationModal from './editcarregistrationmodal/EditCarRegistrationModal';
 
 const Repair = () => {
   const [brandmodels, setBrandModels] = useState([]);
@@ -249,24 +253,11 @@ const Repair = () => {
     }
   };
 
-  const [searchColor, setSearchColor] = useState('');
-  const [filteredColors, setFilteredColors] = useState([]);
-
   const handleColorChange = (e) => {
     setSelectedColor(e.target.value);
     if (e.target.value === 'custom-color') {
       setCustomColor('');
     }
-  };
-
-  const handleSearchColorChange = (e) => {
-    setSearchColor(e.target.value);
-
-    // ค้นหาและตั้งค่าตัวเลือกที่ผู้ใช้ค้นหา
-    const filteredOptions = colors.filter((color) =>
-      color.colorname.toLowerCase().includes(searchColor.toLowerCase())
-    );
-    setFilteredColors(filteredOptions);
   };
 
   const handleDeleteCustomer = async (id) => {
@@ -316,34 +307,28 @@ const Repair = () => {
 
   const handleAddService = async (id) => {
     try {
-      // 1. สร้างตัวแปรเพื่อเก็บราคารวมทั้งหมด
-      let totalCost = serviceFee;
-
-      // 2. สร้างข้อมูลบริการ
-      const serviceData = selectedServices.map((serviceId) => {
+      // 1. คำนวณค่าราคาของบริการแต่ละบริการ
+      const serviceCost = selectedServices.reduce((acc, serviceId) => {
         const sparePartsData = selectedSparePartsForService[serviceId]?.map((selectedSparePart) => {
-          // 3. คำนวณราคารวมของแต่ละรายการอะไหล่
           const sparePart = spareParts.find((sp) => sp._id === selectedSparePart.sparePartId);
-          const quantity = selectedSparePart.quantity;
-          const partCost = sparePart.sparePrice * quantity;
-
-          // 4. เพิ่มราคารวมของรายการอะไหล่นี้เข้าไปในราคารวมทั้งหมด
-          totalCost += partCost;
-
-          return {
-            sparePartId: selectedSparePart.sparePartId,
-            quantity: selectedSparePart.quantity,
-            cost: partCost, // ราคารวมของรายการอะไหล่นี้
-          };
+          if (sparePart) {
+            const quantity = selectedSparePart.quantity;
+            const partCost = sparePart.sparePrice * quantity;
+            return partCost;
+          }
+          return 0;
         }) || [];
+        
+        // บวกค่าราคาของอะไหล่ใน service นี้
+        const serviceTotal = sparePartsData.reduce((sum, partCost) => sum + partCost, 0);
+        
+        // บวกค่าราคาของบริการนี้เข้ากับค่าก่อนหน้า
+        return acc + serviceTotal;
+      }, 0);
 
-        return {
-          serviceName: serviceId,
-          spareParts: sparePartsData,
-        };
-      });
+      let totalCost = parseFloat(serviceFee) + parseFloat(serviceCost);
 
-      // 5. ส่งข้อมูลราคารวมทั้งหมดไปยัง API
+      // 2. ส่งข้อมูลไปยัง API
       await axios.put(`http://localhost:3001/repairs/${id}`, {
         numPlate,
         lineId,
@@ -354,16 +339,27 @@ const Repair = () => {
         selectedColor: customColor || selectedColor,
         startdate,
         enddate,
-        services: serviceData,
+        services: selectedServices.map((serviceId) => {
+          const sparePartsData = selectedSparePartsForService[serviceId]?.map((selectedSparePart) => ({
+            sparePartId: selectedSparePart.sparePartId,
+            quantity: selectedSparePart.quantity,
+          })) || [];
+          
+          return {
+            serviceName: serviceId,
+            spareParts: sparePartsData,
+          };
+        }),
         state1,
         state2,
         state3,
         state4,
         state5,
         serviceFee,
-        totalCost, // ราคารวมทั้งหมด
+        totalCost,
       });
-
+  
+      // 3. อัปเดตสถานะและโหลดข้อมูลใหม่
       setCurrentStep(1);
       setShowSelectServiceModal(false);
       loadCustomers();
@@ -372,6 +368,7 @@ const Repair = () => {
       setMessage('เกิดข้อผิดพลาดในการเพิ่มบริการ');
     }
   };
+  
 
 
   const handleSelectSparePartModalClose = () => {
@@ -600,540 +597,95 @@ const Repair = () => {
         <div className='carregis-button'>ลงทะเบียนรถ</div>
       </Link>
 
-      <Modal
-        show={showCarRigisterModal}
-        onHide={handleAddCustomerModalClose}
-        backdrop="static"
-        size="xl"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>แก้ไขข้อมูลลูกค้า</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="">
-            <div className="">
+      <EditCarRegistrationModal
+        showCarRigisterModal={showCarRigisterModal}
+        handleAddCustomerModalClose={handleAddCustomerModalClose}
+        message={message}
+        numPlate={numPlate}
+        lineId={lineId}
+        brand={brand}
+        brandmodels={brandmodels}
+        customerName={customerName}
+        selectedModel={selectedModel}
+        customModel={customModel}
+        phoneNumber={phoneNumber}
+        selectedColor={selectedColor}
+        customColor={customColor}
+        startdate={startdate}
+        handleBrandChange={handleBrandChange}
+        uniqueCustomerNames={uniqueCustomerNames}
+        handleModelChange={handleModelChange}
+        handleColorChange={handleColorChange}
+        colors={colors}
+        setStartDate={setStartDate}
+        handleUpdateCustomer={handleUpdateCustomer}
+        editingCustomerId={editingCustomerId}
+        setNumPlate={setNumPlate}
+        setLineId={setLineId}
+        setCustomerName={setCustomerName}
+        setCustomModel={setCustomModel}
+        setPhoneNumber={setPhoneNumber}
+        setCustomColor={setCustomColor}
+      />
 
-              {message && <div className="message">{message}</div>}
+      <SelectServiceModal
+        showSelectServiceModal={showSelectServiceModal}
+        handleSelectServiceModalClose={handleSelectServiceModalClose}
+        currentStep={currentStep}
+        services={services}
+        handleNextStep={handleNextStep}
+        selectedServices={selectedServices}
+        handleSelectService={handleSelectService}
+        selectedSparePartsForService={selectedSparePartsForService}
+        serviceFee={serviceFee}
+        handlePreviousStep={handlePreviousStep}
+        handleEditSpareParts={handleEditSpareParts}
+        spareParts={spareParts}
+        handleQuantityChange={handleQuantityChange}
+        handleDeleteSparePart={handleDeleteSparePart}
+        setServiceFee={setServiceFee}
+        handleAddService={handleAddService}
+        editingCustomerId={editingCustomerId}
+      />
 
-              <form className='customer-form'>
-                <div className='row'>
-                  <div className='col col-6'>
-                    <label>ป้ายทะเบียน เช่น XX 0000 NARATHIWAT</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={numPlate}
-                      onChange={(e) => setNumPlate(e.target.value)}
-                    />
-                  </div>
-                  <div className='col col-6'>
-                    <label>LINE ID</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={lineId}
-                      onChange={(e) => setLineId(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className='row'>
-                  <div className='col col-6'>
-                    <label>ยี่ห้อรถ:</label>
-                    <select className="form-control" value={brand} onChange={handleBrandChange}>
-                      <option value="">กรุณาเลือก</option>
-                      {Array.from(new Set(brandmodels.map((brandmodel) => brandmodel.brand))).map((uniqueBrand) => (
-                        <option key={uniqueBrand} value={uniqueBrand}>
-                          {uniqueBrand}
-                        </option>
-                      ))}
-                      <option value="other">อื่นๆ</option>
-                    </select>
-                    {brand === 'other' && (
-                      <input
-                        type="text"
-                        value={customBrand}
-                        onChange={(e) => setCustomBrand(e.target.value)}
-                        placeholder="กรอกยี่ห้อรถ"
-                      />
-                    )}
-                  </div>
-                  <div className='col col-6'>
-                    <label>ชื่อลูกค้า:</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={customerName}
-                      list='customerNamesList'
-                      onChange={(e) => setCustomerName(e.target.value)}
-                    />
-                    <datalist id="customerNamesList">
-                      {uniqueCustomerNames.map((name, index) => (
-                        <option key={index} value={name} />
-                      ))}
-                    </datalist>
+      <SelectSpareModal
+        showSparePartsModal={showSparePartsModal}
+        handleSelectSparePartModalClose={handleSelectSparePartModalClose}
+        spareParts={spareParts}
+        handleSaveSpareParts={handleSaveSpareParts}
+        selectedSparePartsByService={selectedSparePartsByService}
+        currentStepServiceId={currentStepServiceId}
+        handleSelectSparePart={handleSelectSparePart}
+      />
 
-                  </div>
-                </div>
-                <div className='row'>
-                  <div className='col col-6'>
-                    <label>รุ่นรถ:</label>
-                    <select
-                      className="form-control"
-                      value={selectedModel}
-                      onChange={handleModelChange}
-                    >
-                      <option value="">กรุณาเลือก</option>
-                      {brandmodels
-                        .filter((brandmodel) => brandmodel.brand === brand)
-                        .map((brandmodel) => (
-                          <option key={brandmodel._id} value={brandmodel.model}>
-                            {brandmodel.model}
-                          </option>
-                        ))}
-                      <option value="custom-model">
-                        {customModel ? customModel : 'กรุณากรอกรุ่นรถ'}
-                      </option>
-                    </select>
-                    {selectedModel === 'custom-model' && (
-                      <>
-                        <input
-                          type="text"
-                          value={customModel}
-                          onChange={(e) => setCustomModel(e.target.value)}
-                          placeholder="กรอกรุ่นรถ"
-                        />
-                      </>
-                    )}
-                  </div>
-                  <div className='col col-6'>
-                    <label>เบอร์โทรศัพท์:</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className='row'>
-                  <div className='col col-6'>
-                    <label>สี:</label>
-                    <input
-                      type="text"
-                      value={searchColor}
-                      onChange={handleSearchColorChange}
-                      placeholder="ค้นหาสีรถ"
-                    />
+      <SelectMechanicModal
+        showSelectMechanicModal={showSelectMechanicModal}
+        handleSelectMechanicModalClose={handleSelectMechanicModalClose}
+        mechanics={mechanics}
+        selectedMechanics={selectedMechanics}
+        handleSelectMechanic={handleSelectMechanic}
+        handleAddMechanic={handleAddMechanic}
+        editingCustomerId={editingCustomerId}
+      />
 
-                    <select
-                      className="form-control"
-                      value={selectedColor}
-                      onChange={handleColorChange}
-                    >
-                      <option value="">กรุณาเลือก</option>
-                      {filteredColors
-                        .map((color) => (
-                          <option key={color._id} value={color.colorname}>
-                            {color.colorname}
-                          </option>
-                        ))}
-                      <option value="custom-color">
-                        {customColor ? customColor : 'กรุณากรอกสีรถ'}
-                      </option>
-                    </select>
-                    {selectedColor === 'custom-color' && (
-                      <>
-                        <input
-                          type="text"
-                          value={customColor}
-                          onChange={(e) => setCustomColor(e.target.value)}
-                          placeholder="กรอกสีรถ"
-                        />
-                      </>
-                    )}
-                  </div>
-                  <div className='col col-6'>
-                    <label>วันที่:</label>
-                    <input
-                      type="date"
-                      value={startdate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <button type="button" onClick={() => handleUpdateCustomer(editingCustomerId)}>
-            แก้ไข
-          </button>
-          <button type="button" onClick={handleAddCustomerModalClose}>ยกเลิก</button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal
-        show={showSelectServiceModal}
-        onHide={handleSelectServiceModalClose}
-        backdrop="static"
-        size="xl"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>สรุปรายการซ่อม</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {currentStep === 1 && (
-            <div>
-              <ul>
-                {services.map((service) => (
-                  <div key={service._id} value={service.serviceName}>
-                    <span style={{ display: "inline-block" }}>
-                      <input
-                        type="checkbox"
-                        checked={selectedServices.includes(service._id)}
-                        onChange={() => handleSelectService(service._id)}
-                      />
-                    </span>
-                    <span style={{ display: "inline-block" }}>
-                      <label className="form-control">
-                        {service.serviceName}
-                      </label>
-                    </span>
-
-                  </div>
-                ))}
-              </ul>
-            </div>
-          )}
-          {currentStep === 2 && (
-            <div>
-              <ul>
-                {services
-                  .filter((service) => selectedServices.includes(service._id))
-                  .map((selectedService) => (
-                    <li key={selectedService._id}>
-                      <div>
-                        {selectedService.serviceName}
-                      </div>
-                      <ul>
-                        <table style={{ width: "100%" }}>
-                          <thead>
-                            <tr>
-                              <th>อะไหล่</th>
-                              <th>จำนวน</th>
-                              <th>ราคา</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {selectedSparePartsForService[selectedService._id]?.map((selectedSparePartId) => {
-                              const sparePart = spareParts.find((sparePart) =>
-                                sparePart._id === selectedSparePartId
-                                || sparePart._id === selectedSparePartId.sparePartId);
-                              return (
-                                <tr key={sparePart._id}>
-                                  <td s>
-                                    <span>
-                                      {sparePart.spareName}
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <input
-                                      type="number"
-                                      value={selectedSparePartId.quantity}
-                                      onChange={(e) => handleQuantityChange(selectedService._id, selectedSparePartId.sparePartId, e.target.value)}
-                                    />
-                                  </td>
-                                  <td>
-                                    <span>
-                                      {sparePart.sparePrice}
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span className='delete-carregis' onClick={() => handleDeleteSparePart(selectedService._id, sparePart._id)}>
-                                      <img src='./assets/image/bin.png' />
-                                    </span>
-                                  </td>
-
-                                </tr>
-
-                              );
-                            })}
-                          </tbody>
-
-                        </table>
-
-                      </ul>
-                      <div className='add-button' onClick={() => handleEditSpareParts(selectedService)}>
-                        เพิ่มอะไหล่
-                      </div>
-                    </li>
-                  ))}
-              </ul>
-              <div>
-                <table style={{ margin: "50px" }}>
-                  <tbody>
-                    <td style={{ width: "40%" }}>
-                      <h4>
-                        ค่าบริการ
-                      </h4></td>
-                    <td style={{ width: "20%" }}>
-                      <input
-                        type="number"
-                        className="form-control"
-                        value={serviceFee}
-                        onChange={(e) => setServiceFee(e.target.value)}
-                      />
-                    </td>
-
-                  </tbody>
-                </table>
-
-              </div>
-            </div>
-          )}
-
-        </Modal.Body>
-        <Modal.Footer>
-          <div>
-            {currentStep === 1 && (
-              <>
-                <div className="cancel-button" onClick={handleSelectServiceModalClose}>
-                  CANCEL
-                </div>
-                <button className="save-button" onClick={handleNextStep}>
-                  NEXT
-                </button>
-              </>
-            )}
-            {currentStep === 2 && (
-              <>
-                <div className="cancel-button" onClick={handlePreviousStep}>
-                  BACK
-                </div>
-                <div className="save-button" onClick={() => handleAddService(editingCustomerId)}>
-                  SAVE
-                </div>
-              </>
-            )}
-          </div>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal
-        show={showSparePartsModal}
-        onHide={handleSelectSparePartModalClose}
-        backdrop="static"
-        size="xl"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>เพิ่มอะไหล่</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ul>
-            {spareParts.map((sparePart) => (
-              <li key={sparePart._id}>
-                <input
-                  type="checkbox"
-                  checked={selectedSparePartsByService[currentStepServiceId]?.some(sparePartData => sparePartData.sparePartId === sparePart._id)}
-                  onChange={() => handleSelectSparePart(sparePart._id)}
-                />
-                {sparePart.spareName}
-              </li>
-            ))}
-
-          </ul>
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="cancel-button" onClick={handleSelectSparePartModalClose}>
-            CANCEL
-          </div>
-          <div className="save-button" onClick={handleSaveSpareParts}>
-            SAVE
-          </div>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal
-        show={showSelectMechanicModal}
-        onHide={handleSelectMechanicModalClose}
-        backdrop="static"
-        size="xl"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>ช่างที่ทำการซ่อม</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div>
-            <ul>
-              {mechanics.map((mechanic) => (
-                <div key={mechanic._id} value={mechanic.name}>
-                  <span style={{ display: "inline-block" }}>
-                    <input
-                      type="checkbox"
-                      checked={selectedMechanics.includes(mechanic._id)}
-                      onChange={() => handleSelectMechanic(mechanic._id)}
-                    />
-                  </span>
-                  <span style={{ display: "inline-block" }}>
-                    <label className="form-control">
-                      {mechanic.name}
-                    </label>
-                  </span>
-                </div>
-              ))}
-            </ul>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <button type="button" onClick={() => handleAddMechanic(editingCustomerId)}>
-            SAVE
-          </button>
-          <button type="button" onClick={handleSelectMechanicModalClose}>CANCEL</button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal
-        show={showStatusModal}
-        onHide={handleStatusModalClose}
-        backdrop="static"
-        size="xl"
-        centered
-      >
-        <Modal.Body>
-          <div>
-            {selectedCustomerStatus && ( // ตรวจสอบว่ามีข้อมูลสถานะของลูกค้าที่ถูกเลือกหรือไม่
-              <div className="status-header-container">
-                <button className="status-header">
-                  {selectedCustomerStatus.car.brand}{" "}
-                  {selectedCustomerStatus.car.selectedModel}{" "}
-                  {selectedCustomerStatus.car.color}{" "}
-                  {selectedCustomerStatus.car.numPlate}
-                </button>
-              </div>
-            )}
-          </div>
-          <div className="status-container">
-            <div className="state">
-              <div className={`state ${state1 ? "status-active" : "status"}`}>
-                <div className="state-circle1"></div>
-                <div className="state-circle2">
-                  <img src='./assets/image/car.png'></img>
-                </div>
-              </div>
-              <button className="button-true">เรียบร้อย</button>
-            </div>
-            <div className="state">
-              <div className={`state ${state2 ? "status-active" : "status"}`}>
-                <div className="state-circle1"></div>
-                <div className="state-circle2">
-                  <img src='./assets/image/state2.png'></img>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  if (state1) {
-                    handleToggleState("state2");
-                  }
-                  if (state3 || state4 || state5) {
-                    setState2(false);
-                    setState3(false);
-                    setState4(false);
-                    setState5(false);
-                  }
-                }}
-                className={state2 ? "button-true" : "button-false"}
-              >
-                เรียบร้อย
-              </button>
-            </div>
-            <div className="state">
-              <div className={`state ${state3 ? "status-active" : "status"}`}>
-                <div className="state-circle1"></div>
-                <div className="state-circle2">
-                  <img src='./assets/image/state3.png'></img>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  if (state2) {
-                    handleToggleState("state3");
-                  }
-                  if (state4 || state5) {
-                    setState3(false);
-                    setState4(false);
-                    setState5(false);
-                  }
-                }}
-                className={state3 ? "button-true" : "button-false"}
-              >
-                เรียบร้อย
-              </button>
-            </div>
-            <div className="state">
-              <div className={`state ${state4 ? "status-active" : "status"}`}>
-                <div className="state-circle1"></div>
-                <div className="state-circle2">
-                  <img src='./assets/image/state4.png'></img>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  if (state3) {
-                    handleToggleState("state4");
-                  }
-                  if (state5) {
-                    setState4(false);
-                    setState5(false);
-                  }
-                }}
-                className={state4 ? "button-true" : "button-false"}
-              >
-                เรียบร้อย
-              </button>
-            </div>
-            <div className="state">
-              <div className={`state ${state5 ? "status-active" : "status"}`}>
-                <div className="state-circle1"></div>
-                <div className="state-circle2">
-                  <img src='./assets/image/state5.png'></img>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  if (state4) {
-                    handleToggleState("state5");
-                  }
-                }}
-                className={state5 ? "button-true" : "button-false"}
-              >
-                เรียบร้อย
-              </button>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <button
-            type="button"
-            onClick={() => handleUpdateStatus(editingCustomerId)}
-            className="status-save"
-          >
-            SAVE
-          </button>
-          <button
-            type="button"
-            onClick={handleStatusModalClose}
-            className="status-cancel"
-          >
-            CANCEL
-          </button>
-        </Modal.Footer>
-      </Modal>
+      <StatusModal
+        showStatusModal={showStatusModal}
+        handleStatusModalClose={handleStatusModalClose}
+        selectedCustomerStatus={selectedCustomerStatus}
+        state1={state1}
+        state2={state2}
+        state3={state3}
+        state4={state4}
+        state5={state5}
+        setState2={setState2}
+        setState3={setState3}
+        setState4={setState4}
+        setState5={setState5}
+        handleToggleState={handleToggleState}
+        handleUpdateStatus={handleUpdateStatus}
+        editingCustomerId={editingCustomerId}
+      />
+       
     </div>
   );
 };

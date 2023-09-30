@@ -11,7 +11,7 @@ import Report from './components/report/Report'
 import EmployeeManagement from './components/informationmanagement/employeemanagement/EmployeeManagement'
 import TabView from './components/informationmanagement/tabview/TabView'
 import SpareManagement from './components/informationmanagement/sparemanagement/SpareManagement'
-import CarRegistration from './components/home/CarRegistration'
+import CarRegistration from './components/home/carregistation/CarRegistration'
 import Receipt from './components/home/Receipt'
 
 function App() {
