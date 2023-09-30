@@ -8,7 +8,7 @@ router.post('/', async (req, res) => {
     const { 
       numPlate, lineId, customerName, 
       phoneNumber, brand, selectedModel, 
-      selectedColor, services, serviceFee, totalCost, mechanics, startdate, 
+      selectedColor, services, serviceFee, totalCost, mechanics, startdate, enddate,
       state1, state2, state3, state4, state5 
     } = req.body;
     
@@ -20,6 +20,7 @@ router.post('/', async (req, res) => {
       serviceFee,
       mechanics,
       startdate,
+      enddate,
       status: { state1, state2, state3, state4, state5 }
     });
     res.status(201).json(newCustomer);
@@ -45,7 +46,7 @@ router.put('/:id', async (req, res) => {
     const { 
       numPlate, lineId, customerName, phoneNumber, 
       brand, selectedModel, selectedColor, 
-      services, serviceFee, totalCost, mechanics, startdate, 
+      services, serviceFee, totalCost, mechanics, startdate,  enddate,
       state1, state2, state3, state4, state5 } = req.body;
     const updatedCustomer = await Customer.findByIdAndUpdate(
       id,
@@ -57,6 +58,7 @@ router.put('/:id', async (req, res) => {
         totalCost,
         mechanics,
         startdate,
+        enddate,
         status: { state1, state2, state3, state4, state5 }
       },
       { new: true, useFindAndModify: false }

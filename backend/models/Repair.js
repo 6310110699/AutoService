@@ -62,6 +62,9 @@ const customerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  enddate: {
+    type: String,
+  },
   status: {
     state1: {
       type: Boolean,

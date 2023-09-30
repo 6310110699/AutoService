@@ -1,0 +1,28 @@
+@import "../../assets/styles";
+
+/* History.css */
+.history-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .history-table td {
+    padding: 10px; /* Add spacing by adjusting the padding */
+    border: 1px solid #ddd; /* Add borders for better visualization */
+  }
+  
+  .history-table ul {
+    padding-left: 20px; /* Adjust the padding for nested ul elements */
+  }
+  
+
+.history {
+    background-color: #B6CDB1;
+    margin-top: 20px;
+    margin-left: 50px;
+    border-radius: 20px;
+    padding: 20px;
+    // width: 80vw;
+    // height: 100px;
+
+}

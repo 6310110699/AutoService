@@ -27,6 +27,7 @@ const Repair = () => {
   const [selectedColor, setSelectedColor] = useState('');
   const [customColor, setCustomColor] = useState('');
   const [startdate, setStartDate] = useState('');
+  const [enddate, setEndDate] = useState('');
 
   const [serviceFee, setServiceFee] = useState(0);
 
@@ -63,6 +64,13 @@ const Repair = () => {
   const handlePreviousStep = () => {
     setCurrentStep((prevStep) => prevStep - 1);
   };
+
+  const [searchCar, setSearchCar] = useState('');
+
+  const filteredCars = customers.filter((customer) => {
+    return customer.car.numPlate.toLowerCase().includes(searchCar.toLowerCase()) ||
+      customer.car.brand.toLowerCase().includes(searchCar.toLowerCase())
+  });
 
   useEffect(() => {
     loadBrandModels();
@@ -165,6 +173,7 @@ const Repair = () => {
     setSelectedModel(customer.car.selectedModel);
     setSelectedColor(customer.car.selectedColor);
     setStartDate(customer.startdate);
+    setEndDate(customer.enddate);
     setServiceFee(customer.serviceFee)
     setState1(customer.status.state1);
     setState2(customer.status.state2);
@@ -188,6 +197,7 @@ const Repair = () => {
         selectedModel: customModel || selectedModel,
         selectedColor: customColor || selectedColor,
         startdate,
+        enddate,
         services: selectedServices,
         state1,
         state2,
@@ -308,7 +318,7 @@ const Repair = () => {
     try {
       // 1. สร้างตัวแปรเพื่อเก็บราคารวมทั้งหมด
       let totalCost = serviceFee;
-  
+
       // 2. สร้างข้อมูลบริการ
       const serviceData = selectedServices.map((serviceId) => {
         const sparePartsData = selectedSparePartsForService[serviceId]?.map((selectedSparePart) => {
@@ -316,23 +326,23 @@ const Repair = () => {
           const sparePart = spareParts.find((sp) => sp._id === selectedSparePart.sparePartId);
           const quantity = selectedSparePart.quantity;
           const partCost = sparePart.sparePrice * quantity;
-          
+
           // 4. เพิ่มราคารวมของรายการอะไหล่นี้เข้าไปในราคารวมทั้งหมด
           totalCost += partCost;
-          
+
           return {
             sparePartId: selectedSparePart.sparePartId,
             quantity: selectedSparePart.quantity,
             cost: partCost, // ราคารวมของรายการอะไหล่นี้
           };
         }) || [];
-  
+
         return {
           serviceName: serviceId,
           spareParts: sparePartsData,
         };
       });
-  
+
       // 5. ส่งข้อมูลราคารวมทั้งหมดไปยัง API
       await axios.put(`http://localhost:3001/repairs/${id}`, {
         numPlate,
@@ -343,6 +353,7 @@ const Repair = () => {
         selectedModel: customModel || selectedModel,
         selectedColor: customColor || selectedColor,
         startdate,
+        enddate,
         services: serviceData,
         state1,
         state2,
@@ -352,7 +363,7 @@ const Repair = () => {
         serviceFee,
         totalCost, // ราคารวมทั้งหมด
       });
-  
+
       setCurrentStep(1);
       setShowSelectServiceModal(false);
       loadCustomers();
@@ -361,7 +372,7 @@ const Repair = () => {
       setMessage('เกิดข้อผิดพลาดในการเพิ่มบริการ');
     }
   };
-  
+
 
   const handleSelectSparePartModalClose = () => {
     setShowSparePartsModal(false);
@@ -488,6 +499,7 @@ const Repair = () => {
         selectedModel: customModel || selectedModel,
         selectedColor: customColor || selectedColor,
         startdate,
+        enddate,
         state1,
         state2,
         state3,
@@ -523,6 +535,9 @@ const Repair = () => {
         break;
       case "state5":
         setState5(!state5);
+        const currentDate = new Date(); // Create a new Date instance for the current date and time
+        const formattedDate = currentDate.toISOString().slice(0, 16);
+        setEndDate(formattedDate);
         break;
       default:
         break;
@@ -534,40 +549,51 @@ const Repair = () => {
       <div className="repair-title">
         <h2>รายการรถที่อยู่ในอู่ ณ ขณะนี้</h2>
       </div>
+      <div>
+        <input
+        type="text"
+        class="form-control"
+        value={searchCar}
+        onChange={(e) => setSearchCar(e.target.value)}
+        placeholder="ค้นหาป้ายทะเบียนหรือยี่ห้อรถ"
+      />
+      </div>
       <table className="repair-table">
         <tbody>
-          {customers.map((customer, index) => (
-            <tr key={index}>
-              <div className="repair-numplate">
-                <td onClick={() => handleEditStatus(customer)}>
-                  {customer.car.brand} {customer.car.selectedModel} {customer.car.color} {customer.car.numPlate}
-                </td>
-              </div>
-              <div className="repait-edit" onClick={() => handleEditCustomer(customer)}>
-                <img src='./assets/image/edit.png' />
-              </div>
-              <td>
-                <button onClick={() => handleEditRepairCar(customer)}>รายการซ่อม</button>
-              </td>
-              <td>
-                <Link to={`/receipt/${customer._id}`}>
-                  <button>
-                    จ่ายแล้ว
-                  </button>
-                </Link>
-              </td>
-              <td>
-                <button onClick={() => handleEditMecanics(customer)}>
-                  ช่าง
-                </button>
-              </td>
-              <td>
-                <div className='delete-carregis' onClick={() => handleDeleteCustomer(customer._id)}>
-                  <img src='./assets/image/bin.png' />
+          {filteredCars
+            .filter((customer) => !customer.status.state5)
+            .map((customer, index) => (
+              <tr key={index}>
+                <div className="repair-numplate">
+                  <td onClick={() => handleEditStatus(customer)}>
+                    {customer.car.brand} {customer.car.selectedModel} {customer.car.color} {customer.car.numPlate}
+                  </td>
                 </div>
-              </td>
-            </tr>
-          ))}
+                <div className="repait-edit" onClick={() => handleEditCustomer(customer)}>
+                  <img src='./assets/image/edit.png' />
+                </div>
+                <td>
+                  <button onClick={() => handleEditRepairCar(customer)}>รายการซ่อม</button>
+                </td>
+                <td>
+                  <Link to={`/receipt/${customer._id}`}>
+                    <button>
+                      จ่ายแล้ว
+                    </button>
+                  </Link>
+                </td>
+                <td>
+                  <button onClick={() => handleEditMecanics(customer)}>
+                    ช่าง
+                  </button>
+                </td>
+                <td>
+                  <div className='delete-carregis' onClick={() => handleDeleteCustomer(customer._id)}>
+                    <img src='./assets/image/bin.png' />
+                  </div>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
       <Link to="/carregis">
@@ -587,9 +613,6 @@ const Repair = () => {
         <Modal.Body>
           <div className="">
             <div className="">
-              <div>
-                {editingCustomerId ? 'แก้ไขข้อมูลลูกค้า' : 'ลงทะเบียนรถ'}
-              </div>
 
               {message && <div className="message">{message}</div>}
 
@@ -797,52 +820,52 @@ const Repair = () => {
                         {selectedService.serviceName}
                       </div>
                       <ul>
-                        <table style={{width: "100%"}}>
+                        <table style={{ width: "100%" }}>
                           <thead>
                             <tr>
                               <th>อะไหล่</th>
-                            <th>จำนวน</th>
-                            <th>ราคา</th>
+                              <th>จำนวน</th>
+                              <th>ราคา</th>
                             </tr>
                           </thead>
                           <tbody>
                             {selectedSparePartsForService[selectedService._id]?.map((selectedSparePartId) => {
-                          const sparePart = spareParts.find((sparePart) =>
-                            sparePart._id === selectedSparePartId
-                            || sparePart._id === selectedSparePartId.sparePartId);
-                          return (
-                            <tr key={sparePart._id}>
-                              <td s>
-                                <span>
-                                {sparePart.spareName}
-                              </span>
-                              </td>
-                              <td>
-                                <input
-                                type="number"
-                                value={selectedSparePartId.quantity}
-                                onChange={(e) => handleQuantityChange(selectedService._id, selectedSparePartId.sparePartId, e.target.value)}
-                              />
-                              </td>
-                              <td>
-                                <span>
-                                {sparePart.sparePrice}
-                              </span>
-                              </td>
-                              <td>
-                                 <span className='delete-carregis' onClick={() => handleDeleteSparePart(selectedService._id, sparePart._id)}>
-                                <img src='./assets/image/bin.png' />
-                              </span>
-                              </td>
-                             
-                            </tr>
+                              const sparePart = spareParts.find((sparePart) =>
+                                sparePart._id === selectedSparePartId
+                                || sparePart._id === selectedSparePartId.sparePartId);
+                              return (
+                                <tr key={sparePart._id}>
+                                  <td s>
+                                    <span>
+                                      {sparePart.spareName}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <input
+                                      type="number"
+                                      value={selectedSparePartId.quantity}
+                                      onChange={(e) => handleQuantityChange(selectedService._id, selectedSparePartId.sparePartId, e.target.value)}
+                                    />
+                                  </td>
+                                  <td>
+                                    <span>
+                                      {sparePart.sparePrice}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <span className='delete-carregis' onClick={() => handleDeleteSparePart(selectedService._id, sparePart._id)}>
+                                      <img src='./assets/image/bin.png' />
+                                    </span>
+                                  </td>
 
-                          );
-                        })}
+                                </tr>
+
+                              );
+                            })}
                           </tbody>
-                          
+
                         </table>
-                        
+
                       </ul>
                       <div className='add-button' onClick={() => handleEditSpareParts(selectedService)}>
                         เพิ่มอะไหล่
@@ -851,24 +874,24 @@ const Repair = () => {
                   ))}
               </ul>
               <div>
-<table style={{margin: "50px"}}>
-  <tbody>
-    <td style={{width: "40%"}}>
-      <h4>
-        ค่าบริการ
-        </h4></td>
-    <td style={{width: "20%"}}>
-       <input
-                  type="number"
-                  className="form-control"
-                  value={serviceFee}
-                  onChange={(e) => setServiceFee(e.target.value)}
-                />
-    </td>
-               
-  </tbody>
-</table>
-                
+                <table style={{ margin: "50px" }}>
+                  <tbody>
+                    <td style={{ width: "40%" }}>
+                      <h4>
+                        ค่าบริการ
+                      </h4></td>
+                    <td style={{ width: "20%" }}>
+                      <input
+                        type="number"
+                        className="form-control"
+                        value={serviceFee}
+                        onChange={(e) => setServiceFee(e.target.value)}
+                      />
+                    </td>
+
+                  </tbody>
+                </table>
+
               </div>
             </div>
           )}
