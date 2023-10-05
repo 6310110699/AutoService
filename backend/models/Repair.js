@@ -46,6 +46,9 @@ const customerSchema = new mongoose.Schema({
       quantity: {
         type: Number,
       },
+      partCost: {
+        type: Number,
+      },
     }],
   }],
   serviceFee: {
@@ -55,8 +58,8 @@ const customerSchema = new mongoose.Schema({
     type: Number,
   },
   mechanics: [{
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Employee',
   }],
   startdate: {
     type: String,

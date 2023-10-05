@@ -1,0 +1,120 @@
+@import "../../../assets/styles";
+
+.status-header-container {
+  width: 100%;
+  text-align: center;
+}
+
+.status-header {
+  background-color: $fourth-color;
+}
+
+.status-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.status {
+  width: 200px;
+  height: 200px;
+
+  .state-circle1 {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 5px solid #c2c1c1;
+    position: absolute;
+  }
+
+  .state-circle2 {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background-color: #c2c1c1;
+    margin: 20px;
+    position: absolute;
+
+    img {
+      width: 120px;
+      margin: 20px;
+    }
+  }
+}
+
+.status-active {
+  width: 200px;
+  height: 200px;
+
+  .state-circle1 {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 5px solid $third-color;
+    position: absolute;
+  }
+
+  .state-circle2 {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background-color: $third-color;
+    margin: 20px;
+    position: absolute;
+
+    img {
+      width: 120px;
+      margin: 20px;
+    }
+  }
+}
+
+.button-true {
+  background-color: $sixth-color;
+  color: white;
+  margin-left: 20%;
+}
+
+.button-false {
+  background-color: $seventh-color;
+  color: white;
+  margin-left: 20%;
+}
+
+.state-label {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 20px;
+}
+
+.statusmodal {
+    .modal-footer {
+        justify-content: center;
+
+        .button-no {
+            width: 150px;
+            padding: 10px;
+            border-radius: 25px;
+            background-color: $eighth-color;
+            color: $second-color;
+            text-align: center;
+            margin: 10px;
+            font-size: 18px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .button-yes {
+            width: 150px;
+            padding: 10px;
+            border-radius: 25px;
+            background-color: $sixth-color;
+            color: $second-color;
+            text-align: center;
+            margin: 10px;
+            font-size: 18px;
+            display: inline-block;
+            cursor: pointer;
+        }
+    }
+}

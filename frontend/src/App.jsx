@@ -12,7 +12,7 @@ import EmployeeManagement from './components/informationmanagement/employeemanag
 import TabView from './components/informationmanagement/tabview/TabView'
 import SpareManagement from './components/informationmanagement/sparemanagement/SpareManagement'
 import CarRegistration from './components/home/carregistation/CarRegistration'
-import Receipt from './components/home/Receipt'
+import Receipt from './components/receipt/Receipt'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('token') !== null);

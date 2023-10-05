@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import "./Home.scss";
+import Modal from 'react-bootstrap/Modal';
 import SelectMechanicModal from './selectmechanicmodal/SelectMechanicModal';
 import StatusModal from './statusmodal/StatusModal';
 import SelectSpareModal from './selectsparemodal/SelectSpareModal';
@@ -9,6 +10,8 @@ import SelectServiceModal from './selectservicemodal/SelectServiceModal';
 import EditCarRegistrationModal from './editcarregistrationmodal/EditCarRegistrationModal';
 
 const Repair = () => {
+  const navigate = useNavigate();
+
   const [brandmodels, setBrandModels] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [services, setServices] = useState([]);
@@ -17,6 +20,7 @@ const Repair = () => {
   const [colors, setColors] = useState([]);
 
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const [editingCustomerId, setEditingCustomerId] = useState(null);
 
@@ -52,12 +56,17 @@ const Repair = () => {
   const [showSparePartsModal, setShowSparePartsModal] = useState(false);
   const [showSelectMechanicModal, setShowSelectMechanicModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showConfirmBackModal, setShowConfirmBackModal] = useState(false);
+  const [showConfirmDeleteCarModal, setShowConfirmDeleteCarModal] = useState(false);
 
   const [currentStepServiceId, setCurrentStepServiceId] = useState(null);
 
   const [currentStep, setCurrentStep] = useState(1);
 
+  const [uniqueCustomerNumplates, setUniqueCustomerNumplates] = useState([]);
+  const [uniqueCustomerLineId, setUniqueCustomerLineId] = useState([]);
   const [uniqueCustomerNames, setUniqueCustomerNames] = useState([]);
+
 
   const [selectedCustomerStatus, setSelectedCustomerStatus] = useState(null);
 
@@ -73,8 +82,14 @@ const Repair = () => {
 
   const filteredCars = customers.filter((customer) => {
     return customer.car.numPlate.toLowerCase().includes(searchCar.toLowerCase()) ||
-      customer.car.brand.toLowerCase().includes(searchCar.toLowerCase())
+      customer.car.brand.toLowerCase().includes(searchCar.toLowerCase()) ||
+      customer.car.selectedModel.toLowerCase().includes(searchCar.toLowerCase()) ||
+      customer.car.selectedColor.toLowerCase().includes(searchCar.toLowerCase())
   });
+
+  const handleToReceipt = (customerId) => {
+    navigate(`/receipt/${customerId}`);
+  };
 
   useEffect(() => {
     loadBrandModels();
@@ -109,26 +124,28 @@ const Repair = () => {
       const response = await axios.get('http://localhost:3001/repairs');
       setCustomers(response.data);
 
+      const uniqueNumplates = [...new Set(response.data.map((customer) => customer.car.numPlate))];
+      setUniqueCustomerNumplates(uniqueNumplates);
+
+      const uniqueLinId = [...new Set(response.data.map((customer) => customer.customer.lineId))];
+      setUniqueCustomerLineId(uniqueLinId);
+
       const uniqueNames = [...new Set(response.data.map((customer) => customer.customer.customerName))];
       setUniqueCustomerNames(uniqueNames);
 
       const selectedSparePartsByServiceInitial = {};
       response.data.forEach((customer) => {
         customer.services.forEach((service) => {
-          // สร้างรายการอะไหล่ที่เป็นออบเจ็กต์เพื่อเก็บข้อมูลอะไหล่
           const sparePartsData = service.spareParts.map((sparePart) => {
             return {
-              sparePartId: sparePart.sparePartId, // หรืออะไหล่อื่น ๆ ที่คุณต้องการเก็บ
-              quantity: sparePart.quantity, // หรือข้อมูลอื่น ๆ ที่คุณต้องการเก็บ
+              sparePartId: sparePart.sparePartId,
+              quantity: sparePart.quantity,
             };
           });
-
-          // ใช้ชื่อบริการเป็น key ในออบเจ็กต์ selectedSparePartsByServiceInitial
           selectedSparePartsByServiceInitial[service.serviceName] = sparePartsData;
         });
       });
 
-      // อัปเดตสถานะของรายการอะไหล่ที่ถูกเลือกสำหรับบริการ
       setSelectedSparePartsForService(selectedSparePartsByServiceInitial);
 
       setMessage('');
@@ -138,13 +155,10 @@ const Repair = () => {
     }
   };
 
-
-
   const loadServices = async () => {
     try {
       const response = await axios.get('http://localhost:3001/services');
       setServices(response.data);
-
     } catch (error) {
       console.error('Error loading services:', error);
     }
@@ -191,6 +205,14 @@ const Repair = () => {
   };
 
   const handleUpdateCustomer = async (id) => {
+    const phonePattern = /^[0]{1}[0-9]{9}$/;
+
+    if (!phonePattern.test(phoneNumber)) {
+      setError('เบอร์โทรศัพท์ไม่ตรงตามรูปแบบที่ถูกต้อง');
+      setMessage('ลงทะเบียนรถไม่สำเร็จ');
+      return;
+    }
+
     try {
       await axios.put(`http://localhost:3001/repairs/${id}`, {
         numPlate,
@@ -263,6 +285,8 @@ const Repair = () => {
   const handleDeleteCustomer = async (id) => {
     try {
       await axios.delete(`http://localhost:3001/repairs/${id}`);
+
+      setShowConfirmDeleteCarModal(false);
       loadCustomers();
     } catch (error) {
       console.error('Error deleting customer:', error);
@@ -278,9 +302,9 @@ const Repair = () => {
     customer.services.forEach((service) => {
       selectedSparePartsByServiceInitial[service.serviceName] = service.spareParts;
     });
+
     setSelectedSparePartsForService(selectedSparePartsByServiceInitial);
     setSelectedSparePartsByService(selectedSparePartsByServiceInitial);
-
     setEditingCustomerId(customer._id);
     setShowSelectServiceModal(true);
   };
@@ -307,7 +331,6 @@ const Repair = () => {
 
   const handleAddService = async (id) => {
     try {
-      // 1. คำนวณค่าราคาของบริการแต่ละบริการ
       const serviceCost = selectedServices.reduce((acc, serviceId) => {
         const sparePartsData = selectedSparePartsForService[serviceId]?.map((selectedSparePart) => {
           const sparePart = spareParts.find((sp) => sp._id === selectedSparePart.sparePartId);
@@ -318,17 +341,14 @@ const Repair = () => {
           }
           return 0;
         }) || [];
-        
-        // บวกค่าราคาของอะไหล่ใน service นี้
+
         const serviceTotal = sparePartsData.reduce((sum, partCost) => sum + partCost, 0);
-        
-        // บวกค่าราคาของบริการนี้เข้ากับค่าก่อนหน้า
+
         return acc + serviceTotal;
       }, 0);
 
       let totalCost = parseFloat(serviceFee) + parseFloat(serviceCost);
 
-      // 2. ส่งข้อมูลไปยัง API
       await axios.put(`http://localhost:3001/repairs/${id}`, {
         numPlate,
         lineId,
@@ -340,14 +360,24 @@ const Repair = () => {
         startdate,
         enddate,
         services: selectedServices.map((serviceId) => {
-          const sparePartsData = selectedSparePartsForService[serviceId]?.map((selectedSparePart) => ({
-            sparePartId: selectedSparePart.sparePartId,
-            quantity: selectedSparePart.quantity,
-          })) || [];
-          
+          const sparePartsData = selectedSparePartsForService[serviceId]?.map((selectedSparePart) => {
+            const sparePart = spareParts.find((sp) => sp._id === selectedSparePart.sparePartId);
+            if (sparePart) {
+              const quantity = selectedSparePart.quantity;
+              const partCost = sparePart.sparePrice * quantity;
+              return {
+                sparePartId: selectedSparePart.sparePartId,
+                quantity: selectedSparePart.quantity,
+                partCost: partCost
+              };
+            }
+            return null;
+          }) || [];
+
+          // กรองค่า null ที่อาจเกิดขึ้นจาก spareParts.find
           return {
             serviceName: serviceId,
-            spareParts: sparePartsData,
+            spareParts: sparePartsData.filter((part) => part !== null),
           };
         }),
         state1,
@@ -358,8 +388,7 @@ const Repair = () => {
         serviceFee,
         totalCost,
       });
-  
-      // 3. อัปเดตสถานะและโหลดข้อมูลใหม่
+
       setCurrentStep(1);
       setShowSelectServiceModal(false);
       loadCustomers();
@@ -368,8 +397,6 @@ const Repair = () => {
       setMessage('เกิดข้อผิดพลาดในการเพิ่มบริการ');
     }
   };
-  
-
 
   const handleSelectSparePartModalClose = () => {
     setShowSparePartsModal(false);
@@ -388,13 +415,10 @@ const Repair = () => {
       const updatedSelectedSpareParts = [...selectedSpareParts];
 
       if (updatedSelectedSpareParts.some(sparePart => sparePart.sparePartId.toString() === sparepartId.toString())) {
-        // ถ้า sparepartId อยู่ใน updatedSelectedSpareParts ให้ทำการลบออก
         updatedSelectedSpareParts.splice(updatedSelectedSpareParts.findIndex(sparePart => sparePart.sparePartId.toString() === sparepartId.toString()), 1);
       } else {
-        // ถ้า sparepartId ไม่อยู่ใน updatedSelectedSpareParts ให้ทำการเพิ่มเข้าไป
         updatedSelectedSpareParts.push({ sparePartId: sparepartId, quantity: 1 });
       }
-
 
       setSelectedSpareParts(updatedSelectedSpareParts);
 
@@ -422,7 +446,6 @@ const Repair = () => {
     }
   };
 
-
   const handleQuantityChange = (serviceId, sparePartId, newQuantity) => {
     const updatedSparePartsForService = { ...selectedSparePartsForService };
     const sparePartIndex = updatedSparePartsForService[serviceId]?.findIndex((sp) => sp.sparePartId === sparePartId);
@@ -432,8 +455,6 @@ const Repair = () => {
       setSelectedSparePartsForService(updatedSparePartsForService);
     }
   };
-
-
 
   const handleSelectMechanicModalClose = () => {
     setShowSelectMechanicModal(false);
@@ -518,6 +539,10 @@ const Repair = () => {
     setSelectedCustomerStatus(customer);
     setShowStatusModal(true);
   };
+  const currentDate = new Date();
+  const offset = currentDate.getTimezoneOffset();
+  currentDate.setMinutes(currentDate.getMinutes() - offset);
+  const formattedDate = currentDate.toISOString().slice(0, 16);
 
   const handleToggleState = (stateName) => {
     switch (stateName) {
@@ -532,8 +557,6 @@ const Repair = () => {
         break;
       case "state5":
         setState5(!state5);
-        const currentDate = new Date(); // Create a new Date instance for the current date and time
-        const formattedDate = currentDate.toISOString().slice(0, 16);
         setEndDate(formattedDate);
         break;
       default:
@@ -541,66 +564,107 @@ const Repair = () => {
     }
   };
 
+  const handleConfirmBackModalClose = () => {
+    setShowConfirmBackModal(false);
+  };
+
+  const handleConfirmDeleteCarModalClose = () => {
+    setShowConfirmDeleteCarModal(false);
+  };
+
+  const handleShowConfirmDeleteCarModal = (customer) => {
+    setEditingCustomerId(customer._id);
+    setShowConfirmDeleteCarModal(true);
+  }
+
   return (
-    <div className="container">
+    <div className="home-container">
+
+      <div className='car-searchbox'>
+        <input
+          type="text"
+          id="input-with-icon-adornment"
+          value={searchCar}
+          onChange={(e) => setSearchCar(e.target.value)}
+          placeholder="ค้นหารถ"
+        />
+      </div>
+
       <div className="repair-title">
         <h2>รายการรถที่อยู่ในอู่ ณ ขณะนี้</h2>
       </div>
-      <div>
-        <input
-        type="text"
-        class="form-control"
-        value={searchCar}
-        onChange={(e) => setSearchCar(e.target.value)}
-        placeholder="ค้นหาป้ายทะเบียนหรือยี่ห้อรถ"
-      />
-      </div>
+
       <table className="repair-table">
         <tbody>
           {filteredCars
             .filter((customer) => !customer.status.state5)
             .map((customer, index) => (
               <tr key={index}>
-                <div className="repair-numplate">
-                  <td onClick={() => handleEditStatus(customer)}>
-                    {customer.car.brand} {customer.car.selectedModel} {customer.car.color} {customer.car.numPlate}
-                  </td>
-                </div>
-                <div className="repait-edit" onClick={() => handleEditCustomer(customer)}>
-                  <img src='./assets/image/edit.png' />
-                </div>
-                <td>
-                  <button onClick={() => handleEditRepairCar(customer)}>รายการซ่อม</button>
+                <td className="repair-car" onClick={() => handleEditStatus(customer)}>
+                  {customer.car.brand} {customer.car.selectedModel} {customer.car.selectedColor} {customer.car.numPlate}
                 </td>
-                <td>
-                  <Link to={`/receipt/${customer._id}`}>
-                    <button>
-                      จ่ายแล้ว
-                    </button>
-                  </Link>
+
+                <td className="repait-edit">
+                  <img onClick={() => handleEditCustomer(customer)} src='./assets/image/edit.png' />
                 </td>
-                <td>
-                  <button onClick={() => handleEditMecanics(customer)}>
-                    ช่าง
-                  </button>
+
+                <td className="repait-service" onClick={() => handleEditRepairCar(customer)}>
+                  รายการซ่อม
                 </td>
-                <td>
-                  <div className='delete-carregis' onClick={() => handleDeleteCustomer(customer._id)}>
-                    <img src='./assets/image/bin.png' />
-                  </div>
+
+                <td className="repair-pay" onClick={() => handleToReceipt(customer._id)}>
+                  ใบเสร็จ
                 </td>
+
+                <td className='repair-mechanic' onClick={() => handleEditMecanics(customer)}>
+                  ช่าง
+                </td>
+
+                <td className='delete-carregis' onClick={() => handleShowConfirmDeleteCarModal(customer)}>
+                  <img src='./assets/image/bin.png' />
+                </td>
+
               </tr>
             ))}
         </tbody>
       </table>
+
       <Link to="/carregis">
-        <div className='carregis-button'>ลงทะเบียนรถ</div>
+        <div className='carregis-button'>
+          ลงทะเบียนรถ
+        </div>
       </Link>
+
+
+      <Modal
+        className='confirmdeletecarmodal'
+        show={showConfirmDeleteCarModal}
+        onHide={handleConfirmDeleteCarModalClose}
+        backdrop="static"
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>ยืนยันการลบ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          ยืนยันการลบรถคันนี้ออกจากระบบ
+        </Modal.Body>
+        <Modal.Footer>
+          <div className='button-no' onClick={handleConfirmDeleteCarModalClose}>
+            NO
+          </div>
+          <div className='button-yes' onClick={() => handleDeleteCustomer(editingCustomerId)}>
+            YES
+          </div>
+        </Modal.Footer>
+      </Modal>
 
       <EditCarRegistrationModal
         showCarRigisterModal={showCarRigisterModal}
         handleAddCustomerModalClose={handleAddCustomerModalClose}
         message={message}
+        error={error}
         numPlate={numPlate}
         lineId={lineId}
         brand={brand}
@@ -613,7 +677,9 @@ const Repair = () => {
         customColor={customColor}
         startdate={startdate}
         handleBrandChange={handleBrandChange}
+        uniqueCustomerNumplates={uniqueCustomerNumplates}
         uniqueCustomerNames={uniqueCustomerNames}
+        uniqueCustomerLineId={uniqueCustomerLineId}
         handleModelChange={handleModelChange}
         handleColorChange={handleColorChange}
         colors={colors}
@@ -626,6 +692,9 @@ const Repair = () => {
         setCustomModel={setCustomModel}
         setPhoneNumber={setPhoneNumber}
         setCustomColor={setCustomColor}
+        setShowConfirmBackModal={setShowConfirmBackModal}
+        showConfirmBackModal={showConfirmBackModal}
+        handleConfirmBackModalClose={handleConfirmBackModalClose}
       />
 
       <SelectServiceModal
@@ -685,7 +754,7 @@ const Repair = () => {
         handleUpdateStatus={handleUpdateStatus}
         editingCustomerId={editingCustomerId}
       />
-       
+
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
+import "./StatusModal.scss";
 
 const StatusModal = ({  
     showStatusModal,
@@ -21,6 +22,7 @@ const StatusModal = ({
 
   return (
     <Modal
+    className='statusmodal'
     show={showStatusModal}
     onHide={handleStatusModalClose}
     backdrop="static"
@@ -29,7 +31,7 @@ const StatusModal = ({
   >
     <Modal.Body>
       <div>
-        {selectedCustomerStatus && ( // ตรวจสอบว่ามีข้อมูลสถานะของลูกค้าที่ถูกเลือกหรือไม่
+        {selectedCustomerStatus && ( 
           <div className="status-header-container">
             <button className="status-header">
               {selectedCustomerStatus.car.brand}{" "}
@@ -48,6 +50,7 @@ const StatusModal = ({
               <img src='./assets/image/car.png'></img>
             </div>
           </div>
+          <div className='state-label'>รับรถ</div>
           <button className="button-true">เรียบร้อย</button>
         </div>
         <div className="state">
@@ -57,6 +60,7 @@ const StatusModal = ({
               <img src='./assets/image/state2.png'></img>
             </div>
           </div>
+          <div className='state-label'>ตรวจสภาพรถ</div>
           <button
             onClick={() => {
               if (state1) {
@@ -81,6 +85,7 @@ const StatusModal = ({
               <img src='./assets/image/state3.png'></img>
             </div>
           </div>
+          <div className='state-label'>หาอะไหล่</div>
           <button
             onClick={() => {
               if (state2) {
@@ -104,6 +109,7 @@ const StatusModal = ({
               <img src='./assets/image/state4.png'></img>
             </div>
           </div>
+          <div className='state-label'>ดำเนินการซ่อม</div>
           <button
             onClick={() => {
               if (state3) {
@@ -126,6 +132,7 @@ const StatusModal = ({
               <img src='./assets/image/state5.png'></img>
             </div>
           </div>
+          <div className='state-label'>ส่งมอบรถ</div>
           <button
             onClick={() => {
               if (state4) {
@@ -140,20 +147,18 @@ const StatusModal = ({
       </div>
     </Modal.Body>
     <Modal.Footer>
-      <button
-        type="button"
-        onClick={() => handleUpdateStatus(editingCustomerId)}
-        className="status-save"
-      >
-        SAVE
-      </button>
-      <button
-        type="button"
+    <div
         onClick={handleStatusModalClose}
-        className="status-cancel"
+        className="button-no"
       >
         CANCEL
-      </button>
+      </div>
+      <div
+        onClick={() => handleUpdateStatus(editingCustomerId)}
+        className="button-yes"
+      >
+        SAVE
+      </div>
     </Modal.Footer>
   </Modal>
   );

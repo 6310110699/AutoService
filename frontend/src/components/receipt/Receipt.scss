@@ -1,0 +1,168 @@
+@import "../../assets/styles";
+
+@media print {
+    @page {
+        size: A6;
+        margin: 20px;
+    }
+
+    .receipt-paper {
+        font-size: 10px;
+    }
+
+    .receipt-title {
+        font-size: 14px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .receipt-company {
+        padding-right: 30px;
+    }
+
+    .dateandmecha-row {
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+
+    .receipt-mechanic {
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .receipt-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+
+    td {
+        border-left: 1px solid black;
+        padding: 8px;
+        text-align: right;
+    }
+
+    td:first-child {
+        width: 45%;
+        text-align: left;
+    }
+
+    td:last-child {
+        border-right: 1px solid black;
+        width: 20%;
+    }
+
+    tr:last-child {
+        border-bottom: 1px solid black;
+    }
+
+    .serviceFee-row {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+    }
+
+    .receipt-thx {
+        margin-top: 10px;
+        text-align: center;
+    }
+}
+
+
+
+.receipt {
+    margin-top: 30px;
+    font-size: 20px;
+
+    .receipt-paper {
+        width: 21cm;
+        height: 29.6cm;
+        margin: 0 auto;
+        padding: 50px;
+        background-color: #fff;
+        box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+
+        .receipt-title {
+            font-size: 35px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .receipt-company {
+            padding-right: 65px;
+        }
+
+        .dateandmecha-row {
+            margin-top: 60px;
+            margin-bottom: 30px;
+        }
+
+        .receipt-mechanic {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        td {
+            border-left: 1px solid black;
+            padding: 8px;
+            text-align: right;
+        }
+
+        td:first-child {
+            width: 45%;
+            text-align: left;
+        }
+
+        td:last-child {
+            border-right: 1px solid black;
+            width: 20%;
+        }
+
+        tr:last-child {
+            border-bottom: 1px solid black;
+        }
+
+        .serviceFee-row {
+            border-bottom: 1px solid black;
+            border-top: 1px solid black;
+        }
+
+        .receipt-thx {
+            margin-top: 20px;
+            text-align: center;
+        }
+    }
+
+    .receipt-print {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .receipt-printbutton {
+            width: 200px;
+            background-color: $fourth-color;
+            margin: 30px;
+            padding: 10px;
+            border-radius: 25px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+        }
+    }
+}

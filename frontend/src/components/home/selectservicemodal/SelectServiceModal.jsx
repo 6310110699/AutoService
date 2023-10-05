@@ -1,28 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
+import "./SelectServiceModal.scss";
 
-const SelectServiceModal = ({ 
-    showSelectServiceModal,
-    handleSelectServiceModalClose,
-    currentStep,
-    services,
-    handleNextStep,
-    selectedServices,
-    handleSelectService,
-    selectedSparePartsForService,
-    serviceFee,
-    handlePreviousStep,
-    handleEditSpareParts,
-    spareParts,
-    handleQuantityChange,
-    handleDeleteSparePart,
-    setServiceFee,
-    handleAddService,
-    editingCustomerId
+const SelectServiceModal = ({
+  showSelectServiceModal,
+  handleSelectServiceModalClose,
+  currentStep,
+  services,
+  handleNextStep,
+  selectedServices,
+  handleSelectService,
+  selectedSparePartsForService,
+  serviceFee,
+  handlePreviousStep,
+  handleEditSpareParts,
+  spareParts,
+  handleQuantityChange,
+  handleDeleteSparePart,
+  setServiceFee,
+  handleAddService,
+  editingCustomerId
 }) => {
 
+  const [showConfirmCancelEditServiceModal, setShowConfirmCancelEditServiceModal] = useState(false);
+
+  const [searchService, setSearchService] = useState('');
+
+  const filteredServices = services.filter((service) => {
+    return service.serviceName.toLowerCase().includes(searchService.toLowerCase())
+  });
+
+  const handleConfirmCancelEditServiceModalClose = () => {
+    setShowConfirmCancelEditServiceModal(false);
+  }
+
+  const handleCancelUpdateService = () => {
+    handleConfirmCancelEditServiceModalClose();
+    handleSelectServiceModalClose();
+  };
+
   return (
-    <Modal
+    <div>
+      <Modal
+        className='selectservicemodal'
         show={showSelectServiceModal}
         onHide={handleSelectServiceModalClose}
         backdrop="static"
@@ -30,51 +50,66 @@ const SelectServiceModal = ({
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>สรุปรายการซ่อม</Modal.Title>
+          <Modal.Title>
+            <div>
+              {currentStep === 1 && (
+                <>
+                  รายการซ่อม
+                </>
+              )}
+              {currentStep === 2 && (
+                <>
+                  สรุปรายการซ่อม
+                </>
+              )}
+            </div>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {currentStep === 1 && (
-            <div>
-              <ul>
-                {services.map((service) => (
+            <div className='firststep'>
+              <div className='service-searchbox'>
+                <input
+                  type="text"
+                  id="input-with-icon-adornment"
+                  value={searchService}
+                  onChange={(e) => setSearchService(e.target.value)}
+                  placeholder="ค้นหารายการซ่อม"
+                />
+              </div>
+
+              <ul className='service-choice'>
+                {filteredServices.map((service) => (
                   <div key={service._id} value={service.serviceName}>
-                    <span style={{ display: "inline-block" }}>
+                    <span className='input-checkbox'>
                       <input
                         type="checkbox"
                         checked={selectedServices.includes(service._id)}
                         onChange={() => handleSelectService(service._id)}
                       />
                     </span>
-                    <span style={{ display: "inline-block" }}>
-                      <label className="form-control">
+                    <span className="service-label">
+                      <div className="service-name">
                         {service.serviceName}
-                      </label>
+                      </div>
                     </span>
-
                   </div>
                 ))}
               </ul>
             </div>
           )}
           {currentStep === 2 && (
-            <div>
+            <div className='secondstep'>
               <ul>
                 {services
                   .filter((service) => selectedServices.includes(service._id))
                   .map((selectedService) => (
-                    <li key={selectedService._id}>
-                      <div>
+                    <div key={selectedService._id}>
+                      <div className='selectservice-name'>
                         {selectedService.serviceName}
                       </div>
                       <ul>
-                        <table style={{ width: "100%" }}>
-                          <thead>
-                            <tr>
-                              <th>อะไหล่</th>
-                              <th>จำนวน</th>
-                              <th>ราคา</th>
-                            </tr>
-                          </thead>
+                        <table className='selectservice-table'>
                           <tbody>
                             {selectedSparePartsForService[selectedService._id]?.map((selectedSparePartId) => {
                               const sparePart = spareParts.find((sparePart) =>
@@ -82,63 +117,49 @@ const SelectServiceModal = ({
                                 || sparePart._id === selectedSparePartId.sparePartId);
                               return (
                                 <tr key={sparePart._id}>
-                                  <td>
-                                    <span>
-                                      {sparePart.spareName}
-                                    </span>
+                                  <td className='selectservice-spare'>
+                                    {sparePart.spareName}
                                   </td>
-                                  <td>
+                                  <td className='selectservice-quantity'>
                                     <input
                                       type="number"
                                       value={selectedSparePartId.quantity}
                                       onChange={(e) => handleQuantityChange(selectedService._id, selectedSparePartId.sparePartId, e.target.value)}
                                     />
                                   </td>
-                                  <td>
-                                    <span>
-                                      {sparePart.sparePrice}
-                                    </span>
+                                  <td className='selectservice-price'>
+                                    {sparePart.sparePrice}
                                   </td>
-                                  <td>
-                                    <span className='delete-carregis' onClick={() => handleDeleteSparePart(selectedService._id, sparePart._id)}>
-                                      <img src='./assets/image/bin.png' />
-                                    </span>
+                                  <td className='delete-spare' onClick={() => handleDeleteSparePart(selectedService._id, sparePart._id)}>
+                                    <img src='./assets/image/bin.png' />
                                   </td>
-
                                 </tr>
-
                               );
                             })}
                           </tbody>
-
                         </table>
-
                       </ul>
-                      <div className='add-button' onClick={() => handleEditSpareParts(selectedService)}>
+                      <div className='add-spare' onClick={() => handleEditSpareParts(selectedService)}>
                         เพิ่มอะไหล่
                       </div>
-                    </li>
+                    </div>
                   ))}
               </ul>
               <div>
-                <table style={{ margin: "50px" }}>
-                  <tbody>
-                    <td style={{ width: "40%" }}>
-                      <h4>
-                        ค่าบริการ
-                      </h4></td>
-                    <td style={{ width: "20%" }}>
-                      <input
-                        type="number"
-                        className="form-control"
-                        value={serviceFee}
-                        onChange={(e) => setServiceFee(e.target.value)}
-                      />
-                    </td>
-
-                  </tbody>
-                </table>
-
+                <div className='servicefee-table'>
+                  <div className='servicefee-label'>
+                    ค่าบริการ
+                  </div>
+                  <div className='servicefee'>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={serviceFee}
+                      placeholder="กรอกค่าบริการ"
+                      onChange={(e) => setServiceFee(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -148,20 +169,20 @@ const SelectServiceModal = ({
           <div>
             {currentStep === 1 && (
               <>
-                <div className="cancel-button" onClick={handleSelectServiceModalClose}>
+                <div className="button-no" onClick={setShowConfirmCancelEditServiceModal}>
                   CANCEL
                 </div>
-                <button className="save-button" onClick={handleNextStep}>
+                <div className="button-yes" onClick={handleNextStep}>
                   NEXT
-                </button>
+                </div>
               </>
             )}
             {currentStep === 2 && (
               <>
-                <div className="cancel-button" onClick={handlePreviousStep}>
+                <div className="button-no" onClick={handlePreviousStep}>
                   BACK
                 </div>
-                <div className="save-button" onClick={() => handleAddService(editingCustomerId)}>
+                <div className="button-yes" onClick={() => handleAddService(editingCustomerId)}>
                   SAVE
                 </div>
               </>
@@ -169,6 +190,33 @@ const SelectServiceModal = ({
           </div>
         </Modal.Footer>
       </Modal>
+
+      <Modal
+        className='confirmcanceleditservicemodal'
+        show={showConfirmCancelEditServiceModal}
+        onHide={handleConfirmCancelEditServiceModalClose}
+        backdrop="static"
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>ยกเลิกการแก้ไข</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          ยืนยันการยกเลิกแก้ไขรายการซ่อม
+        </Modal.Body>
+        <Modal.Footer>
+          <div className='button-no' onClick={handleConfirmCancelEditServiceModalClose}>
+            NO
+          </div>
+
+          <div className='button-yes' onClick={handleCancelUpdateService}>
+            YES
+          </div>
+        </Modal.Footer>
+      </Modal>
+    </div>
+
   );
 };
 

@@ -1,10 +1,12 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
+import "./EditCarRegistrationModal.scss";
 
-const EditCarRegistrationModal = ({ 
+const EditCarRegistrationModal = ({
   showCarRigisterModal,
   handleAddCustomerModalClose,
   message,
+  error,
   numPlate,
   lineId,
   brand,
@@ -17,7 +19,9 @@ const EditCarRegistrationModal = ({
   customColor,
   startdate,
   handleBrandChange,
+  uniqueCustomerNumplates,
   uniqueCustomerNames,
+  uniqueCustomerLineId,
   handleModelChange,
   handleColorChange,
   colors,
@@ -29,13 +33,23 @@ const EditCarRegistrationModal = ({
   setCustomerName,
   setCustomModel,
   setPhoneNumber,
-  setCustomColor
+  setCustomColor,
+  setShowConfirmBackModal,
+  showConfirmBackModal,
+  handleConfirmBackModalClose
 }) => {
 
+  const handleCancelUpdateCustomer = () => {
+    handleConfirmBackModalClose();
+    handleAddCustomerModalClose();
+  };
+
   return (
-    <Modal
+    <div className='editcarregis'>
+      <Modal
         show={showCarRigisterModal}
         onHide={handleAddCustomerModalClose}
+        className='editcarregismodal'
         backdrop="static"
         size="xl"
         centered
@@ -44,162 +58,211 @@ const EditCarRegistrationModal = ({
           <Modal.Title>แก้ไขข้อมูลลูกค้า</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="">
-            <div className="">
+          <div>
 
-              {message && <div className="message">{message}</div>}
+            {message &&
+              <div className="message">
+                {message}
+              </div>
+            }
 
-              <form className='customer-form'>
-                <div className='row'>
-                  <div className='col col-6'>
-                    <label>ป้ายทะเบียน เช่น XX 0000 NARATHIWAT</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={numPlate}
-                      onChange={(e) => setNumPlate(e.target.value)}
-                    />
-                  </div>
-                  <div className='col col-6'>
-                    <label>LINE ID</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={lineId}
-                      onChange={(e) => setLineId(e.target.value)}
-                    />
-                  </div>
+            <form className='editcustomer-form'>
+              <div className='row'>
+                <div className='col col-6'>
+                  <label>ป้ายทะเบียน เช่น XX 0000 NARATHIWAT</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={numPlate}
+                    onChange={(e) => setNumPlate(e.target.value)}
+                    list='customerNumplatesList'
+                  />
+                  <datalist id="customerNumplatesList">
+                    {uniqueCustomerNumplates.map((numPlate, index) => (
+                      <option key={index} value={numPlate} />
+                    ))}
+                  </datalist>
                 </div>
-                <div className='row'>
-                  <div className='col col-6'>
-                    <label>ยี่ห้อรถ:</label>
-                    <select className="form-control" value={brand} onChange={handleBrandChange}>
-                      <option value="">กรุณาเลือก</option>
-                      {Array.from(new Set(brandmodels.map((brandmodel) => brandmodel.brand))).map((uniqueBrand) => (
-                        <option key={uniqueBrand} value={uniqueBrand}>
-                          {uniqueBrand}
+                <div className='col col-6'>
+                  <label>LINE ID</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={lineId}
+                    onChange={(e) => setLineId(e.target.value)}
+                    list='customerLineIdList'
+                  />
+                  <datalist id="customerLineIdList">
+                    {uniqueCustomerLineId.map((lineId, index) => (
+                      <option key={index} value={lineId} />
+                    ))}
+                  </datalist>
+                </div>
+              </div>
+              <div className='row'>
+                <div className='col col-6'>
+                  <label>ยี่ห้อรถ:</label>
+                  <select className="form-control" value={brand} onChange={handleBrandChange}>
+                    <option value="">กรุณาเลือก</option>
+                    {Array.from(new Set(brandmodels.map((brandmodel) => brandmodel.brand))).map((uniqueBrand) => (
+                      <option key={uniqueBrand} value={uniqueBrand}>
+                        {uniqueBrand}
+                      </option>
+                    ))}
+                    <option value="other">อื่นๆ</option>
+                  </select>
+                  {brand === 'other' && (
+                    <input
+                      type="text"
+                      value={customBrand}
+                      onChange={(e) => setCustomBrand(e.target.value)}
+                      placeholder="กรอกยี่ห้อรถ"
+                    />
+                  )}
+                </div>
+                <div className='col col-6'>
+                  <label>ชื่อลูกค้า:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    list='customerNamesList'
+                  />
+                  <datalist id="customerNamesList">
+                    {uniqueCustomerNames.map((customerName, index) => (
+                      <option key={index} value={customerName} />
+                    ))}
+                  </datalist>
+                </div>
+              </div>
+              <div className='row'>
+                <div className='col col-6'>
+                  <label>รุ่นรถ:</label>
+                  <select
+                    className="form-control"
+                    value={selectedModel}
+                    onChange={handleModelChange}
+                  >
+                    <option value="">กรุณาเลือก</option>
+                    {brandmodels
+                      .filter((brandmodel) => brandmodel.brand === brand)
+                      .map((brandmodel) => (
+                        <option key={brandmodel._id} value={brandmodel.model}>
+                          {brandmodel.model}
                         </option>
                       ))}
-                      <option value="other">อื่นๆ</option>
-                    </select>
-                    {brand === 'other' && (
+                    <option value="custom-model">
+                      {customModel ? customModel : 'กรุณากรอกรุ่นรถ'}
+                    </option>
+                  </select>
+                  {selectedModel === 'custom-model' && (
+                    <>
                       <input
                         type="text"
-                        value={customBrand}
-                        onChange={(e) => setCustomBrand(e.target.value)}
-                        placeholder="กรอกยี่ห้อรถ"
+                        value={customModel}
+                        onChange={(e) => setCustomModel(e.target.value)}
+                        placeholder="กรอกรุ่นรถ"
                       />
-                    )}
-                  </div>
-                  <div className='col col-6'>
-                    <label>ชื่อลูกค้า:</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={customerName}
-                      list='customerNamesList'
-                      onChange={(e) => setCustomerName(e.target.value)}
-                    />
-                    <datalist id="customerNamesList">
-                      {uniqueCustomerNames.map((name, index) => (
-                        <option key={index} value={name} />
+                    </>
+                  )}
+                </div>
+                <div className='col col-6'>
+                  <label>เบอร์โทรศัพท์ (0812345678):</label>
+                  <input
+                    type="tel"
+                    className="form-control"
+                    id="phone"
+                    pattern="[0]{1}[0-9]{9}"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                  />
+                  {error &&
+                    <div className="danger">
+                      {error}
+                    </div>
+                  }
+                </div>
+              </div>
+              <div className='row'>
+                <div className='col col-6'>
+                  <label>สี:</label>
+                  <select
+                    className="form-control"
+                    value={selectedColor}
+                    onChange={handleColorChange}
+                  >
+                    <option value="">กรุณาเลือก</option>
+                    {colors
+                      .map((color) => (
+                        <option key={color._id} value={color.colorname}>
+                          {color.colorname}
+                        </option>
                       ))}
-                    </datalist>
-
-                  </div>
+                    <option value="custom-color">
+                      {customColor ? customColor : 'กรุณากรอกสีรถ'}
+                    </option>
+                  </select>
+                  {selectedColor === 'custom-color' && (
+                    <>
+                      <input
+                        type="text"
+                        value={customColor}
+                        onChange={(e) => setCustomColor(e.target.value)}
+                        placeholder="กรอกสีรถ"
+                      />
+                    </>
+                  )}
                 </div>
-                <div className='row'>
-                  <div className='col col-6'>
-                    <label>รุ่นรถ:</label>
-                    <select
-                      className="form-control"
-                      value={selectedModel}
-                      onChange={handleModelChange}
-                    >
-                      <option value="">กรุณาเลือก</option>
-                      {brandmodels
-                        .filter((brandmodel) => brandmodel.brand === brand)
-                        .map((brandmodel) => (
-                          <option key={brandmodel._id} value={brandmodel.model}>
-                            {brandmodel.model}
-                          </option>
-                        ))}
-                      <option value="custom-model">
-                        {customModel ? customModel : 'กรุณากรอกรุ่นรถ'}
-                      </option>
-                    </select>
-                    {selectedModel === 'custom-model' && (
-                      <>
-                        <input
-                          type="text"
-                          value={customModel}
-                          onChange={(e) => setCustomModel(e.target.value)}
-                          placeholder="กรอกรุ่นรถ"
-                        />
-                      </>
-                    )}
-                  </div>
-                  <div className='col col-6'>
-                    <label>เบอร์โทรศัพท์:</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                  </div>
+                <div className='col col-6'>
+                  <label>วันที่:</label>
+                  <input
+                    type="datetime-local"
+                    value={startdate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="form-control"
+                  />
                 </div>
-                <div className='row'>
-                  <div className='col col-6'>
-                    <label>สี:</label>
-                    <select
-                      className="form-control"
-                      value={selectedColor}
-                      onChange={handleColorChange}
-                    >
-                      <option value="">กรุณาเลือก</option>
-                      {colors
-                        .map((color) => (
-                          <option key={color._id} value={color.colorname}>
-                            {color.colorname}
-                          </option>
-                        ))}
-                      <option value="custom-color">
-                        {customColor ? customColor : 'กรุณากรอกสีรถ'}
-                      </option>
-                    </select>
-                    {selectedColor === 'custom-color' && (
-                      <>
-                        <input
-                          type="text"
-                          value={customColor}
-                          onChange={(e) => setCustomColor(e.target.value)}
-                          placeholder="กรอกสีรถ"
-                        />
-                      </>
-                    )}
-                  </div>
-                  <div className='col col-6'>
-                    <label>วันที่:</label>
-                    <input
-                      type="datetime-local"
-                      value={startdate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" onClick={() => handleUpdateCustomer(editingCustomerId)}>
-            แก้ไข
-          </button>
-          <button type="button" onClick={handleAddCustomerModalClose}>ยกเลิก</button>
+          <div className='button-no' onClick={setShowConfirmBackModal}>
+            CANCEL
+          </div>
+          <div className='button-yes' onClick={() => handleUpdateCustomer(editingCustomerId)}>
+            UPDATE
+          </div>
         </Modal.Footer>
       </Modal>
+
+      <Modal
+        className='confirmbackmodal'
+        show={showConfirmBackModal}
+        onHide={handleConfirmBackModalClose}
+        backdrop="static"
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>ยกเลิกการแก้ไข</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          ยืนยันการยกเลิกแก้ไขข้อมูลลูกค้า
+        </Modal.Body>
+        <Modal.Footer>
+          <div className='button-no' onClick={handleConfirmBackModalClose}>
+            NO
+          </div>
+
+            <div className='button-yes' onClick={handleCancelUpdateCustomer}>
+              YES
+            </div>
+        </Modal.Footer>
+      </Modal>
+    </div>
+
   )
 };
 

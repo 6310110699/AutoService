@@ -56,63 +56,63 @@ const StartPage = () => {
                 <div className="status-container">
                   <div className="state">
                     <div
-                      className={`state ${
-                        customer.status.state1 ? "status-active" : "status"
-                      }`}
+                      className={`state ${customer.status.state1 ? "status-active" : "status"
+                        }`}
                     >
                       <div className="state-circle1"></div>
                       <div className="state-circle2">
                         <img src='./assets/image/car.png'></img>
                       </div>
                     </div>
+                    <div className='state-label'>รับรถ</div>
                   </div>
                   <div className="state">
                     <div
-                      className={`state ${
-                        customer.status.state2 ? "status-active" : "status"
-                      }`}
+                      className={`state ${customer.status.state2 ? "status-active" : "status"
+                        }`}
                     >
                       <div className="state-circle1"></div>
                       <div className="state-circle2">
                         <img src='./assets/image/state2.png'></img>
                       </div>
                     </div>
+                    <div className='state-label'>ตรวจสภาพรถ</div>
                   </div>
                   <div className="state">
                     <div
-                      className={`state ${
-                        customer.status.state3 ? "status-active" : "status"
-                      }`}
+                      className={`state ${customer.status.state3 ? "status-active" : "status"
+                        }`}
                     >
                       <div className="state-circle1"></div>
                       <div className="state-circle2">
                         <img src='./assets/image/state3.png'></img>
                       </div>
                     </div>
+                    <div className='state-label'>หาอะไหล่</div>
                   </div>
                   <div className="state">
                     <div
-                      className={`state ${
-                        customer.status.state4 ? "status-active" : "status"
-                      }`}
+                      className={`state ${customer.status.state4 ? "status-active" : "status"
+                        }`}
                     >
                       <div className="state-circle1"></div>
                       <div className="state-circle2">
                         <img src='./assets/image/state4.png'></img>
                       </div>
                     </div>
+                    <div className='state-label'>ดำเนินการซ่อม</div>
                   </div>
                   <div className="state">
                     <div
-                      className={`state ${
-                        customer.status.state5 ? "status-active" : "status"
-                      }`}
+                      className={`state ${customer.status.state5 ? "status-active" : "status"
+                        }`}
                     >
                       <div className="state-circle1"></div>
                       <div className="state-circle2">
                         <img src='./assets/image/state5.png'></img>
                       </div>
                     </div>
+                    <div className='state-label'>ส่งมอบรถ</div>
                   </div>
                 </div>
               </tr>

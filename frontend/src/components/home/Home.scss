@@ -1,251 +1,323 @@
 @import "../../assets/styles";
 
-.container {
+.home-container {
   max-width: 100%;
   padding: 0;
-}
 
-.repair-title {
-  margin-top: 50px;
-  margin-left: 0;
-  width: 450px;
-  height: 60px;
-  background-color: $sixth-color;
-  border-radius: 0 30px 30px 0;
-
-  h2 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: $second-color;
-    letter-spacing: 1px;
-    font-family: $font-family1;
+  .car-searchbox {
+    input {
+      width: 30%;
+      float: right;
+      border-radius: 15px;
+      padding: 10px;
+      margin: 25px 40px;
+    }
   }
-}
 
-.repair-table {
-  margin: 30px 100px;
+  .repair-title {
+    margin-top: 70px;
+    width: 450px;
+    height: 60px;
+    background-color: $sixth-color;
+    border-radius: 0 30px 30px 0;
+    display: inline-block;
 
-  .repair-numplate {
-    width: 500px;
-    height: 50px;
-    margin-top: 35px;
-    border-radius: 20px;
-    padding: 10px;
-    background-color: $fourth-color;
-    cursor: pointer;
-
-    td {
-      letter-spacing: 1px;
-      font-family: $font-family1;
-      font-weight: 500;
+    h2 {
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100%;
+      color: $second-color;
+      letter-spacing: 1px;
+      font-family: $font-family1;
+    }
+  }
 
+  .repair-table {
+    margin: 30px 80px;
+    width: 90%;
+    border-collapse: separate;
+    border-spacing: 20px 30px;
+
+    .repair-car {
+      width: 500px;
+      height: 60px;
+      border-radius: 20px;
+      background-color: $fourth-color;
+      letter-spacing: 1px;
+      font-family: $font-family1;
+      font-weight: 500;
+      font-size: 20px;
+      text-align: center;
+      cursor: pointer;
     }
 
+    .repait-edit {
+      text-align: center;
+
       img {
-        position: absolute;
-        width: 30px;
-        margin-top: -15px;
-        margin-left: 30px;
+        width: 50px;
+        cursor: pointer;
       }
-    
-  }
-}
+    }
 
-.my-modal {
-  width: 100vw;
-  height: 100vh;
-}
+    .repait-service {
+      width: 200px;
+      height: 60px;
+      border-radius: 30px;
+      background-color: $seventh-color;
+      font-weight: 500;
+      font-size: 20px;
+      text-align: center;
+      cursor: pointer;
+    }
 
-.form-container {
-  padding: 40px 60px;
-}
+    .repair-pay {
+      width: 200px;
+      height: 60px;
+      border-radius: 30px;
+      background-color: $seventh-color;
+      font-weight: 500;
+      font-size: 20px;
+      text-align: center;
+      cursor: pointer;
 
-.customer-form {
-  .col {
-    padding: 10px 60px;
-  }
-}
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+    }
 
-.form-control {
-  height: 55px;
-  background-color: $nineth-color;
-  border-radius: 20px;
-  margin-top: 5px;
-}
+    .repair-mechanic {
+      width: 200px;
+      height: 60px;
+      border-radius: 30px;
+      background-color: $seventh-color;
+      font-weight: 500;
+      font-size: 20px;
+      text-align: center;
+      cursor: pointer;
+    }
 
-.button-container {
-  display: flex;
-  justify-content: center;
-}
+    .delete-carregis {
 
-.button {
-  width: 180px;
-  border-radius: 50px;
-  background-color: $fourth-color;
-}
-
-
-.modal-footer {
-  // justify-content: flex-start;
-
-  .cancel-button {
-    background-color: $fourth-color;
-    font-size: 20px;
-    font-weight: bold;
-    width: 120px;
-    text-align: center;
-    padding: 10px;
-    border-radius: 15px;
-    display: inline-block;
-    cursor: pointer;
-  }
-
-  .save-button {
-    background-color: $fourth-color;
-    font-size: 20px;
-    font-weight: bold;
-    width: 120px;
-    text-align: center;
-    padding: 10px;
-    border-radius: 15px;
-    display: inline-block;
-    margin: 0px 20px;
-    cursor: pointer;
-  }
-}
-
-.add-button {
-  background-color: $fifth-color;
-  font-size: 20px;
-  font-weight: bold;
-  width: 120px;
-  text-align: center;
-  padding: 10px;
-  border-radius: 15px;
-  margin: 15px 0px;
-  cursor: pointer;
-}
-
-.repait-edit {
-  img {
-    width: 50px;
-  }
-}
-
-  .delete-carregis {
-    img {
-      width: 50px;
+      img {
+        width: 50px;
+        cursor: pointer;
+      }
     }
   }
 
   .carregis-button {
     width: 500px;
+    height: 60px;
+    border-radius: 30px;
+    background-color: $seventh-color;
+    letter-spacing: 1px;
+    font-family: $font-family1;
+    font-weight: 500;
+    font-size: 20px;
+    margin-left: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 18px;
-    padding: 10px;
-    margin-left: 30px;
-    border-radius: 15px;
-    text-decoration: none;
-    background-color: $seventh-color;
+    cursor: pointer;
+  }
+}
+
+.confirmdeletecarmodal {
+  .modal-body {
+    font-size: 30px;
+    margin: 30px 0px;
+    text-align: center;
   }
 
+  .modal-footer {
+    justify-content: center;
 
-//-- status --//
-.status-header-container {
-  width: 100%;
-  text-align: center;
-}
+    .button-no {
+      width: 150px;
+      padding: 10px;
+      border-radius: 25px;
+      background-color: $eighth-color;
+      color: $second-color;
+      text-align: center;
+      margin: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
 
-.status-header {
-  background-color: $fourth-color;
-  // width: 20%;
-}
-
-.status-container {
-  display: flex;
-  justify-content: space-between;
-}
-
-.status {
-  width: 200px;
-  height: 200px;
-
-  .state-circle1 {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    border: 5px solid #c2c1c1;
-    position: absolute;
-  }
-
-  .state-circle2 {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background-color: #c2c1c1;
-    margin: 20px;
-    position: absolute;
-
-    img {
-      width: 120px;
-      margin: 20px;
+    .button-yes {
+      width: 150px;
+      padding: 10px;
+      border-radius: 25px;
+      background-color: $sixth-color;
+      color: $second-color;
+      text-align: center;
+      margin: 10px;
+      font-size: 18px;
+      cursor: pointer;
     }
   }
 }
 
-.status-active {
-  width: 200px;
-  height: 200px;
-
-  .state-circle1 {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    border: 5px solid $third-color;
-    position: absolute;
-  }
-
-  .state-circle2 {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background-color: $third-color;
-    margin: 20px;
-    position: absolute;
-
-    img {
-      width: 120px;
-      margin: 20px;
-    }
-  }
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-.button-true {
-  background-color: $sixth-color;
-  color: white;
-  margin-left: 20%;
-}
 
-.button-false {
-  background-color: $seventh-color;
-  color: white;
-  margin-left: 20%;
-}
+// .my-modal {
+//   width: 100vw;
+//   height: 100vh;
+// }
 
-.status-save {
-  background-color: $sixth-color;
-  width: 120px;
-}
+// .form-container {
+//   padding: 40px 60px;
+// }
 
-.status-cancel {
-  background-color: $fourth-color;
-  width: 120px;
-}
+// .button-container {
+//   display: flex;
+//   justify-content: center;
+// }
+
+// .button {
+//   width: 180px;
+//   border-radius: 50px;
+//   background-color: $fourth-color;
+// }
+
+
+// .modal-footer {
+//   // justify-content: flex-start;
+
+//   .cancel-button {
+//     background-color: $fourth-color;
+//     font-size: 20px;
+//     font-weight: bold;
+//     width: 120px;
+//     text-align: center;
+//     padding: 10px;
+//     border-radius: 15px;
+//     display: inline-block;
+//     cursor: pointer;
+//   }
+
+//   .save-button {
+//     background-color: $fourth-color;
+//     font-size: 20px;
+//     font-weight: bold;
+//     width: 120px;
+//     text-align: center;
+//     padding: 10px;
+//     border-radius: 15px;
+//     display: inline-block;
+//     margin: 0px 20px;
+//     cursor: pointer;
+//   }
+// }
+
+// .add-button {
+//   background-color: $fifth-color;
+//   font-size: 20px;
+//   font-weight: bold;
+//   width: 120px;
+//   text-align: center;
+//   padding: 10px;
+//   border-radius: 15px;
+//   margin: 15px 0px;
+//   cursor: pointer;
+// }
+
+
+// //-- status --//
+// .status-header-container {
+//   width: 100%;
+//   text-align: center;
+// }
+
+// .status-header {
+//   background-color: $fourth-color;
+//   // width: 20%;
+// }
+
+// .status-container {
+//   display: flex;
+//   justify-content: space-between;
+// }
+
+// .status {
+//   width: 200px;
+//   height: 200px;
+
+//   .state-circle1 {
+//     width: 200px;
+//     height: 200px;
+//     border-radius: 50%;
+//     border: 5px solid #c2c1c1;
+//     position: absolute;
+//   }
+
+//   .state-circle2 {
+//     width: 160px;
+//     height: 160px;
+//     border-radius: 50%;
+//     background-color: #c2c1c1;
+//     margin: 20px;
+//     position: absolute;
+
+//     img {
+//       width: 120px;
+//       margin: 20px;
+//     }
+//   }
+// }
+
+// .status-active {
+//   width: 200px;
+//   height: 200px;
+
+//   .state-circle1 {
+//     width: 200px;
+//     height: 200px;
+//     border-radius: 50%;
+//     border: 5px solid $third-color;
+//     position: absolute;
+//   }
+
+//   .state-circle2 {
+//     width: 160px;
+//     height: 160px;
+//     border-radius: 50%;
+//     background-color: $third-color;
+//     margin: 20px;
+//     position: absolute;
+
+//     img {
+//       width: 120px;
+//       margin: 20px;
+//     }
+//   }
+// }
+
+// .button-true {
+//   background-color: $sixth-color;
+//   color: white;
+//   margin-left: 20%;
+// }
+
+// .button-false {
+//   background-color: $seventh-color;
+//   color: white;
+//   margin-left: 20%;
+// }
+
+// .status-save {
+//   background-color: $sixth-color;
+//   width: 120px;
+// }
+
+// .status-cancel {
+//   background-color: $fourth-color;
+//   width: 120px;
+// }
