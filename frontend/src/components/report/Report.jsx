@@ -6,7 +6,9 @@ function Report() {
     const [customers, setCustomers] = useState([]);
     const [services, setServices] = useState([]);
     const [mechanics, setMechanics] = useState([]);
-    const [showServiceDetails, setShowServiceDetails] = useState({});
+    const [showServiceDetailsByType, setShowServiceDetailsByType] = useState({});
+  const [showServiceDetailsByMechanic, setShowServiceDetailsByMechanic] = useState({});
+
 
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -141,12 +143,23 @@ function Report() {
         setSearchServiceResults(filteredAndSortedCustomers);
     };
 
-    const toggleServiceDetails = (serviceName) => {
-        setShowServiceDetails((prevDetails) => ({
-            ...prevDetails,
-            [serviceName]: !prevDetails[serviceName],
-        }));
-    };
+    const toggleServiceDetailsByType = (serviceName) => {
+            setShowServiceDetailsByType((prevDetails) => ({
+              ...prevDetails,
+              [serviceName]: !prevDetails[serviceName],
+            }));
+          };
+        
+          const toggleServiceDetailsByMechanic = (mechanicId, serviceName) => {
+            setShowServiceDetailsByMechanic((prevDetails) => ({
+              ...prevDetails,
+              [mechanicId]: {
+                ...prevDetails[mechanicId],
+                [serviceName]: !prevDetails[mechanicId]?.[serviceName],
+              },
+            }));
+          };
+          
 
     const toggleShowAll = () => {
         setStartDate("");
@@ -210,7 +223,11 @@ function Report() {
                 </div>
             </div>
 
-            <div className="report-table-container">
+            <div className="reportrepair-head">
+                สรุปรายการซ่อม
+            </div>
+
+            <div className="reportrepair-table-container">
                 <table className="reportrepair-table">
                     <thead>
                         <tr>
@@ -222,22 +239,26 @@ function Report() {
                         {Object.entries(countServicesByType()).map(([serviceName, serviceInfo]) => (
                             <React.Fragment key={serviceName}>
                                 <tr>
-                                    <td>
+                                    <td style={{paddingLeft: "15px"}}>
                                         {serviceName}
-                                        <img onClick={() => toggleServiceDetails(serviceName)} src='./assets/image/down-arrow.png' />
+                                        <img
+                                            onClick={() => toggleServiceDetailsByType(serviceName)}
+                                            src='./assets/image/down-arrow.png'
+                                        />
                                     </td>
                                     <td>{serviceInfo.count}</td>
                                 </tr>
-                                {showServiceDetails[serviceName] && (
+                                {showServiceDetailsByType[serviceName] && (
                                     <tr>
-                                        <td colSpan="2">
+                                        <td colSpan={2}>
                                             {Object.entries(getServiceCountsCarModel(serviceName)).map(
                                                 ([carModel, carModelCount]) => (
                                                     <div key={carModel}>
                                                         <table className="reportrepair-subrow">
                                                             <tr>
                                                                 <td>{carModel}</td>
-                                                                <td>{carModelCount}</td>
+                                                                <td style={{ width: "20%" }}>{carModelCount}</td>
+                                                                <td></td>
                                                             </tr>
                                                         </table>
                                                     </div>
@@ -252,57 +273,66 @@ function Report() {
                 </table>
             </div>
 
-            <h3>สรุปการซ่อมรถของแต่ละช่าง</h3>
-            <table style={{width: "100%"}}>
-                <thead>
-                    <tr>
-                        <th>ช่าง</th>
-                        <th>รายการซ่อม</th>
-                        <th>บริการที่ซ่อม</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {mechanics.map((mechanic) => (
-                        <tr key={mechanic._id}>
-                            <td>{mechanic.name}</td>
-                            {/* <td>
-                                {
-                                    searchResults.filter((customer) =>
-                                        customer.mechanics.includes(mechanic._id)
-                                    ).length
-                                }
-                            </td> */}
-                            
-                                <ul>
-                                    {Object.entries(countServicesByMechanic(mechanic._id)).map(
-                                        ([serviceName, count]) => (
-                                            <li key={serviceName}>
-                                                <td>{serviceName}</td>
-                                                <td>{count}</td>
-                                                <button onClick={() => toggleServiceDetails(serviceName)}>
-                                                    {showServiceDetails[serviceName] ? "ซ่อนรายละเอียด" : "แสดงรายละเอียด"}
-                                                </button>
-                                                {showServiceDetails[serviceName] && (
-                                                    <ul>
-                                                        {Object.entries(getServiceCountsByCarModel(mechanic._id, serviceName)).map(
-                                                            ([carModel, carModelCount]) => (
-                                                                <li key={carModel}>
-                                                                    <td>{carModel}</td>
-                                                                     <td>{carModelCount}</td> 
-                                                                </li>
-                                                            )
-                                                        )}
-                                                    </ul>
-                                                )}
-                                            </li>
-                                        )
-                                    )}
-                                </ul>
+            <div className="reportmechanic-head">
+                สรุปการทำงานของช่าง
+            </div>
+
+            <div className="reportmechanic-table-container">
+                <table className="reportmechanic-table">
+                    <thead>
+                        <tr>
+                            <th>ช่าง</th>
+                            <th>รายการซ่อม</th>
+                            <th>จำนวน</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        {mechanics.map((mechanic) => {
+                            const services = countServicesByMechanic(mechanic._id);
+
+                            return (
+                                <React.Fragment key={mechanic._id}>
+                                    {Object.keys(services).map((serviceName, index) => {
+                                        const carModelCounts = Object.entries(getServiceCountsByCarModel(mechanic._id, serviceName));
+                                        const serviceTotal = carModelCounts.reduce((acc, [carModel, carModelCount]) => acc + carModelCount, 0);
+
+                                        return (
+                                            <tr key={`${mechanic._id}-${serviceName}`}>
+                                                {index === 0 && <td rowSpan={Object.keys(services).length}>{mechanic.name}</td>}
+                                                <td style={{textAlign: "left"}}>
+                                                    {serviceName}
+                                                    <img
+                                                        onClick={() => toggleServiceDetailsByMechanic(mechanic._id, serviceName)}
+                                                        src='./assets/image/down-arrow.png'
+                                                    />
+                                                    {showServiceDetailsByMechanic[mechanic._id]?.[serviceName] && (
+                                                        <div>
+                                                            {carModelCounts.map(([carModel, carModelCount]) => (
+                                                                <table className="reportmechanic-subrow">
+                                                                    <tr key={carModel}>
+                                                                        <td style={{paddingLeft: "20px"}}>{carModel}</td>
+                                                                        <td style={{ width: "10%" }}>{carModelCount}</td>
+                                                                    </tr>
+                                                                </table>
+
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </td>
+                                                <td>{serviceTotal}</td>
+                                            </tr>
+                                        );
+                                    })}
+                                </React.Fragment>
+                            );
+                        })}
+                    </tbody>
+                </table>;
+
+            </div>
+
+
+        </div >
     );
 }
 

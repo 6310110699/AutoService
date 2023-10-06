@@ -51,61 +51,126 @@
         }
     }
 
-    .report-table-container {
+    .reportrepair-table-container {
         display: flex;
         justify-content: center;
-        margin-top: 50px;
+        margin-top: 10px;
+        padding-bottom: 50px;
 
         .reportrepair-table {
-        width: 50%;
-        font-size: 18px;
+            width: 60%;
+            font-size: 18px;
 
-        th {
-            text-align: center;
-            border: 1px solid black;
-            background-color: $third-color;
-            color: $second-color;
-            padding: 10px;
-        }
-
-        td {
-            border: 1px solid black;
-            background-color: $fourteenth-color;
-        }
-
-        td:last-child {
-            width: 20%;
-            text-align: center;
-        }
-
-        .reportrepair-subrow {
-            width: 100%;
-
-            td {
-                border-top: none;
-                border-left: none;
+            th {
+                text-align: center;
+                border: 1px solid black;
+                background-color: $third-color;
+                color: $second-color;
+                padding: 10px;
             }
 
-            td:first-child {
-                padding-left: 50px;
-                text-align: left;
+            td {
+                border: 1px solid black;
+                background-color: $fourteenth-color;
             }
 
             td:last-child {
-                border-right: none;
+                width: 20%;
+                text-align: center;
             }
 
-            tr:last-child {
-                border-bottom: none;
+            .reportrepair-subrow {
+                width: 100%;
+
+                td {
+                    border-top: none;
+                    border-left: none;
+                    background-color: $second-color;
+                }
+
+                td:first-child {
+                    padding-left: 50px;
+                    text-align: left;
+                }
+
+                td:last-child {
+                    border-right: none;
+                    border-bottom: none;
+                    border-top: none;
+                }
+            }
+
+            img {
+                width: 30px;
             }
         }
+    }
 
-        img {
-            width: 30px;
-            text-align: right;
+    .reportmechanic-table-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+        padding-bottom: 50px;
+
+        .reportmechanic-table {
+            width: 60%;
+            font-size: 18px;
+
+            th {
+                text-align: center;
+                border: 1px solid black;
+                background-color: $third-color;
+                color: $second-color;
+                padding: 10px;
+            }
+
+            td {
+                border: 1px solid black;
+                background-color: $fourteenth-color;
+                width: 50%;
+            }
+
+            td:first-child {
+                width: 30%;
+                text-align: center;
+            }
+
+            td:last-child {
+                width: 20%;
+                text-align: center;
+            }
+
+            .reportmechanic-subrow {
+                width: 100%;
+
+                td {
+                    border-bottom: none;
+                    border-left: none;
+                    border-right: none;
+                    background-color: $second-color;
+                    text-align: left;
+                }
+
+                td:last-child {
+                    border-left: 1px solid black;
+                    text-align: center;
+                }
+            }
+
+            img {
+                width: 30px;
+            }
         }
     }
+
+    .reportmechanic-head {
+        text-align: center;
+        font-size: 25px;
     }
 
-    
+    .reportrepair-head {
+        text-align: center;
+        font-size: 25px;
+        margin-top: 50px;
+    }
 }

@@ -124,13 +124,15 @@ const SelectServiceModal = ({
                                     <input
                                       type="number"
                                       value={selectedSparePartId.quantity}
-                                      onChange={(e) => handleQuantityChange(selectedService._id, selectedSparePartId.sparePartId, e.target.value)}
+                                      onChange={(e) =>
+                                        handleQuantityChange(selectedService._id, selectedSparePartId.sparePartId, e.target.value)}
                                     />
                                   </td>
                                   <td className='selectservice-price'>
                                     {sparePart.sparePrice}
                                   </td>
-                                  <td className='delete-spare' onClick={() => handleDeleteSparePart(selectedService._id, sparePart._id)}>
+                                  <td className='delete-spare' onClick={() =>
+                                    handleDeleteSparePart(selectedService._id, sparePart._id)}>
                                     <img src='./assets/image/bin.png' />
                                   </td>
                                 </tr>

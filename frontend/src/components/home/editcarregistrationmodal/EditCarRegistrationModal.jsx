@@ -10,6 +10,8 @@ const EditCarRegistrationModal = ({
   numPlate,
   lineId,
   brand,
+  customBrand,
+  setCustomBrand,
   brandmodels,
   customerName,
   selectedModel,

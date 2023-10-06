@@ -122,7 +122,9 @@ function History() {
                 {searchResults.map((customer) => (
                     <div className="history-customer row" onClick={() => navigateToReceipt(customer._id)} key={customer._id}>
                         <div className="col col-8">
-                            <div className="history-detail">{customer.car.brand} {customer.car.selectedModel} {customer.car.color} {customer.car.numPlate}</div>
+                            <div className="history-detail">
+                                {customer.car.brand} {customer.car.selectedModel} {customer.car.color} {customer.car.numPlate}
+                            </div>
                             <div>รายการซ่อม :
                                 {customer.services.map((service, serviceIndex) => (
                                     <div className="history-repair" key={serviceIndex}>

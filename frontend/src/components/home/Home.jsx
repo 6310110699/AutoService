@@ -603,32 +603,25 @@ const Repair = () => {
                 <td className="repair-car" onClick={() => handleEditStatus(customer)}>
                   {customer.car.brand} {customer.car.selectedModel} {customer.car.selectedColor} {customer.car.numPlate}
                 </td>
-
                 <td className="repait-edit">
                   <img onClick={() => handleEditCustomer(customer)} src='./assets/image/edit.png' />
                 </td>
-
                 <td className="repait-service" onClick={() => handleEditRepairCar(customer)}>
                   รายการซ่อม
                 </td>
-
                 <td className="repair-pay" onClick={() => handleToReceipt(customer._id)}>
                   ใบเสร็จ
                 </td>
-
                 <td className='repair-mechanic' onClick={() => handleEditMecanics(customer)}>
                   ช่าง
                 </td>
-
                 <td className='delete-carregis' onClick={() => handleShowConfirmDeleteCarModal(customer)}>
                   <img src='./assets/image/bin.png' />
                 </td>
-
               </tr>
             ))}
         </tbody>
       </table>
-
       <Link to="/carregis">
         <div className='carregis-button'>
           ลงทะเบียนรถ
@@ -668,6 +661,8 @@ const Repair = () => {
         numPlate={numPlate}
         lineId={lineId}
         brand={brand}
+        customBrand={customBrand}
+        setCustomBrand={setCustomBrand}
         brandmodels={brandmodels}
         customerName={customerName}
         selectedModel={selectedModel}
