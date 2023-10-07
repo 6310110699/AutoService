@@ -1,10 +1,39 @@
-@import "../../../assets/styles";
+@import "../../assets/styles";
 
-.statusmodal {
+.startpage {
+    .no-result {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 175px;
+        font-size: 50px;
+    }
+
+    .search-bar {
+        input {
+            margin: 30px;
+            width: 400px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .search-button {
+            display: inline-block;
+            width: 120px;
+            background-color: $fifth-color;
+            border-radius: 15px;
+            padding: 10px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    }
+
     .status-header-container {
         display: flex;
         justify-content: center;
-        margin: 15px;
+        margin: 10px;
 
         .status-header {
             width: 450px;
@@ -22,6 +51,11 @@
 
         .col-2 {
             width: 20%;
+        }
+
+        .status-image-container {
+            display: flex;
+            justify-content: center;
         }
 
         .status {
@@ -83,6 +117,7 @@
             font-size: 20px;
             font-weight: 500;
             margin-top: 20px;
+            // display: inline-block;
         }
 
         .statebutton-container {
@@ -99,7 +134,6 @@
                 border-radius: 10px;
                 font-size: 20px;
                 font-weight: 500;
-                cursor: pointer;
             }
 
             .button-false {
@@ -111,38 +145,7 @@
                 border-radius: 10px;
                 font-size: 20px;
                 font-weight: 500;
-                cursor: pointer;
             }
-        }
-    }
-
-    .modal-footer {
-        justify-content: center;
-
-        .button-no {
-            width: 150px;
-            padding: 10px;
-            border-radius: 25px;
-            background-color: $eighth-color;
-            color: $second-color;
-            text-align: center;
-            margin: 10px;
-            font-size: 18px;
-            display: inline-block;
-            cursor: pointer;
-        }
-
-        .button-yes {
-            width: 150px;
-            padding: 10px;
-            border-radius: 25px;
-            background-color: $sixth-color;
-            color: $second-color;
-            text-align: center;
-            margin: 10px;
-            font-size: 18px;
-            display: inline-block;
-            cursor: pointer;
         }
     }
 }

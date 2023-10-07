@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import './SpareManagement.scss';
-import Select from 'react-select';
+// import Select from 'react-select';
 
 const SpareManagement = () => {
     const [spares, setSpares] = useState([]);
     const [spareName, setSpareName] = useState('');
     const [spareType, setSpareType] = useState('');
     const [sparePrice, setSparePrice] = useState('');
-    const [selectedModels, setSelectedModels] = useState([]);
-    const [compatibleCarModels, setCompatibleCarModels] = useState([]);
-    const [modelsByCategory, setModelsByCategory] = useState([]);
+    // const [selectedModels, setSelectedModels] = useState([]);
+    // const [compatibleCarModels, setCompatibleCarModels] = useState([]);
+    // const [modelsByCategory, setModelsByCategory] = useState([]);
 
     const [editingSpareId, setEditingSpareId] = useState(null);
     const [message, setMessage] = useState('');
@@ -26,7 +26,7 @@ const SpareManagement = () => {
 
     useEffect(() => {
         loadSpares();
-        loadCompatibleCarModels();
+        // loadCompatibleCarModels();
     }, []);
 
     const loadSpares = async () => {
@@ -40,34 +40,34 @@ const SpareManagement = () => {
         }
     };
 
-    const loadCompatibleCarModels = async () => {
-        try {
-            const response = await axios.get('http://localhost:3001/brandmodels');
-            const modelsData = response.data;
+    // const loadCompatibleCarModels = async () => {
+    //     try {
+    //         const response = await axios.get('http://localhost:3001/brandmodels');
+    //         const modelsData = response.data;
 
-            // Group spares by category
-            const modelsGroupedByCategory = {};
-            modelsData.forEach((model) => {
-                if (!modelsGroupedByCategory[model.brand]) {
-                    modelsGroupedByCategory[model.brand] = [];
-                }
-                modelsGroupedByCategory[model.brand].push(model);
-            });
+    //         // Group spares by category
+    //         const modelsGroupedByCategory = {};
+    //         modelsData.forEach((model) => {
+    //             if (!modelsGroupedByCategory[model.brand]) {
+    //                 modelsGroupedByCategory[model.brand] = [];
+    //             }
+    //             modelsGroupedByCategory[model.brand].push(model);
+    //         });
 
-            // Convert the grouped data into an array
-            const modelsByCategory = Object.keys(modelsGroupedByCategory).map((brand) => ({
-                categoryName: brand,
-                compatibleCarModels: modelsGroupedByCategory[brand],
-            }));
+    //         // Convert the grouped data into an array
+    //         const modelsByCategory = Object.keys(modelsGroupedByCategory).map((brand) => ({
+    //             categoryName: brand,
+    //             compatibleCarModels: modelsGroupedByCategory[brand],
+    //         }));
 
-            setModelsByCategory(modelsByCategory);
-            setCompatibleCarModels(response.data);
-            setMessage('');
-        } catch (error) {
-            console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลรุ่นรถ:', error);
-            setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลรุ่นรถ');
-        }
-    };
+    //         setModelsByCategory(modelsByCategory);
+    //         setCompatibleCarModels(response.data);
+    //         setMessage('');
+    //     } catch (error) {
+    //         console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลรุ่นรถ:', error);
+    //         setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลรุ่นรถ');
+    //     }
+    // };
 
     const handleAddSpare = async () => {
         try {
@@ -75,7 +75,7 @@ const SpareManagement = () => {
                 spareName,
                 spareType,
                 sparePrice,
-                compatibleCarModels: selectedModels,
+                // compatibleCarModels: selectedModels,
             });
             loadSpares();
             clearForm();
@@ -91,7 +91,7 @@ const SpareManagement = () => {
                 spareName,
                 spareType,
                 sparePrice,
-                compatibleCarModels: selectedModels,
+                // compatibleCarModels: selectedModels,
             });
             loadSpares();
             clearForm();
@@ -121,7 +121,7 @@ const SpareManagement = () => {
         setSpareName('');
         setSpareType('');
         setSparePrice('');
-        setSelectedModels([]);
+        // setSelectedModels([]);
         setEditingSpareId(null);
         setMessage('');
     };
@@ -132,12 +132,12 @@ const SpareManagement = () => {
         setSpareName(spare.spareName);
         setSpareType(spare.spareType)
         setSparePrice(spare.sparePrice);
-        setSelectedModels(spare.compatibleCarModels);
+        // setSelectedModels(spare.compatibleCarModels);
         setEditingSpareId(spare._id);
     };
 
     return (
-        <div className=''>
+        <div>
             <div className='sparemanagement-title'>
                 จัดการข้อมูลอะไหล่
             </div>
@@ -165,7 +165,7 @@ const SpareManagement = () => {
                     onChange={(e) => setSparePrice(e.target.value)}
                 />
 
-                <label>รุ่นรถที่ใช้ได้:</label>
+                {/* <label>รุ่นรถที่ใช้ได้:</label>
                 <Select
                     isMulti
                     styles={{
@@ -202,7 +202,7 @@ const SpareManagement = () => {
                     onChange={(selectedOptions) =>
                         setSelectedModels(selectedOptions.map((option) => option.value))
                     }
-                />
+                /> */}
 
                 {message &&
                     <div className='error-form'>
@@ -248,7 +248,7 @@ const SpareManagement = () => {
                             <tr key={spare._id}>
                                 <td>{spare.spareName}</td>
                                 <td>{spare.spareType}</td>
-                                <td>
+                                {/* <td>
                                     {spare.compatibleCarModels.map((modelId) => {
                                         const model = compatibleCarModels.find((model) => model._id === modelId);
                                         return (
@@ -257,7 +257,7 @@ const SpareManagement = () => {
                                             </div>
                                         );
                                     })}
-                                </td>
+                                </td> */}
                                 <td>{spare.sparePrice}</td>
                                 <td>
                                     <button ref={editButtonRef} className='edit-button' onClick={() => handleEditSpare(spare)}>แก้ไข</button>

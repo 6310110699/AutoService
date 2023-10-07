@@ -5,10 +5,10 @@ const serviceSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  spares: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Spare',
-  }],
+  // spares: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Spare',
+  // }],
 });
 
 const Service = mongoose.model('Service', serviceSchema);

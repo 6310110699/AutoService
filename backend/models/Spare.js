@@ -14,10 +14,10 @@ const spareSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  compatibleCarModels: [{
-    type: String, // เปลี่ยนเป็น String
-    required: true,
-  }],
+  // compatibleCarModels: [{
+  //   type: String, // เปลี่ยนเป็น String
+  //   required: true,
+  // }],
 });
 
 const Spare = mongoose.model('Spare', spareSchema);

@@ -14,7 +14,10 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { serviceName, spares } = req.body;
+    const { 
+      serviceName, 
+      // spares 
+    } = req.body;
 
     const existingService = await Service.findOne({ serviceName });
 
@@ -24,7 +27,7 @@ router.post('/', async (req, res) => {
 
     const newService = await Service.create({
       serviceName,
-      spares,
+      // spares,
     });
 
     res.status(201).json(newService);
@@ -37,7 +40,10 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { serviceName, spares } = req.body;
+    const { 
+      serviceName, 
+      // spares 
+    } = req.body;
 
     const existingService = await Service.findOne({ $and: [{ _id: { $ne: id } }, { serviceName }] });
 
@@ -49,7 +55,7 @@ router.put('/:id', async (req, res) => {
       id,
       {
         serviceName,
-        spares,
+        // spares,
       },
       { new: true, useFindAndModify: false }
     );

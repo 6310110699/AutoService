@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Select from 'react-select';
+// import Select from 'react-select';
 import './ServiceManagement.scss';
 
 const ServiceManagement = () => {
   const [services, setServices] = useState([]);
   const [serviceName, setServiceName] = useState('');
-  const [selectedSpares, setSelectedSpares] = useState([]);
-  const [spares, setSpares] = useState([]);
-  const [sparesByCategory, setSparesByCategory] = useState([]);
-  const [sparePrices, setSparePrices] = useState({});
+  // const [selectedSpares, setSelectedSpares] = useState([]);
+  // const [spares, setSpares] = useState([]);
+  // const [sparesByCategory, setSparesByCategory] = useState([]);
+  // const [sparePrices, setSparePrices] = useState({});
   
   const [editingServiceId, setEditingServiceId] = useState(null);
   const [message, setMessage] = useState('');
@@ -22,8 +22,8 @@ const ServiceManagement = () => {
 
   useEffect(() => {
     loadServices();
-    loadSpares();
-    loadSparePrices();
+    // loadSpares();
+    // loadSparePrices();
   }, []);
 
   const loadServices = async () => {
@@ -37,55 +37,55 @@ const ServiceManagement = () => {
     }
   };
 
-  const loadSpares = async () => {
-    try {
-      const response = await axios.get('http://localhost:3001/spares');
-      const sparesData = response.data;
+  // const loadSpares = async () => {
+  //   try {
+  //     const response = await axios.get('http://localhost:3001/spares');
+  //     const sparesData = response.data;
 
-      // Group spares by category
-      const sparesGroupedByCategory = {};
-      sparesData.forEach((spare) => {
-        if (!sparesGroupedByCategory[spare.spareType]) {
-          sparesGroupedByCategory[spare.spareType] = [];
-        }
-        sparesGroupedByCategory[spare.spareType].push(spare);
-      });
+  //     // Group spares by category
+  //     const sparesGroupedByCategory = {};
+  //     sparesData.forEach((spare) => {
+  //       if (!sparesGroupedByCategory[spare.spareType]) {
+  //         sparesGroupedByCategory[spare.spareType] = [];
+  //       }
+  //       sparesGroupedByCategory[spare.spareType].push(spare);
+  //     });
 
-      // Convert the grouped data into an array
-      const sparesByCategory = Object.keys(sparesGroupedByCategory).map((spareType) => ({
-        categoryName: spareType,
-        spares: sparesGroupedByCategory[spareType],
-      }));
+  //     // Convert the grouped data into an array
+  //     const sparesByCategory = Object.keys(sparesGroupedByCategory).map((spareType) => ({
+  //       categoryName: spareType,
+  //       spares: sparesGroupedByCategory[spareType],
+  //     }));
 
-      setSparesByCategory(sparesByCategory);
-      setSpares(response.data);
-      setMessage('');
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลอะไหล่:', error);
-      setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลอะไหล่');
-    }
-  };
+  //     setSparesByCategory(sparesByCategory);
+  //     setSpares(response.data);
+  //     setMessage('');
+  //   } catch (error) {
+  //     console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลอะไหล่:', error);
+  //     setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลอะไหล่');
+  //   }
+  // };
 
-  const loadSparePrices = async () => {
-    try {
-      const response = await axios.get('http://localhost:3001/spares');
-      const prices = {};
-      response.data.forEach((spare) => {
-        prices[spare._id] = spare.sparePrice;
-      });
-      setSparePrices(prices);
-      setMessage('');
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลราคาอะไหล่:', error);
-      setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลราคาอะไหล่');
-    }
-  };
+  // const loadSparePrices = async () => {
+  //   try {
+  //     const response = await axios.get('http://localhost:3001/spares');
+  //     const prices = {};
+  //     response.data.forEach((spare) => {
+  //       prices[spare._id] = spare.sparePrice;
+  //     });
+  //     setSparePrices(prices);
+  //     setMessage('');
+  //   } catch (error) {
+  //     console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลราคาอะไหล่:', error);
+  //     setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลราคาอะไหล่');
+  //   }
+  // };
 
   const handleAddService = async () => {
     try {
       await axios.post('http://localhost:3001/services', {
         serviceName,
-        spares: selectedSpares,
+        // spares: selectedSpares,
       });
       loadServices();
       clearForm();
@@ -99,7 +99,7 @@ const ServiceManagement = () => {
     try {
       await axios.put(`http://localhost:3001/services/${editingServiceId}`, {
         serviceName,
-        spares: selectedSpares,
+        // spares: selectedSpares,
       });
       loadServices();
       clearForm();
@@ -123,7 +123,7 @@ const ServiceManagement = () => {
 
   const clearForm = () => {
     setServiceName('');
-    setSelectedSpares([]);
+    // setSelectedSpares([]);
     setEditingServiceId(null);
     setMessage('');
   };
@@ -131,7 +131,7 @@ const ServiceManagement = () => {
 
   const handleEditService = (service) => {
     setServiceName(service.serviceName);
-    setSelectedSpares(service.spares);
+    // setSelectedSpares(service.spares);
     setEditingServiceId(service._id);
   };
 
@@ -150,7 +150,7 @@ const ServiceManagement = () => {
           value={serviceName}
           onChange={(e) => setServiceName(e.target.value)}
         />
-        <label>อะไหล่ที่ใช้ในบริการ:</label>
+        {/* <label>อะไหล่ที่ใช้ในบริการ:</label>
         <Select
           isMulti
           styles={{
@@ -187,7 +187,7 @@ const ServiceManagement = () => {
           onChange={(selectedOptions) =>
             setSelectedSpares(selectedOptions.map((option) => option.value))
           }
-        />
+        /> */}
 
         {message &&
           <div className='error-form'>
@@ -222,8 +222,8 @@ const ServiceManagement = () => {
           <thead>
             <tr>
               <th>ชื่อบริการ</th>
-              <th>อะไหล่ที่ใช้ในบริการ</th>
-              <th>ราคา</th>
+              {/* <th>อะไหล่ที่ใช้ในบริการ</th>
+              <th>ราคา</th> */}
               <th>การดำเนินการ</th>
             </tr>
           </thead>
@@ -231,7 +231,7 @@ const ServiceManagement = () => {
             {filteredServices.map((service) => (
               <tr key={service._id}>
                 <td>{service.serviceName}</td>
-                <td>
+                {/* <td>
                   {service.spares.map((spareId) => {
                     const spare = spares.find((spare) => spare._id === spareId);
                     return (
@@ -250,7 +250,7 @@ const ServiceManagement = () => {
                       </div>
                     );
                   })}
-                </td>
+                </td> */}
                 <td>
                   <button className='edit-button' onClick={() => handleEditService(service)}>แก้ไข</button>
                   <button className='delete-button' onClick={() => handleDeleteService(service._id)}>ลบ</button>
