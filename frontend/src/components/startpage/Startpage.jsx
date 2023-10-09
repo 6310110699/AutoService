@@ -95,7 +95,7 @@ const StartPage = () => {
                     </div>
                     <div className='state-label'>หาอะไหล่</div>
                     <div className='statebutton-container'>
-                      <div className={`state ${customer.status.state13 ? "button-true" : "button-false"}`}>เรียบร้อย</div>
+                      <div className={`state ${customer.status.state3 ? "button-true" : "button-false"}`}>เรียบร้อย</div>
                     </div>
                   </div>
                   <div className="state col col-2">
