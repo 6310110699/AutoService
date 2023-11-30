@@ -6,7 +6,7 @@ import axios from 'axios'
 function Signup() {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [role, setRole] = useState('employee')
+    // const [role, setRole] = useState('employee')
     const [message, setMessage] = useState('')
 
     const navigate = useNavigate()
@@ -15,7 +15,9 @@ function Signup() {
         e.preventDefault()
         axios.post('http://localhost:3001/register',
             {
-                username, password, role
+                username, 
+                password, 
+                // role
             })
             .then(result => {
                 setMessage('ลงทะเบียนผู้ใช้งานสำเร็จ')
@@ -51,7 +53,7 @@ function Signup() {
                         className="form-control"
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <label htmlFor="role">
+                    {/* <label htmlFor="role">
                         <strong>Role</strong>
                     </label>
                     <select
@@ -62,7 +64,7 @@ function Signup() {
                     >
                         <option value="employee">Employee</option>
                         <option value="boss">Boss</option>
-                    </select>
+                    </select> */}
                     <div className="error-form">{message}</div>
                     <button type="submit" className="button-register">
                         Register

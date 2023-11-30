@@ -373,8 +373,6 @@ const Repair = () => {
             }
             return null;
           }) || [];
-
-          // กรองค่า null ที่อาจเกิดขึ้นจาก spareParts.find
           return {
             serviceName: serviceId,
             spareParts: sparePartsData.filter((part) => part !== null),

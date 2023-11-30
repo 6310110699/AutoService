@@ -23,9 +23,11 @@ const StartPage = () => {
   const handleSearch = () => {
     if (searchQuery.length === 10) {
       const filteredResults = customers.filter((customer) =>
-        customer.customer.phoneNumber.includes(searchQuery)
+        customer.customer.phoneNumber.includes(searchQuery) &&
+        !customer.status.state5
       );
       setSearchResults(filteredResults);
+      loadCustomers();
     } else {
       setSearchResults([]);
     }
@@ -126,6 +128,12 @@ const StartPage = () => {
                       <div className={`state ${customer.status.state5 ? "button-true" : "button-false"}`}>เรียบร้อย</div>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div className="status-price-container">
+                <div className="">
+                  ราคาโดยประมาณ {customer.totalCost} บาท
                 </div>
               </div>
             </div>

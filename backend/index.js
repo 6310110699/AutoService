@@ -33,13 +33,12 @@ app.post('/login', (req, res) => {
                         res.status(500).json({ message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ" });
                     }
                     else if (isMatch) {
-                        // หากรหัสผ่านถูกต้อง สร้าง Token และส่งกลับไปให้ Client
                         const token = jwt.sign({ username: user.username }, secretKey);
-                        res.cookie("token", token, {
-                            httpOnly: true,
-                            sameSite: 'strict',
-                            maxAge: 24 * 60 * 60 * 1000, // 1 วัน (หน่วยเป็นมิลลิวินาที)
-                        });
+                        // res.cookie("token", token, {
+                        //     httpOnly: true,
+                        //     sameSite: 'strict',
+                        //     maxAge: 24 * 60 * 60 * 1000, 
+                        // });
                         res.status(200).json({ message: "เข้าสู่ระบบสำเร็จ", token });
                     }
                     else {
@@ -56,7 +55,11 @@ app.post('/login', (req, res) => {
         });
 });
 app.post('/register', (req, res) => {
-    const { username, password, role } = req.body;
+    const { 
+        username, 
+        password,
+        // role 
+    } = req.body;
     if (password.length < 8) {
         res.status(400).json({ message: "รหัสผ่านต้องมีอย่างน้อย 8 ตัว" })
     }
@@ -66,7 +69,11 @@ app.post('/register', (req, res) => {
                 res.status(500).json({ message: "เกิดข้อผิดพลาดในการลงทะเบียน" });
             }
             else {
-                userModel.create({ username, password: hashedPassword, role })
+                userModel.create({ 
+                    username, 
+                    password: hashedPassword, 
+                    // role 
+                })
                     .then(user => {
                         res.status(201).json({ message: "ลงทะเบียนผู้ใช้งานสำเร็จ" });
                     })

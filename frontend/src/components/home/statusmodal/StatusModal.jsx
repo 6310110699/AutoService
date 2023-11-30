@@ -157,6 +157,14 @@ const StatusModal = ({
             </div>
           </div>
         </div>
+
+        <div className="status-price-container">
+          {selectedCustomerStatus && (
+            <div className="">
+              ราคาโดยประมาณ {selectedCustomerStatus.totalCost} บาท
+            </div>
+          )}
+        </div>
       </Modal.Body>
       <Modal.Footer>
         <div

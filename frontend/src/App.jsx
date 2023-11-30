@@ -18,7 +18,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('token') !== null);
 
   const handleLogout = () => {
-    localStorage.removeItem('role');
+    // localStorage.removeItem('role');
     localStorage.removeItem('token');
     setIsLoggedIn(false);
   };

@@ -33,7 +33,6 @@
     .status-header-container {
         display: flex;
         justify-content: center;
-        margin: 10px;
 
         .status-header {
             width: 450px;
@@ -47,7 +46,7 @@
     }
 
     .status-container {
-        margin: 40px 0px 20px 0px;
+        margin: 20px 0px 20px 0px;
 
         .col-2 {
             width: 20%;
@@ -147,5 +146,13 @@
                 font-weight: 500;
             }
         }
+    }
+
+    .status-price-container {
+        display: flex;
+        justify-content: center;
+        font-size: 30px;
+        margin-top: 30px;
+        margin-bottom: 10px;
     }
 }

@@ -8,6 +8,7 @@ function History() {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [searchResults, setSearchResults] = useState([]);
+    const [numPlate, setNumPlate] = useState("");
 
     useEffect(() => {
         loadCustomers();
@@ -53,13 +54,18 @@ function History() {
     const endDateObject = new Date(`${endDate}T23:59:59`);
 
     const filterAndSortCustomers = () => {
-
         const filteredAndSortedCustomers = customers
             .filter((customer) => {
                 const customerEndDate = new Date(customer.enddate);
+                const currentDate = new Date(); // เวลาปัจจุบัน
+
+                const isWithinDateRange =
+                    (!startDate || customerEndDate >= startDateObject) &&
+                    (!endDate || customerEndDate <= endDateObject); // ตรวจสอบว่าอยู่ในช่วงวันที่หรือไม่
+
                 return (
-                    customerEndDate >= startDateObject &&
-                    customerEndDate <= endDateObject &&
+                    isWithinDateRange &&
+                    (!numPlate || customer.car.numPlate.includes(numPlate)) && // ตรวจสอบเลขทะเบียน
                     customer.status.state5
                 );
             })
@@ -75,8 +81,10 @@ function History() {
     const toggleShowAll = () => {
         setStartDate("");
         setEndDate("");
+        setNumPlate("");
         const allCustomersFiltered = customers.filter(
-            (customer) => customer.status.state5
+            (customer) =>
+                customer.status.state5
         );
         const sortedAllCustomers = allCustomersFiltered.sort((a, b) => {
             const dateA = new Date(a.enddate);
@@ -90,42 +98,61 @@ function History() {
     return (
         <div className="history">
             <div className="history-head">
-                <div className="history-history">
-                    ประวัติการซ่อม
-                </div>
+                <div className="history-history">ประวัติการซ่อม</div>
             </div>
 
             <div className="history-filter">
-                <label htmlFor="startDateSelect">เลือกวันเริ่มต้น : </label>
-                <input
-                    type="date"
-                    id="startDateSelect"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                />
-                <label htmlFor="endDateSelect">เลือกวันสิ้นสุด : </label>
-                <input
-                    type="date"
-                    id="endDateSelect"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                />
+                <div className="row">
+                    <div className="col col-4">
+                        <label htmlFor="numPlateInput">ค้นหาด้วยป้ายทะเบียน : </label>
+                        <input
+                            type="text"
+                            id="numPlateInput"
+                            value={numPlate}
+                            onChange={(e) => setNumPlate(e.target.value)}
+                        />
+                    </div>
+                    <div className="col col-4">
+                        <label htmlFor="startDateSelect">วันเริ่มต้น : </label>
+                        <input
+                            type="date"
+                            id="startDateSelect"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                        />
+                    </div>
+                    <div className="col col-4">
+                        <label htmlFor="endDateSelect">วันสิ้นสุด : </label>
+                        <input
+                            type="date"
+                            id="endDateSelect"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                        />
+                    </div>
+                </div>
                 <div className="history-filterbutton" onClick={filterAndSortCustomers}>
-                    ยืนยัน
+                    ค้นหา
                 </div>
                 <div className="history-filterbutton" onClick={toggleShowAll}>
-                    แสดงทั้งหมด
+                    ทั้งหมด
                 </div>
             </div>
 
             <div className="history-item">
                 {searchResults.map((customer) => (
-                    <div className="history-customer row" onClick={() => navigateToReceipt(customer._id)} key={customer._id}>
+                    <div
+                        className="history-customer row"
+                        onClick={() => navigateToReceipt(customer._id)}
+                        key={customer._id}
+                    >
                         <div className="col col-8">
                             <div className="history-detail">
-                                {customer.car.brand} {customer.car.selectedModel} {customer.car.color} {customer.car.numPlate}
+                                {customer.car.brand} {customer.car.selectedModel}{" "}
+                                {customer.car.color} {customer.car.numPlate}
                             </div>
-                            <div>รายการซ่อม :
+                            <div>
+                                รายการซ่อม :
                                 {customer.services.map((service, serviceIndex) => (
                                     <div className="history-repair" key={serviceIndex}>
                                         {getServiceNameById(service.serviceName)}
