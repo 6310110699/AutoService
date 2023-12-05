@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
   try {
     const { name, nickname, phone, subdistrict, district, province } = req.body;
 
-    const existingEmployee = await Employee.findOne({ $or: [{ name }, { nickname }] });
+    const existingEmployee = await Employee.findOne({ name });
 
     if (existingEmployee) {
       return res.status(400).json({ message: 'ชื่อหรือชื่อเล่นนี้ถูกใช้งานแล้ว' });
@@ -42,7 +42,7 @@ router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const { name, nickname, phone, subdistrict, district, province } = req.body;
 
-    const existingEmployee = await Employee.findOne({ $and: [{ _id: { $ne: id } }, { $or: [{ name }, { nickname }] }] });
+    const existingEmployee = await Employee.findOne({ $and: [{ _id: { $ne: id } }, { name }] });
 
     if (existingEmployee) {
       return res.status(400).json({ message: 'ชื่อหรือชื่อเล่นนี้ถูกใช้งานแล้ว' });

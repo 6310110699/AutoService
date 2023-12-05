@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import "./SelectMechanicModal.scss";
 
@@ -9,7 +10,8 @@ const SelectMechanicModal = ({
   selectedMechanics,
   handleSelectMechanic,
   handleAddMechanic,
-  editingCustomerId
+  editingCustomerId,
+  loadMechanics
 }) => {
 
   const [showConfirmCancelEditMechanicModal, setShowConfirmCancelEditMechanicModal] = useState(false);
@@ -17,7 +19,7 @@ const SelectMechanicModal = ({
   const [searchMechanic, setSearchMechanic] = useState('');
 
   const filteredMechanics = mechanics.filter((mechanic) => {
-    return mechanic.name.toLowerCase().includes(searchMechanic.toLowerCase()) 
+    return mechanic.name.toLowerCase().includes(searchMechanic.toLowerCase())
   });
 
   const handleConfirmCancelEditMechanicModalClose = () => {
@@ -27,6 +29,26 @@ const SelectMechanicModal = ({
   const handleCancelUpdateMechanic = () => {
     handleConfirmCancelEditMechanicModalClose();
     handleSelectMechanicModalClose();
+  };
+
+  const [name, setName] = useState('');
+
+  const handleAddOptionMechanic = async () => {
+    try {
+      await axios.post('http://localhost:3001/employees', {
+        name,
+        nickname: '',
+        phone: '',
+        subdistrict: '',
+        district: '',
+        province: '',
+      });
+
+      loadMechanics();
+      setName('');
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลช่าง:', error);
+    }
   };
 
   return (
@@ -57,7 +79,7 @@ const SelectMechanicModal = ({
             <ul className='mechanic-choice'>
               {filteredMechanics.map((mechanic) => (
                 <div key={mechanic._id} value={mechanic.name}>
-                  <span>
+                  <span className='input-checkbox'>
                     <input
                       type="checkbox"
                       checked={selectedMechanics.includes(mechanic._id)}
@@ -71,6 +93,21 @@ const SelectMechanicModal = ({
                   </span>
                 </div>
               ))}
+
+              <div className='addoption'>
+                <input
+                  type='text'
+                  placeholder='กรุณากรอกเพื่อเพิ่มตัวเลือกช่าง'
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <div
+                  onClick={handleAddOptionMechanic}
+                  className='addoption-button'
+                >
+                  เพิ่ม
+                </div>
+              </div>
             </ul>
           </div>
         </Modal.Body>

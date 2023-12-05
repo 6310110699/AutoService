@@ -8,7 +8,6 @@ const spareSchema = new mongoose.Schema({
   },
   spareType: {
     type: String,
-    required: true,
   },
   sparePrice: {
     type: Number,

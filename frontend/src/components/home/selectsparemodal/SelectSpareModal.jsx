@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import "./SelectSpareModal.scss";
 
@@ -9,7 +10,8 @@ const SelectSpareModal = ({
   handleSaveSpareParts,
   selectedSparePartsByService,
   currentStepServiceId,
-  handleSelectSparePart
+  handleSelectSparePart,
+  loadSpareParts
 }) => {
 
   const [showConfirmCancelEditSpareModal, setShowConfirmCancelEditSpareModal] = useState(false);
@@ -27,6 +29,25 @@ const SelectSpareModal = ({
   const handleCancelUpdateSpare = () => {
     handleConfirmCancelEditSpareModalClose();
     handleSelectSparePartModalClose();
+  };
+
+  const [spareName, setSpareName] = useState('');
+  const [sparePrice, setSparePrice] = useState('');
+
+  const handleAddOptionSpare = async () => {
+    try {
+      await axios.post('http://localhost:3001/spares', {
+        spareName,
+        sppareType: '',
+        sparePrice,
+      });
+
+      loadSpareParts();
+      setSpareName('');
+      setSparePrice('');
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลอะไหล่:', error);
+    }
   };
 
   return (
@@ -56,7 +77,7 @@ const SelectSpareModal = ({
           <ul className='spare-choice'>
             {filteredSpares.map((sparePart) => (
               <div key={sparePart._id}>
-                <span>
+                <span className='input-checkbox'>
                   <input
                     type="checkbox"
                     checked={selectedSparePartsByService[currentStepServiceId]?.some(sparePartData => sparePartData.sparePartId === sparePart._id)}
@@ -70,6 +91,27 @@ const SelectSpareModal = ({
                 </span>
               </div>
             ))}
+
+            <div className='addoption'>
+              <input
+                type='text'
+                placeholder='กรุณากรอกรุ่นอะไหล่'
+                value={spareName}
+                onChange={(e) => setSpareName(e.target.value)}
+              />
+              <input
+                type='number'
+                placeholder='กรุณากรอกราคา'
+                value={sparePrice}
+                onChange={(e) => setSparePrice(e.target.value)}
+              />
+              <div
+                onClick={handleAddOptionSpare}
+                className='addoption-button'
+              >
+                เพิ่ม
+              </div>
+            </div>
           </ul>
         </Modal.Body>
         <Modal.Footer>

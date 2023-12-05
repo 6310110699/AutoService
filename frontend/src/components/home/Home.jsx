@@ -708,6 +708,7 @@ const Repair = () => {
         setServiceFee={setServiceFee}
         handleAddService={handleAddService}
         editingCustomerId={editingCustomerId}
+        loadServices={loadServices}
       />
 
       <SelectSpareModal
@@ -718,6 +719,7 @@ const Repair = () => {
         selectedSparePartsByService={selectedSparePartsByService}
         currentStepServiceId={currentStepServiceId}
         handleSelectSparePart={handleSelectSparePart}
+        loadSpareParts={loadSpareParts}
       />
 
       <SelectMechanicModal
@@ -728,6 +730,7 @@ const Repair = () => {
         handleSelectMechanic={handleSelectMechanic}
         handleAddMechanic={handleAddMechanic}
         editingCustomerId={editingCustomerId}
+        loadMechanics={loadMechanics}
       />
 
       <StatusModal

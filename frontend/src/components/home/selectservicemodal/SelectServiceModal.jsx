@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import "./SelectServiceModal.scss";
 
@@ -19,7 +20,8 @@ const SelectServiceModal = ({
   handleDeleteSparePart,
   setServiceFee,
   handleAddService,
-  editingCustomerId
+  editingCustomerId,
+  loadServices
 }) => {
 
   const [showConfirmCancelEditServiceModal, setShowConfirmCancelEditServiceModal] = useState(false);
@@ -37,6 +39,21 @@ const SelectServiceModal = ({
   const handleCancelUpdateService = () => {
     handleConfirmCancelEditServiceModalClose();
     handleSelectServiceModalClose();
+  };
+
+  const [serviceName, setServiceName] = useState('');
+
+  const handleAddOptionService = async () => {
+    try {
+      await axios.post('http://localhost:3001/services', {
+        serviceName,
+      });
+
+      loadServices();
+      setServiceName("");
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลบริการ:', error);
+    }
   };
 
   return (
@@ -95,6 +112,21 @@ const SelectServiceModal = ({
                     </span>
                   </div>
                 ))}
+
+                <div className='addoption'>
+                  <input
+                    type='text'
+                    placeholder='กรุณากรอกเพื่อเพิ่มตัวเลือกบริการ'
+                    value={serviceName}
+                    onChange={(e) => setServiceName(e.target.value)}
+                  />
+                  <div
+                    onClick={handleAddOptionService}
+                    className='addoption-button'
+                  >
+                    เพิ่ม
+                  </div>
+                </div>
               </ul>
             </div>
           )}

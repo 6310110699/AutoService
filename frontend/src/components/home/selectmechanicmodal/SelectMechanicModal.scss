@@ -15,28 +15,54 @@
         .mechanic-choice {
             display: grid;
             grid-template-columns: 1fr 1fr;
-        }
 
-        input {
-            width: 30px;
-            height: 30px;
-        }
+            .input-checkbox {
+                input {
+                    width: 30px;
+                    height: 30px;
+                    cursor: pointer;
+                }
+            }
 
-        .mechanic-label {
-            display: inline-block;
-            margin: 10px 20px;
+            .mechanic-label {
+                display: inline-block;
+                margin: 10px 20px;
 
-        }
+                .mechanic-name {
+                    background-color: $nineth-color;
+                    height: 55px;
+                    width: 400px;
+                    font-size: 20px;
+                    font-weight: 500;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+            }
 
-        .mechanic-name {
-            background-color: $nineth-color;
-            height: 55px;
-            width: 400px;
-            font-size: 20px;
-            font-weight: 500;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            .addoption {
+                margin: 10px 50px;
+                
+                input {
+                    height: 55px;
+                    width: 300px;
+                    padding: 10px;
+                    border-radius: 5px;
+                }
+
+                .addoption-button {
+                    width: 90px;
+                    padding: 12px;
+                    font-size: 18px;
+                    margin-left: 10px;
+                    border-radius: 8px;
+                    text-align: center;
+                    color: $second-color;
+                    background-color: $fourth-color;
+                    display: inline-block;
+                    cursor: pointer;
+                }
+            }
         }
     }
 }

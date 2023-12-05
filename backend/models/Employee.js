@@ -8,25 +8,19 @@ const employeeSchema = new mongoose.Schema({
   },
   nickname: {
     type: String,
-    required: true,
-    unique: true
   },
   phone: {
     type: String,
-    required: true,
   },
   address: {
     subdistrict: {
       type: String,
-      required: true,
     },
     district: {
       type: String,
-      required: true,
     },
     province: {
       type: String,
-      required: true,
     },
   },
 });
