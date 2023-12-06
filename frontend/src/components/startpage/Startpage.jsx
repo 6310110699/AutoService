@@ -7,27 +7,30 @@ const StartPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
-  useEffect(() => {
-    loadCustomers();
-  }, []);
-
-  const loadCustomers = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/repairs");
-      setCustomers(response.data);
-    } catch (error) {
-      console.error("Error loading customer data:", error);
-    }
-  };
-
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchQuery.length === 10) {
-      const filteredResults = customers.filter((customer) =>
-        customer.customer.phoneNumber.includes(searchQuery) &&
-        !customer.status.state5
+      const filteredResults = customers.filter(
+        (customer) =>
+          customer.customer.phoneNumber.includes(searchQuery) &&
+          !customer.status.state5
       );
       setSearchResults(filteredResults);
-      loadCustomers();
+
+      // โหลดข้อมูลล่าสุดจาก API เมื่อค้นหาใหม่
+      try {
+        const response = await axios.get("http://localhost:3001/repairs");
+        setCustomers(response.data);
+
+        // อัปเดต searchResults ใหม่หลังจากโหลดข้อมูลใหม่
+        const updatedResults = response.data.filter(
+          (customer) =>
+            customer.customer.phoneNumber.includes(searchQuery) &&
+            !customer.status.state5
+        );
+        setSearchResults(updatedResults);
+      } catch (error) {
+        console.error("Error loading customer data:", error);
+      }
     } else {
       setSearchResults([]);
     }
