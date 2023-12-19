@@ -2,22 +2,22 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Report.scss";
 import ReportGraph from "./ReportGraph";
+import ReportCarGraph from "./ReportCarGraph";
 
 function Report() {
   const [customers, setCustomers] = useState([]);
   const [services, setServices] = useState([]);
   const [mechanics, setMechanics] = useState([]);
   const [showServiceDetailsByType, setShowServiceDetailsByType] = useState({});
-  const [showServiceDetailsByMechanic, setShowServiceDetailsByMechanic] =
-    useState({});
+  const [showServiceDetailsByMechanic, setShowServiceDetailsByMechanic] = useState({});
   const [dailyTotalCost, setDailyTotalCost] = useState({});
   const [dailyServiceFee, setDailyServiceFee] = useState({});
-
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchServiceResults, setSearchServiceResults] = useState([]);
   const [allCustomersFiltered, setAllCustomersFiltered] = useState([]);
+  const [carsWithoutEndDatePerDay, setCarsWithoutEndDatePerDay] = useState({});
 
   useEffect(() => {
     loadCustomers();
@@ -114,7 +114,7 @@ function Report() {
     searchServiceResults.forEach((customer) => {
       customer.services.forEach((service) => {
         const serviceInfo = getServiceNameById(service.serviceName);
-        const carInfo = `${customer.car.brand}` `${customer.car.selectedModel}`;
+        const carInfo = `${customer.car.brand} ${customer.car.selectedModel}`;
         if (serviceInfo === serviceName) {
           if (carModelCounts[carInfo]) {
             carModelCounts[carInfo]++;
@@ -143,6 +143,81 @@ function Report() {
 
     setSearchResults(filteredAndSortedCustomers);
     setSearchServiceResults(filteredAndSortedCustomers);
+
+    const carsBetweenDates = customers.filter((customer) => {
+      const customerStartDate = new Date(customer.startdate);
+      return (
+        customerStartDate >= startDateObject &&
+        customerStartDate <= endDateObject
+      );
+    });
+
+    const numberOfCarsBetweenDates = carsBetweenDates.length;
+    console.log(
+      `จำนวนรถที่มี startdate อยู่ระหว่าง ${
+        startDateObject.toISOString().split("T")[0]
+      } ถึง ${
+        endDateObject.toISOString().split("T")[0]
+      } คือ ${numberOfCarsBetweenDates} คัน`
+    );
+
+    const oneDay = 24 * 60 * 60 * 1000; // จำนวน millisecond ในหนึ่งวัน
+
+    const endCarsBetweenDates = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= startDateObject && customerEndDate <= endDateObject
+      );
+    });
+
+    const endNumberOfCarsBetweenDates = endCarsBetweenDates.length;
+    console.log(
+      `จำนวนรถที่มี enddate อยู่ระหว่าง ${
+        startDateObject.toISOString().split("T")[0]
+      } ถึง ${
+        endDateObject.toISOString().split("T")[0]
+      } คือ ${endNumberOfCarsBetweenDates} คัน`
+    );
+
+    const carsWithoutEndDatePerDay = {};
+    let currentDate = new Date(startDateObject); 
+
+    while (currentDate <= endDateObject) {
+      const carsOnCurrentDate = customers.filter((customer) => {
+        const customerStartDate = new Date(customer.startdate);
+        const customerEndDate = new Date(customer.enddate);
+
+        return (
+          !customer.enddate &&
+          customerStartDate.getTime() <= currentDate.getTime() &&
+          currentDate.getTime() <= new Date().getTime()
+        );
+      });
+
+      carsWithoutEndDatePerDay[currentDate.toISOString().split("T")[0]] =
+        carsOnCurrentDate.length;
+
+      currentDate = new Date(currentDate.getTime() + oneDay); 
+    }
+
+    setCarsWithoutEndDatePerDay(carsWithoutEndDatePerDay);
+
+    const endcarsBetweenDates = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= startDateObject && customerEndDate <= endDateObject
+      );
+    });
+
+    const endnumberOfCarsBetweenDates = endcarsBetweenDates.length;
+
+    console.log(
+      `จำนวนรถที่มี enddate อยู่ระหว่าง ${
+        startDateObject.toISOString().split("T")[0]
+      } ถึง ${
+        endDateObject.toISOString().split("T")[0]
+      } คือ ${endnumberOfCarsBetweenDates} คัน`
+    );
 
     const dailyTotalCost = filteredAndSortedCustomers.reduce(
       (accumulator, customer) => {
@@ -182,10 +257,25 @@ function Report() {
       {}
     );
 
-    // อัปเดต state เพื่อเก็บผลลัพธ์ของ servicefee แต่ละวัน
     setDailyServiceFee(dailyServiceFee);
-
   };
+
+  const countCarsWithoutEndDate = () => {
+    const endDateObject = new Date(`${endDate}T23:59:59`);
+
+    const filteredCars = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return !customer.enddate || customerEndDate >= endDateObject;
+    });
+
+    return filteredCars.length;
+  };
+  const countCarsWithoutEndDateAtEndDate = countCarsWithoutEndDate();
+
+  console.log(
+    "จำนวนรถที่ไม่มีข้อมูล enddate ในวันที่ endDateSelect:",
+    countCarsWithoutEndDateAtEndDate
+  );
 
   const toggleServiceDetailsByType = (serviceName) => {
     setShowServiceDetailsByType((prevDetails) => ({
@@ -203,6 +293,7 @@ function Report() {
       },
     }));
   };
+
   const sumTotalCost = Object.values(dailyTotalCost).reduce(
     (accumulator, currentValue) => accumulator + currentValue,
     0
@@ -242,15 +333,56 @@ function Report() {
 
     return serviceCounts;
   };
-
-const countCustomersByStartDate = (targetDate) => {
-  const filteredCustomers = customers.filter(
-    (customer) => customer.startdate === targetDate
-  );
-  return filteredCustomers.length;
-};
-
   
+  const countCarsWithEndDatePerDay = () => {
+    const startDateObject = new Date(`${startDate}T00:00:00`);
+    const endDateObject = new Date(`${endDate}T23:59:59`);
+
+    const carsWithEndDatePerDay = {};
+    searchResults.forEach((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      if (
+        customerEndDate >= startDateObject &&
+        customerEndDate <= endDateObject
+      ) {
+        const dateString = customerEndDate.toISOString().split("T")[0];
+        if (carsWithEndDatePerDay[dateString]) {
+          carsWithEndDatePerDay[dateString]++;
+        } else {
+          carsWithEndDatePerDay[dateString] = 1;
+        }
+      }
+    });
+
+    return carsWithEndDatePerDay;
+  };
+
+  const carsWithEndDatePerDay = countCarsWithEndDatePerDay();
+
+  const countCarsWithStartDatePerDay = () => {
+    const startDateObject = new Date(`${startDate}T00:00:00`);
+    const endDateObject = new Date(`${endDate}T23:59:59`);
+
+    const carsWithStartDatePerDay = {};
+    searchResults.forEach((customer) => {
+      const customerStartDate = new Date(customer.startdate);
+      if (
+        customerStartDate >= startDateObject &&
+        customerStartDate <= endDateObject
+      ) {
+        const dateString = customerStartDate.toISOString().split("T")[0];
+        if (carsWithStartDatePerDay[dateString]) {
+          carsWithStartDatePerDay[dateString]++;
+        } else {
+          carsWithStartDatePerDay[dateString] = 1;
+        }
+      }
+    });
+
+    return carsWithStartDatePerDay;
+  };
+
+  const carsWithStartDatePerDay = countCarsWithStartDatePerDay();
 
   return (
     <div className="report">
@@ -281,6 +413,14 @@ const countCustomersByStartDate = (targetDate) => {
         </div>
       </div>
 
+      <div>
+        {" "}
+        <ReportCarGraph
+          carsWithoutEndDatePerDay={carsWithoutEndDatePerDay}
+          carsWithStartDatePerDay={carsWithStartDatePerDay}
+          carsWithEndDatePerDay={carsWithEndDatePerDay}
+        />
+      </div>
 
       <div className="reportrepair-head">สรุปรายได้</div>
 
