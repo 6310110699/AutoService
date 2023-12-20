@@ -85,7 +85,7 @@ const SelectSpareModal = ({
                   />
                 </span>
                 <span className="spare-label">
-                  <div className="spare-name">
+                  <div className={`spare-name ${selectedSparePartsByService[currentStepServiceId]?.some(sparePartData => sparePartData.sparePartId === sparePart._id) ? 'selected' : 'not-selected'}`}>
                     {sparePart.spareName}
                   </div>
                 </span>

@@ -87,7 +87,7 @@ const SelectMechanicModal = ({
                     />
                   </span>
                   <span className="mechanic-label">
-                    <div className="mechanic-name">
+                    <div className={`mechanic-name ${selectedMechanics.includes(mechanic._id) ? 'selected' : 'not-selected'}`}>
                       {mechanic.name}
                     </div>
                   </span>

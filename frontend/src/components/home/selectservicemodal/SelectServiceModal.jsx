@@ -106,7 +106,7 @@ const SelectServiceModal = ({
                       />
                     </span>
                     <span className="service-label">
-                      <div className="service-name">
+                      <div className={`service-name ${selectedServices.includes(service._id) ? 'selected' : 'not-selected'}`}>
                         {service.serviceName}
                       </div>
                     </span>

@@ -28,8 +28,19 @@
                 display: inline-block;
                 margin: 10px 20px;
 
-                .mechanic-name {
+                .mechanic-name.not-selected {
                     background-color: $nineth-color;
+                    height: 55px;
+                    width: 400px;
+                    font-size: 20px;
+                    font-weight: 500;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .mechanic-name.selected {
+                    background-color: $thirteenth-color;
                     height: 55px;
                     width: 400px;
                     font-size: 20px;
