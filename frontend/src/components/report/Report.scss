@@ -24,6 +24,66 @@
         justify-content: center;
         align-items: center;
 
+        .report-daily {
+            width: 150px;
+            margin: 0px 10px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            background-color: $fourth-color;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .report-weekly {
+            width: 150px;
+            margin: 0px 10px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            background-color: $fourth-color;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .report-monthly {
+            width: 150px;
+            margin: 0px 10px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            background-color: $fourth-color;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .report-yearly {
+            width: 150px;
+            margin: 0px 10px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            background-color: $fourth-color;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+    }
+
+    .report-filter1 {
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
         label {
             font-size: 20px;
             margin-right: 10px;
