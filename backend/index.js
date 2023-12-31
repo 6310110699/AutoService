@@ -105,6 +105,18 @@ app.post('/verify-token', (req, res) => {
     }
 });
 
+app.post('/webhook', (req, res) => {
+    const events = req.body.events;
+    events.forEach(event => {
+      if (event.type === 'message' && event.message.type === 'text') {
+        const userId = event.source.userId;
+        console.log('User ID:', userId); // แสดง User ID ใน console log
+      }
+    });
+    res.sendStatus(200);
+  });
+  
+
 // กำหนดเส้นทาง API ของระบบ
 const authRoutes = require('./Routes/AuthRoute');
 app.use('/', authRoutes);
