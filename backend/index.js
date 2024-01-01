@@ -105,16 +105,34 @@ app.post('/verify-token', (req, res) => {
     }
 });
 
-app.post('/webhook', (req, res) => {
-    const events = req.body.events;
-    events.forEach(event => {
-      if (event.type === 'message' && event.message.type === 'text') {
-        const userId = event.source.userId;
-        console.log('User ID:', userId); // แสดง User ID ใน console log
-      }
-    });
-    res.sendStatus(200);
-  });
+// const line = require('@line/bot-sdk');
+
+// // ในส่วนของ middleware หรือส่วนที่ใช้สร้าง client สำหรับการใช้งาน LINE Messaging API
+// const config = {
+//   channelAccessToken: '1xDrmtbLRDS5XlfTqzXjz0RoFUu0q4xMKsDVkydZGnw/14OfuyATRL7YuSCo62D98ZAW9zAktPBg19o0H3RaBqMCTiEcGTXaLbZeFSGJiD8UNs00rjR0omPFV+fFBggsmLPiqL+kD5DWlORr/Cck9AdB04t89/1O/w1cDnyilFU=', // ใส่ Channel Access Token ของคุณที่ได้จาก LINE Developers Console
+// };
+// const client = new line.Client(config);
+
+// app.post('/webhook', (req, res) => {
+//     const events = req.body.events;
+//     events.forEach(async event => {
+//       if (event.type === 'message' && event.message.type === 'text') {
+//         const userId = event.source.userId;
+//         const messageText = event.message.text; // ดึงข้อความที่ถูกส่งมา
+        
+//         try {
+//           const userProfile = await client.getProfile(userId); // ขอข้อมูลโปรไฟล์ผู้ใช้จาก LINE
+//           const displayName = userProfile.displayName;
+//           console.log('User ID:', userId);
+//           console.log('Display Name:', displayName);
+//           console.log('Message Text:', messageText);
+//         } catch (error) {
+//           console.error('Error fetching profile:', error);
+//         }
+//       }
+//     });
+//     res.sendStatus(200);
+//   });
   
 
 // กำหนดเส้นทาง API ของระบบ
@@ -138,6 +156,9 @@ app.use('/colors', colorRoutes);
 
 const repairRoutes = require('./Routes/repairRoutes');
 app.use('/repairs', repairRoutes);
+
+const userlineidRoutes = require('./Routes/userlineidRoutes');
+app.use('/webhook', userlineidRoutes);
 
 // กำหนดพอร์ตที่ใช้รัน Backend
 const port = process.env.PORT || 3001;
