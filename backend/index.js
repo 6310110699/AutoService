@@ -6,7 +6,6 @@ const userModel = require('./models/User');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
-const { SECRET_KEY } = process.env;
 
 const app = express();
 app.use(express.json());
@@ -15,8 +14,8 @@ app.use(cookieParser());
 
 // การเชื่อมต่อฐานข้อมูล MongoDB
 mongoose.connect("mongodb+srv://zulfa:Zulfa1234@cluster0.6xnlkvm.mongodb.net/AutoService", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 });
 
 // สร้างคีย์สำหรับรหัสลับ
@@ -55,8 +54,8 @@ app.post('/login', (req, res) => {
         });
 });
 app.post('/register', (req, res) => {
-    const { 
-        username, 
+    const {
+        username,
         password,
         // role 
     } = req.body;
@@ -69,9 +68,9 @@ app.post('/register', (req, res) => {
                 res.status(500).json({ message: "เกิดข้อผิดพลาดในการลงทะเบียน" });
             }
             else {
-                userModel.create({ 
-                    username, 
-                    password: hashedPassword, 
+                userModel.create({
+                    username,
+                    password: hashedPassword,
                     // role 
                 })
                     .then(user => {
@@ -105,36 +104,6 @@ app.post('/verify-token', (req, res) => {
     }
 });
 
-// const line = require('@line/bot-sdk');
-
-// // ในส่วนของ middleware หรือส่วนที่ใช้สร้าง client สำหรับการใช้งาน LINE Messaging API
-// const config = {
-//   channelAccessToken: '1xDrmtbLRDS5XlfTqzXjz0RoFUu0q4xMKsDVkydZGnw/14OfuyATRL7YuSCo62D98ZAW9zAktPBg19o0H3RaBqMCTiEcGTXaLbZeFSGJiD8UNs00rjR0omPFV+fFBggsmLPiqL+kD5DWlORr/Cck9AdB04t89/1O/w1cDnyilFU=', // ใส่ Channel Access Token ของคุณที่ได้จาก LINE Developers Console
-// };
-// const client = new line.Client(config);
-
-// app.post('/webhook', (req, res) => {
-//     const events = req.body.events;
-//     events.forEach(async event => {
-//       if (event.type === 'message' && event.message.type === 'text') {
-//         const userId = event.source.userId;
-//         const messageText = event.message.text; // ดึงข้อความที่ถูกส่งมา
-        
-//         try {
-//           const userProfile = await client.getProfile(userId); // ขอข้อมูลโปรไฟล์ผู้ใช้จาก LINE
-//           const displayName = userProfile.displayName;
-//           console.log('User ID:', userId);
-//           console.log('Display Name:', displayName);
-//           console.log('Message Text:', messageText);
-//         } catch (error) {
-//           console.error('Error fetching profile:', error);
-//         }
-//       }
-//     });
-//     res.sendStatus(200);
-//   });
-  
-
 // กำหนดเส้นทาง API ของระบบ
 const authRoutes = require('./Routes/AuthRoute');
 app.use('/', authRoutes);
@@ -159,6 +128,9 @@ app.use('/repairs', repairRoutes);
 
 const userlineidRoutes = require('./Routes/userlineidRoutes');
 app.use('/webhook', userlineidRoutes);
+
+const sendlineRoutes = require('./Routes/sendlineRoutes');
+app.use('/send-message', sendlineRoutes);
 
 // กำหนดพอร์ตที่ใช้รัน Backend
 const port = process.env.PORT || 3001;

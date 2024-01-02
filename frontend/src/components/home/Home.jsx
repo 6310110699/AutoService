@@ -523,12 +523,125 @@ const Repair = () => {
         state5,
       });
 
+      const repairResponse = await axios.get(`http://localhost:3001/repairs/${id}`);
+      const repairData = repairResponse.data.customer.lineId;
+      const totalCost = repairResponse.data.totalCost;
+
+      const lineIdResponse = await axios.get(`http://localhost:3001/webhook`);
+      const lineIdData = lineIdResponse.data;
+
+      const filteredUserLineIds = lineIdData
+        .filter(item => item.lineId === repairData)
+        .map(item => item.userId);
+
+      // เช็ค state1 และส่งข้อความไปทางไลน์ถ้าเป็นจริง
+      if (state1 && !state2) {
+        const flexMessage = createFlexMessage('กำลังดำเนินการตรวจสภาพรถ 🔎🚗', numPlate, totalCost);
+
+        filteredUserLineIds.forEach(async (userId) => {
+          await sendFlexMessageToBackend(userId, flexMessage);
+        });
+      }
+
+      // เช็ค state2 และส่งข้อความไปทางไลน์ถ้าเป็นจริง
+      if (state2 && !state3) {
+        const flexMessage = createFlexMessage('กำลังดำเนินการหาอะไหล่ 🔩🔋', numPlate, totalCost);
+
+        filteredUserLineIds.forEach(async (userId) => {
+          await sendFlexMessageToBackend(userId, flexMessage);
+        });
+      }
+
+      if (state3 && !state4) {
+        const flexMessage = createFlexMessage('กำลังดำเนินการซ่อม 🔧⚙️🚗', numPlate, totalCost);
+
+        filteredUserLineIds.forEach(async (userId) => {
+          await sendFlexMessageToBackend(userId, flexMessage);
+        });
+      }
+
+      if (state4 && !state5) {
+        const flexMessage = createFlexMessage('ซ่อมเสร็จเรียบร้อย พร้อมส่งมอบรถ ✨🚘✨', numPlate, totalCost);
+
+        filteredUserLineIds.forEach(async (userId) => {
+          await sendFlexMessageToBackend(userId, flexMessage);
+        });
+      }
+
+      if (state5) {
+        const flexMessage = createFlexMessage('ส่งมอบรถสำเร็จ 📦✅', numPlate, totalCost);
+
+        filteredUserLineIds.forEach(async (userId) => {
+          await sendFlexMessageToBackend(userId, flexMessage);
+        });
+      }
+
       setShowStatusModal(false);
       loadCustomers();
     } catch (error) {
       console.error("Error updating status:", error);
       setMessage("เกิดข้อผิดพลาดในการแก้ไขสถานะ");
     }
+  };
+
+  const sendFlexMessageToBackend = async (userId, flexMessage) => {
+    try {
+      await axios.post('http://localhost:3001/send-message', {
+        userId,
+        flexMessage,
+      });
+    } catch (error) {
+      console.error('Error sending Flex Message to backend:', error);
+    }
+  };
+
+  // Function เพื่อสร้าง Flex Message
+  const createFlexMessage = (message, numPlate, totalCost) => {
+    // สร้าง Flex Message ตามที่ต้องการ
+    const flexMessage = {
+      "type": "bubble",
+      "direction": "ltr",
+      "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "M AUTO SERVICE",
+            "weight": "bold",
+            "color": "#000000",
+            "wrap": true
+          },
+          {
+            "type": "text",
+            "text": numPlate,
+            "color": "#000000",
+            "wrap": true
+          }
+        ]
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": message,
+            "weight": "bold",
+            "color": "#33cc00",
+            "wrap": true
+          },
+          {
+            "type": "text",
+            "text": "ราคาโดยประมาณ " + totalCost + " บาท",
+            "color": "#000000",
+            "wrap": true
+          }
+        ]
+      }
+    };
+
+    return flexMessage;
   };
 
   const handleEditStatus = (customer) => {

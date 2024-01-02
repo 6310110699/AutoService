@@ -5,13 +5,13 @@ const Customer = require('../models/Repair');
 // สร้างรายการรถใหม่
 router.post('/', async (req, res) => {
   try {
-    const { 
-      numPlate, lineId, customerName, 
-      phoneNumber, brand, selectedModel, 
+    const {
+      numPlate, lineId, customerName,
+      phoneNumber, brand, selectedModel,
       selectedColor, services, serviceFee, totalCost, mechanics, startdate, enddate,
-      state1, state2, state3, state4, state5 
+      state1, state2, state3, state4, state5
     } = req.body;
-    
+
     const newCustomer = await Customer.create({
       customer: { lineId, customerName, phoneNumber },
       car: { numPlate, brand, selectedModel, selectedColor },
@@ -39,14 +39,29 @@ router.get('/', async (req, res) => {
   }
 });
 
+// ดึงรายการรถ
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const customer = await Customer.findById(id);
+    if (!customer) {
+      return res.status(404).json({ message: 'Customer not found' });
+    }
+    res.status(200).json(customer);
+  } catch (error) {
+    res.status(500).json({ message: 'Error loading customer data', error });
+  }
+});
+
+
 // แก้ไขข้อมูลรถ
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { 
-      numPlate, lineId, customerName, phoneNumber, 
-      brand, selectedModel, selectedColor, 
-      services, serviceFee, totalCost, mechanics, startdate,  enddate,
+    const {
+      numPlate, lineId, customerName, phoneNumber,
+      brand, selectedModel, selectedColor,
+      services, serviceFee, totalCost, mechanics, startdate, enddate,
       state1, state2, state3, state4, state5 } = req.body;
     const updatedCustomer = await Customer.findByIdAndUpdate(
       id,
