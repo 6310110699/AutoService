@@ -80,12 +80,12 @@ const SelectSpareModal = ({
                 <span className='input-checkbox'>
                   <input
                     type="checkbox"
-                    checked={selectedSparePartsByService[currentStepServiceId]?.some(sparePartData => sparePartData.sparePartId === sparePart._id)}
-                    onChange={() => handleSelectSparePart(sparePart._id)}
+                    checked={selectedSparePartsByService[currentStepServiceId]?.some(sparePartData => sparePartData.sparePartId === sparePart.spareName)}
+                    onChange={() => handleSelectSparePart(sparePart.spareName)}
                   />
                 </span>
                 <span className="spare-label">
-                  <div className={`spare-name ${selectedSparePartsByService[currentStepServiceId]?.some(sparePartData => sparePartData.sparePartId === sparePart._id) ? 'selected' : 'not-selected'}`}>
+                  <div className={`spare-name ${selectedSparePartsByService[currentStepServiceId]?.some(sparePartData => sparePartData.sparePartId === sparePart.spareName) ? 'selected' : 'not-selected'}`}>
                     {sparePart.spareName}
                   </div>
                 </span>

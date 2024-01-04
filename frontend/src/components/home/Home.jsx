@@ -333,7 +333,7 @@ const Repair = () => {
     try {
       const serviceCost = selectedServices.reduce((acc, serviceId) => {
         const sparePartsData = selectedSparePartsForService[serviceId]?.map((selectedSparePart) => {
-          const sparePart = spareParts.find((sp) => sp._id === selectedSparePart.sparePartId);
+          const sparePart = spareParts.find((sp) => sp.spareName === selectedSparePart.sparePartId);
           if (sparePart) {
             const quantity = selectedSparePart.quantity;
             const partCost = sparePart.sparePrice * quantity;
@@ -361,12 +361,13 @@ const Repair = () => {
         enddate,
         services: selectedServices.map((serviceId) => {
           const sparePartsData = selectedSparePartsForService[serviceId]?.map((selectedSparePart) => {
-            const sparePart = spareParts.find((sp) => sp._id === selectedSparePart.sparePartId);
+            const sparePart = spareParts.find((sp) => sp.spareName === selectedSparePart.sparePartId);
             if (sparePart) {
               const quantity = selectedSparePart.quantity;
               const partCost = sparePart.sparePrice * quantity;
+              const sparePartName = sparePart.spareName;
               return {
-                sparePartId: selectedSparePart.sparePartId,
+                sparePartId: sparePartName,
                 quantity: selectedSparePart.quantity,
                 partCost: partCost
               };
@@ -402,8 +403,8 @@ const Repair = () => {
   };
 
   const handleEditSpareParts = (service) => {
-    const initialSelectedSpareParts = selectedSparePartsByService[service._id] || [];
-    setCurrentStepServiceId(service._id);
+    const initialSelectedSpareParts = selectedSparePartsByService[service.serviceName] || [];
+    setCurrentStepServiceId(service.serviceName);
     setSelectedSpareParts(initialSelectedSpareParts);
     setShowSparePartsModal(true);
   };
@@ -525,7 +526,7 @@ const Repair = () => {
 
       const repairResponse = await axios.get(`http://localhost:3001/repairs/${id}`);
       const repairData = repairResponse.data.customer.lineId;
-      const totalCost = repairResponse.data.totalCost;
+      const totalCost = repairResponse.data.totalCost !== null ? repairResponse.data.totalCost : '-';
 
       const lineIdResponse = await axios.get(`http://localhost:3001/webhook`);
       const lineIdData = lineIdResponse.data;
@@ -561,7 +562,7 @@ const Repair = () => {
       }
 
       if (state4 && !state5) {
-        const flexMessage = createFlexMessage('ซ่อมเสร็จเรียบร้อย พร้อมส่งมอบรถ ✨🚘✨', numPlate, totalCost);
+        const flexMessage = createFlexMessage('ซ่อมเสร็จเรียบร้อย พร้อมส่งมอบรถ 🚘✨', numPlate, totalCost);
 
         filteredUserLineIds.forEach(async (userId) => {
           await sendFlexMessageToBackend(userId, flexMessage);
@@ -595,7 +596,6 @@ const Repair = () => {
     }
   };
 
-  // Function เพื่อสร้าง Flex Message
   const createFlexMessage = (message, numPlate, totalCost) => {
     // สร้าง Flex Message ตามที่ต้องการ
     const flexMessage = {

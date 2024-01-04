@@ -82,12 +82,12 @@ const SelectMechanicModal = ({
                   <span className='input-checkbox'>
                     <input
                       type="checkbox"
-                      checked={selectedMechanics.includes(mechanic._id)}
-                      onChange={() => handleSelectMechanic(mechanic._id)}
+                      checked={selectedMechanics.includes(mechanic.name)}
+                      onChange={() => handleSelectMechanic(mechanic.name)}
                     />
                   </span>
                   <span className="mechanic-label">
-                    <div className={`mechanic-name ${selectedMechanics.includes(mechanic._id) ? 'selected' : 'not-selected'}`}>
+                    <div className={`mechanic-name ${selectedMechanics.includes(mechanic.name) ? 'selected' : 'not-selected'}`}>
                       {mechanic.name}
                     </div>
                   </span>

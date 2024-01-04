@@ -101,12 +101,12 @@ const SelectServiceModal = ({
                     <span className='input-checkbox'>
                       <input
                         type="checkbox"
-                        checked={selectedServices.includes(service._id)}
-                        onChange={() => handleSelectService(service._id)}
+                        checked={selectedServices.includes(service.serviceName)}
+                        onChange={() => handleSelectService(service.serviceName)}
                       />
                     </span>
                     <span className="service-label">
-                      <div className={`service-name ${selectedServices.includes(service._id) ? 'selected' : 'not-selected'}`}>
+                      <div className={`service-name ${selectedServices.includes(service.serviceName) ? 'selected' : 'not-selected'}`}>
                         {service.serviceName}
                       </div>
                     </span>
@@ -134,7 +134,7 @@ const SelectServiceModal = ({
             <div className='secondstep'>
               <ul>
                 {services
-                  .filter((service) => selectedServices.includes(service._id))
+                  .filter((service) => selectedServices.includes(service.serviceName))
                   .map((selectedService) => (
                     <div key={selectedService._id}>
                       <div className='selectservice-name'>
@@ -143,12 +143,12 @@ const SelectServiceModal = ({
                       <ul>
                         <table className='selectservice-table'>
                           <tbody>
-                            {selectedSparePartsForService[selectedService._id]?.map((selectedSparePartId) => {
+                            {selectedSparePartsForService[selectedService.serviceName]?.map((selectedSparePartId) => {
                               const sparePart = spareParts.find((sparePart) =>
-                                sparePart._id === selectedSparePartId
-                                || sparePart._id === selectedSparePartId.sparePartId);
+                                sparePart.spareName === selectedSparePartId
+                                || sparePart.spareName === selectedSparePartId.sparePartId);
                               return (
-                                <tr key={sparePart._id}>
+                                <tr key={sparePart.spareName}>
                                   <td className='selectservice-spare'>
                                     {sparePart.spareName}
                                   </td>
@@ -157,14 +157,14 @@ const SelectServiceModal = ({
                                       type="number"
                                       value={selectedSparePartId.quantity}
                                       onChange={(e) =>
-                                        handleQuantityChange(selectedService._id, selectedSparePartId.sparePartId, e.target.value)}
+                                        handleQuantityChange(selectedService.serviceName, selectedSparePartId.sparePartId, e.target.value)}
                                     />
                                   </td>
                                   <td className='selectservice-price'>
                                     {sparePart.sparePrice}
                                   </td>
                                   <td className='delete-spare' onClick={() =>
-                                    handleDeleteSparePart(selectedService._id, sparePart._id)}>
+                                    handleDeleteSparePart(selectedService.serviceName, sparePart.spareName)}>
                                     <img src='./assets/image/bin.png' />
                                   </td>
                                 </tr>

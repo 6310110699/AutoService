@@ -35,13 +35,11 @@ const customerSchema = new mongoose.Schema({
   },
   services: [{
     serviceName: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Service',
+      type: String,
     },
     spareParts: [{
       sparePartId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'SparePart',
+        type: String,
       },
       quantity: {
         type: Number,
@@ -58,8 +56,7 @@ const customerSchema = new mongoose.Schema({
     type: Number,
   },
   mechanics: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Employee',
+    type: String,
   }],
   startdate: {
     type: String,

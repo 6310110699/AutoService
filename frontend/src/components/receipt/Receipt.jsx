@@ -53,7 +53,7 @@ const Receipt = () => {
 
     const getPartNameFromId = (sparePartId) => {
         const sparePart = spareParts.find(
-            (sparePart) => sparePart._id === sparePartId
+            (sparePart) => sparePart.spareName === sparePartId
         );
 
         return sparePart
@@ -72,7 +72,7 @@ const Receipt = () => {
 
     const getMechanicNameFromId = (mechanicId) => {
         const mechanic = mechanics.find(
-            (mechanic) => mechanic._id === mechanicId
+            (mechanic) => mechanic.name === mechanicId
         );
 
         return mechanic
