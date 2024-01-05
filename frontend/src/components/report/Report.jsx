@@ -282,7 +282,7 @@ function Report() {
 
   const getServiceNameById = (serviceId) => {
     const matchedService = services.find(
-      (service) => service._id === serviceId
+      (service) => service.serviceName === serviceId
     );
     return matchedService ? matchedService.serviceName : "ไม่พบบริการ";
   };
@@ -608,13 +608,13 @@ function Report() {
           </thead>
           <tbody>
             {mechanics.map((mechanic) => {
-              const services = countServicesByMechanic(mechanic._id);
+              const services = countServicesByMechanic(mechanic.name);
 
               return (
                 <React.Fragment key={mechanic._id}>
                   {Object.keys(services).map((serviceName, index) => {
                     const carModelCounts = Object.entries(
-                      getServiceCountsByCarModel(mechanic._id, serviceName)
+                      getServiceCountsByCarModel(mechanic.name, serviceName)
                     );
                     const serviceTotal = carModelCounts.reduce(
                       (acc, [carModel, carModelCount]) => acc + carModelCount,
@@ -633,13 +633,13 @@ function Report() {
                           <img
                             onClick={() =>
                               toggleServiceDetailsByMechanic(
-                                mechanic._id,
+                                mechanic.name,
                                 serviceName
                               )
                             }
                             src="./assets/image/down-arrow.png"
                           />
-                          {showServiceDetailsByMechanic[mechanic._id]?.[
+                          {showServiceDetailsByMechanic[mechanic.name]?.[
                             serviceName
                           ] && (
                             <div>

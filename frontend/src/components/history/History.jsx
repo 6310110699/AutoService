@@ -45,7 +45,7 @@ function History() {
 
     const getServiceNameById = (serviceId) => {
         const matchedService = services.find(
-            (service) => service._id === serviceId
+            (service) => service.serviceName === serviceId
         );
         return matchedService ? matchedService.serviceName : "ไม่พบบริการ";
     };
