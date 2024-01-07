@@ -233,6 +233,7 @@ const CarRegistration = () => {
                         {brand === 'other' && (
                             <input
                                 type="text"
+                                className='form-other'
                                 value={customBrand}
                                 onChange={(e) => setCustomBrand(e.target.value)}
                                 placeholder="กรอกยี่ห้อรถ"
@@ -280,6 +281,7 @@ const CarRegistration = () => {
                             <>
                                 <input
                                     type="text"
+                                    className='form-other'
                                     value={customModel}
                                     onChange={(e) => setCustomModel(e.target.value)}
                                     placeholder="กรอกรุ่นรถ"
@@ -331,6 +333,7 @@ const CarRegistration = () => {
                             <>
                                 <input
                                     type="text"
+                                    className='form-other'
                                     value={customColor}
                                     onChange={(e) => setCustomColor(e.target.value)}
                                     placeholder="กรอกสีรถ"
