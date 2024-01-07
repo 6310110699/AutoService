@@ -1,48 +1,42 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Report.scss";
-import ReportGraph from "./ReportGraph";
-import ReportCarGraph from "./ReportCarGraph";
+import moment from "moment";
+import BarCar from "./BarCar";
+import DonutChart from "./DonutChart";
+import BarCost from "./BarCost";
 
 function Report() {
   const [customers, setCustomers] = useState([]);
   const [services, setServices] = useState([]);
   const [mechanics, setMechanics] = useState([]);
-  const [showServiceDetailsByType, setShowServiceDetailsByType] = useState({});
+  const [dayOn, setDayOn] = useState([]);
+  const [weekOn, setWeekOn] = useState([]);
+  const [monthOn, setMonthOn] = useState([]);
+  const [yearOn, setYearOn] = useState([]);
+  const [date, setDate] = useState([]);
+  const [week, setWeek] = useState(moment().format("YYYY-MM-DD"));
+  const [month, setMonth] = useState([]);
+  const [year, setYear] = useState([]);
+  const [showServiceDetails, setShowServiceDetails] = useState({});
   const [showServiceDetailsByMechanic, setShowServiceDetailsByMechanic] =
     useState({});
-  const [dailyTotalCost, setDailyTotalCost] = useState({});
-  const [dailyServiceFee, setDailyServiceFee] = useState({});
-  const [startPerDay, setStartPerDay] = useState({});
-
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchServiceResults, setSearchServiceResults] = useState([]);
-  const [allCustomersFiltered, setAllCustomersFiltered] = useState([]);
-  const [carsWithoutEndDatePerDay, setCarsWithoutEndDatePerDay] = useState({});
-  const [allCustomers, setAllCustomers] = useState([]);
-  const [searchResultAll, setSearchResultAll] = useState([]);
+  const [
+    showServiceDetailsByMechanicDate,
+    setShowServiceDetailsByMechanicDate,
+  ] = useState({});
 
   useEffect(() => {
     loadCustomers();
     loadServices();
     loadMechanics();
+    handleWeekClick();
   }, []);
-  useEffect(() => {
-    toggleShowAll();
-  }, [customers]);
 
   const loadCustomers = async () => {
     try {
       const response = await axios.get("http://localhost:3001/repairs");
       setCustomers(response.data);
-      setAllCustomersFiltered(
-        response.data.filter((customer) => customer.status.state5)
-      );
-      setAllCustomers(
-        response.data.filter((customer) => customer.status.state1)
-      );
     } catch (error) {
       console.error("Error loading customer data:", error);
     }
@@ -65,105 +59,427 @@ function Report() {
       console.error("Error loading mechanics:", error);
     }
   };
-  const handleDailyClick = () => {
-    const today = new Date();
 
-    setStartDate(
-      `${today.getFullYear()}-${(today.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`
-    );
-
-    setEndDate(
-      `${today.getFullYear()}-${(today.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`
-    );
+  const handleDayClick = () => {
+    const currentDate = moment().format("YYYY-MM-DD");
+    setDate(currentDate);
+    setDayOn(true);
+    setWeekOn(false);
+    setMonthOn(false);
+    setYearOn(false);
   };
 
-  const handleWeeklyClick = () => {
-    const today = new Date();
-    const saturday = new Date(today);
-    saturday.setDate(today.getDate() - ((today.getDay() + 1) % 7));
+  const handleWeekClick = () => {
+    const currentWeek = moment().startOf("week").format("YYYY-MM-DD");
+    setWeek("Week: " + currentWeek);
 
-    const thursday = new Date(saturday);
-    thursday.setDate(saturday.getDate() + ((today.getDay() + 1) % 7));
-
-    setStartDate(
-      `${saturday.getFullYear()}-${(saturday.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${saturday.getDate().toString().padStart(2, "0")}`
-    );
-
-    setEndDate(
-      `${thursday.getFullYear()}-${(thursday.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${thursday.getDate().toString().padStart(2, "0")}`
-    );
+    setDayOn(false);
+    setWeekOn(true);
+    setMonthOn(false);
+    setYearOn(false);
   };
 
-  const handleMonthlyClick = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth();
-    const firstDayOfMonth = new Date(year, month, 1);
-    const lastDayOfMonth = new Date(year, month + 1, 0);
-
-    setStartDate(
-      `${firstDayOfMonth.getFullYear()}-${(firstDayOfMonth.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${firstDayOfMonth
-        .getDate()
-        .toString()
-        .padStart(2, "0")}`
-    );
-
-    setEndDate(
-      `${lastDayOfMonth.getFullYear()}-${(lastDayOfMonth.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${lastDayOfMonth
-        .getDate()
-        .toString()
-        .padStart(2, "0")}`
-    );
+  const handleMonthClick = () => {
+    const currentMonth = moment().format("YYYY-MM");
+    setMonth(currentMonth);
+    setDayOn(false);
+    setWeekOn(false);
+    setMonthOn(true);
+    setYearOn(false);
   };
 
-  const handleYearlyClick = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const firstDayOfYear = new Date(year, 0, 1);
-    const lastDayOfYear = new Date(year, 11, 31);
-
-    setStartDate(
-      `${firstDayOfYear.getFullYear()}-${(firstDayOfYear.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${firstDayOfYear
-        .getDate()
-        .toString()
-        .padStart(2, "0")}`
-    );
-
-    setEndDate(
-      `${lastDayOfYear.getFullYear()}-${(lastDayOfYear.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${lastDayOfYear
-        .getDate()
-        .toString()
-        .padStart(2, "0")}`
-    );
+  const handleYearClick = () => {
+    setDayOn(false);
+    setWeekOn(false);
+    setMonthOn(false);
+    setYearOn(true);
+  };
+  //********************-----------DAY-----------********************//
+  //CAR-DAY
+  const handlePreviousDateClick = () => {
+    const previousDate = moment(date).subtract(1, "day").format("YYYY-MM-DD");
+    setDate(previousDate);
+    setShowServiceDetails(false);
   };
 
-  const countCarsWithStartDatePerDay = () => {
-    const startDateObject = new Date(`${startDate}T00:00:00`);
-    const endDateObject = new Date(`${endDate}T23:59:59`);
+  const handleNextDateClick = () => {
+    const nextDate = moment(date).add(1, "day").format("YYYY-MM-DD");
+    setDate(nextDate);
+    setShowServiceDetails(false);
+  };
+
+  const countCarsWithStartDateDate = () => {
+    const start = moment(`${date}T00:00:00`);
+    const end = moment(`${date}T23:59:59`);
 
     const carsWithStartDatePerDay = {};
-    searchResultAll.forEach((customer) => {
-      const customerStartDate = new Date(customer.startdate);
+    customers.forEach((customer) => {
+      const customerStartDate = moment(customer.startdate);
+      if (customerStartDate >= start && customerStartDate <= end) {
+        const dateString = customerStartDate;
+        if (carsWithStartDatePerDay[dateString]) {
+          carsWithStartDatePerDay[dateString]++;
+        } else {
+          carsWithStartDatePerDay[dateString] = 1;
+        }
+      }
+    });
+
+    return carsWithStartDatePerDay;
+  };
+
+  const carsWithStartDateDate = countCarsWithStartDateDate();
+  const sumCarsWithStartDateDate = Object.values(carsWithStartDateDate).reduce(
+    (sum, count) => sum + count,
+    0
+  );
+
+  console.log("ลองงง start", carsWithStartDateDate);
+  console.log("ลอง start", sumCarsWithStartDateDate);
+
+  const countCarsWithOutEndDateDate = () => {
+    const start = moment(`${date}T00:00:00`);
+    const end = moment(`${date}T23:59:59`);
+
+    const carsWithOutEndDate = {};
+
+    let currentDate = moment(start);
+    while (currentDate <= end) {
+      const dateString = currentDate.format("YYYY-MM-DD");
+
+      const count = customers.reduce((accumulator, customer) => {
+        const customerStartDate = moment(customer.startdate).startOf("day");
+        const customerEndDate = customer.enddate
+          ? moment(customer.enddate).startOf("day")
+          : null;
+
+        if (
+          customerStartDate.isSameOrBefore(currentDate, "day") &&
+          (!customerEndDate || customerEndDate.isAfter(currentDate, "day"))
+        ) {
+          return accumulator + 1;
+        }
+        return accumulator;
+      }, 0);
+
+      carsWithOutEndDate[dateString] = count;
+
+      currentDate.add(1, "day"); // เพิ่มวันที่ 1 วัน
+
+      if (currentDate.isAfter(moment(), "day") || currentDate > end) {
+        break;
+      }
+    }
+
+    return carsWithOutEndDate;
+  };
+
+  const carsWithOutEndDateDate = countCarsWithOutEndDateDate();
+
+  const lastDateDate = Object.keys(carsWithOutEndDateDate).pop();
+  const lastValueDate = carsWithOutEndDateDate[lastDateDate];
+
+  console.log("ลองงง WithOut", carsWithOutEndDateDate);
+  console.log("ลอง WithOut", lastValueDate);
+
+  const countCarsWithEndDateDate = () => {
+    const start = moment(`${date}T00:00:00`);
+    const end = moment(`${date}T23:59:59`);
+
+    const carsWithEndDatePerDay = {};
+    customers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+      if (customerEndDate >= start && customerEndDate <= end) {
+        const dateString = customerEndDate;
+        if (carsWithEndDatePerDay[dateString]) {
+          carsWithEndDatePerDay[dateString]++;
+        } else {
+          carsWithEndDatePerDay[dateString] = 1;
+        }
+      }
+    });
+
+    return carsWithEndDatePerDay;
+  };
+
+  const carsWithEndDateDate = countCarsWithEndDateDate();
+  const sumCarsWithEndDateDate = Object.values(carsWithEndDateDate).reduce(
+    (sum, count) => sum + count,
+    0
+  );
+  console.log("ลองงง End", carsWithEndDateDate);
+  console.log("ลอง End", sumCarsWithEndDateDate);
+
+  //COST-DAY
+
+  const countTotalCostDate = () => {
+    const start = moment(`${date}T00:00:00`);
+    const end = moment(`${date}T23:59:59`);
+
+    const filteredCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const totalCostPerDay = {};
+
+    filteredCustomers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+
+      const dateString = customerEndDate.format("YYYY-MM-DD");
+
+      if (totalCostPerDay[dateString]) {
+        totalCostPerDay[dateString] += customer.totalCost;
+      } else {
+        totalCostPerDay[dateString] = customer.totalCost;
+      }
+    });
+
+    return totalCostPerDay;
+  };
+
+  const totalCostPerDayDate = countTotalCostDate();
+  console.log("totalCostPerDayDated", totalCostPerDayDate);
+
+  const countTotalFeeDate = () => {
+    const start = moment(`${date}T00:00:00`);
+    const end = moment(`${date}T23:59:59`);
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const totalFeePerDay = {};
+
+    filterCustomers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+
+      const dateString = customerEndDate.format("YYYY-MM-DD");
+
+      if (totalFeePerDay[dateString]) {
+        totalFeePerDay[dateString] += customer.serviceFee;
+      } else {
+        totalFeePerDay[dateString] = customer.serviceFee;
+      }
+    });
+
+    return totalFeePerDay;
+  };
+
+  const totalFeePerDayDate = countTotalFeeDate();
+  console.log("totalFeePerDayDate", totalFeePerDayDate);
+
+  const countTotalSpareDate = () => {
+    const totalSparePerDay = {};
+
+    Object.keys(totalCostPerDayDate).forEach((date) => {
+      if (totalFeePerDayDate[date]) {
+        totalSparePerDay[date] =
+          totalCostPerDayDate[date] - totalFeePerDayDate[date];
+      }
+    });
+
+    return totalSparePerDay;
+  };
+
+  const totalSparePerDayDate = countTotalSpareDate();
+  console.log("totalSparePerDayDate", totalSparePerDayDate);
+
+  const sumTotalCostDate = Object.values(totalCostPerDayDate).reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  const sumTotalSpareDate = Object.values(totalSparePerDayDate).reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  const sumTotalFeeDate = Object.values(totalFeePerDayDate).reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  const countServiceDate = () => {
+    const start = moment(`${date}T00:00:00`);
+    const end = moment(`${date}T23:59:59`);
+
+    const servicesUsed = {};
+
+    customers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
       if (
-        customerStartDate >= startDateObject &&
-        customerStartDate <= endDateObject
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
       ) {
+        customer.services.forEach((service) => {
+          const serviceName = service.serviceName;
+          if (!servicesUsed[serviceName]) {
+            servicesUsed[serviceName] = [];
+          }
+          servicesUsed[serviceName].push({
+            carBrand: customer.car.brand,
+            selectedModel: customer.car.selectedModel,
+          });
+        });
+      }
+    });
+
+    return servicesUsed;
+  };
+
+  const servicesUsedDate = countServiceDate();
+  console.log(servicesUsedDate);
+
+  const toggleServiceDetailsDate = (serviceName) => {
+    setShowServiceDetails({
+      ...showServiceDetails,
+      [serviceName]: !showServiceDetails[serviceName],
+    });
+  };
+
+  const getServiceDate = (serviceName) => {
+    const start = moment(`${date}T00:00:00`);
+    const end = moment(`${date}T23:59:59`);
+
+    const carModelCounts = {};
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = moment(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    filterCustomers.forEach((customer) => {
+      customer.services.forEach((service) => {
+        const serviceInfo = service.serviceName;
+        const carInfo = `${customer.car.brand} ${customer.car.selectedModel}`;
+        if (serviceInfo === serviceName) {
+          if (carModelCounts[carInfo]) {
+            carModelCounts[carInfo]++;
+          } else {
+            carModelCounts[carInfo] = 1;
+          }
+        }
+      });
+    });
+
+    return carModelCounts;
+  };
+
+  // //MECHANIC-DAY
+
+  const countServicesByMechanicDate = (mechanicId) => {
+    const start = moment(`${date}T00:00:00`);
+    const end = moment(`${date}T23:59:59`);
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const mechanicCustomers = filterCustomers.filter((customer) =>
+      customer.mechanics.includes(mechanicId)
+    );
+    const serviceCounts = {};
+
+    mechanicCustomers.forEach((customer) => {
+      customer.services.forEach((service) => {
+        const serviceName = service.serviceName;
+        if (serviceCounts[serviceName]) {
+          serviceCounts[serviceName]++;
+        } else {
+          serviceCounts[serviceName] = 1;
+        }
+      });
+    });
+
+    return serviceCounts;
+  };
+
+  const getServiceCountsByCarModelDate = (mechanicId, serviceName) => {
+    const start = moment(`${date}T00:00:00`);
+    const end = moment(`${date}T23:59:59`);
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+    const mechanicCustomers = filterCustomers.filter((customer) =>
+      customer.mechanics.includes(mechanicId)
+    );
+    const carModelCounts = {};
+
+    mechanicCustomers.forEach((customer) => {
+      customer.services.forEach((service) => {
+        const serviceInfo = service.serviceName;
+        const carInfo = `${customer.car.brand} ${customer.car.selectedModel}`;
+        if (serviceInfo === serviceName) {
+          if (carModelCounts[carInfo]) {
+            carModelCounts[carInfo]++;
+          } else {
+            carModelCounts[carInfo] = 1;
+          }
+        }
+      });
+    });
+
+    return carModelCounts;
+  };
+
+  const toggleServiceDetailsByMechanicDate = (mechanicId, serviceName) => {
+    setShowServiceDetailsByMechanicDate((prevDetails) => ({
+      ...prevDetails,
+      [mechanicId]: {
+        ...prevDetails[mechanicId],
+        [serviceName]: !prevDetails[mechanicId]?.[serviceName],
+      },
+    }));
+  };
+
+  //********************-----------WEEK-----------********************//
+  //CAR-WEEK
+  const handlePreviousWeekClick = () => {
+    const previousWeek = moment(week).subtract(1, "week").startOf("week");
+    setWeek(previousWeek.format("YYYY-MM-DD"));
+    setShowServiceDetails(false);
+  };
+
+  const handleNextWeekClick = () => {
+    const nextWeek = moment(week).add(1, "week").startOf("week");
+    setWeek(nextWeek.format("YYYY-MM-DD"));
+    setShowServiceDetails(false);
+  };
+
+
+  const countCarsWithStartDateWeek = () => {
+    const start = moment(week).startOf("week").toDate();
+    const end = moment(week).endOf("week").toDate();
+
+    const carsWithStartDatePerDay = {};
+    customers.forEach((customer) => {
+      const customerStartDate = moment(customer.startdate);
+      if (customerStartDate >= start && customerStartDate <= end) {
         const dateString = customerStartDate.toISOString().split("T")[0];
         if (carsWithStartDatePerDay[dateString]) {
           carsWithStartDatePerDay[dateString]++;
@@ -176,89 +492,59 @@ function Report() {
     return carsWithStartDatePerDay;
   };
 
-  const carsWithStartDatePerDay = countCarsWithStartDatePerDay();
-  const sumCarsWithStartDatePerDay = Object.values(
-    carsWithStartDatePerDay
-  ).reduce((sum, count) => sum + count, 0);
+  const carsWithStartDateWeek = countCarsWithStartDateWeek();
+  const sumCarsWithStartDateWeek = Object.values(carsWithStartDateWeek).reduce(
+    (sum, count) => sum + count,
+    0
+  );
 
-  console.log("carsWithStartDatePerDay:", carsWithStartDatePerDay);
-  console.log("sumCarsWithStartDatePerDay:", sumCarsWithStartDatePerDay);
+  const countCarsWithOutEndDateWeek = () => {
+    const start = moment(week).startOf("week").toDate();
+    const end = moment(week).endOf("week").toDate();
 
-  const countCarsWithOutEndDatePerDay = () => {
-    const startDateObject = new Date(`${startDate}T00:00:00`);
-    const endDateObject = new Date(`${endDate}T23:59:59`);
+    const carsWithOutEndDate = {};
 
-    startDateObject.setDate(startDateObject.getDate() + 1);
+    let currentDate = moment(start);
+    while (currentDate <= end) {
+      const dateString = currentDate.format("YYYY-MM-DD");
 
-    endDateObject.setDate(endDateObject.getDate() + 1);
-
-    const carsWithOutEndDatePerDay = {};
-
-    let currentDate = new Date(startDateObject);
-    while (currentDate <= endDateObject) {
-      const dateString = currentDate.toISOString().split("T")[0];
-
-      const count = searchResultAll.reduce((accumulator, customer) => {
-        const customerStartDate = new Date(customer.startdate);
+      const count = customers.reduce((accumulator, customer) => {
+        const customerStartDate = moment(customer.startdate).startOf("day");
         const customerEndDate = customer.enddate
-          ? new Date(customer.enddate)
+          ? moment(customer.enddate).startOf("day")
           : null;
 
         if (
-          customerStartDate.getTime() <= currentDate.getTime() &&
-          (!customerEndDate ||
-            customerEndDate.getTime() > currentDate.getTime())
+          customerStartDate.isSameOrBefore(currentDate, "day") &&
+          (!customerEndDate || customerEndDate.isAfter(currentDate, "day"))
         ) {
           return accumulator + 1;
         }
         return accumulator;
       }, 0);
 
-      carsWithOutEndDatePerDay[dateString] = count;
+      carsWithOutEndDate[dateString] = count;
 
-      currentDate.setDate(currentDate.getDate() + 1);
+      currentDate.add(1, "day"); // เพิ่มวันที่ 1 วัน
 
-      if (currentDate > endDateObject) {
+      if (currentDate.isAfter(moment(), "day") || currentDate > end) {
         break;
       }
     }
 
-    return carsWithOutEndDatePerDay;
+    return carsWithOutEndDate;
   };
 
-  const carsWithOutEndDatePerDay = countCarsWithOutEndDatePerDay();
-  console.log(
-    "Cars with start date but no end date per day:",
-    carsWithOutEndDatePerDay
-  );
-  const countCarsWithoutEndDate = () => {
-    const endDateObject = new Date(`${endDate}T23:59:59`);
+  const carsWithOutEndDateWeek = countCarsWithOutEndDateWeek();
 
-    const filteredCars = customers.filter((customer) => {
-      const customerEndDate = new Date(customer.enddate);
-      return !customer.enddate || customerEndDate >= endDateObject;
-    });
-
-    return filteredCars.length;
-  };
-  const countCarsWithoutEndDateAtEndDate = countCarsWithoutEndDate();
-
-  console.log(
-    "จำนวนรถที่ไม่มีข้อมูล enddate ในวันที่ endDateSelect:",
-    countCarsWithoutEndDateAtEndDate
-  );
-
-  const countCarsWithEndDatePerDay = () => {
-    const startDateObject = new Date(`${startDate}T00:00:00`);
-    const endDateObject = new Date(`${endDate}T23:59:59`);
+  const countCarsWithEndDateWeek = () => {
+    const start = moment(week).startOf("week").toDate();
+    const end = moment(week).endOf("week").toDate();
 
     const carsWithEndDatePerDay = {};
-    searchResults.forEach((customer) => {
-      const customerEndDate = new Date(customer.enddate);
-      if (
-        customerEndDate >= startDateObject &&
-        customerEndDate <= endDateObject
-      ) {
+    customers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+      if (customerEndDate >= start && customerEndDate <= end) {
         const dateString = customerEndDate.toISOString().split("T")[0];
         if (carsWithEndDatePerDay[dateString]) {
           carsWithEndDatePerDay[dateString]++;
@@ -271,31 +557,577 @@ function Report() {
     return carsWithEndDatePerDay;
   };
 
-  const carsWithEndDatePerDay = countCarsWithEndDatePerDay();
-  const sumCarsWithEndDatePerDay = Object.values(carsWithEndDatePerDay).reduce(
+  const carsWithEndDateWeek = countCarsWithEndDateWeek();
+  const sumCarsWithEndDateWeek = Object.values(carsWithEndDateWeek).reduce(
     (sum, count) => sum + count,
     0
   );
 
-  console.log("carsWithEndDatePerDay:", carsWithEndDatePerDay);
-  console.log("sumCarsWithEndDatePerDay:", sumCarsWithEndDatePerDay);
+  const lastDateWeek = Object.keys(carsWithOutEndDateWeek).pop();
+  const lastValueWeek = carsWithOutEndDateWeek[lastDateWeek];
 
-  const getServiceNameById = (serviceId) => {
-    const matchedService = services.find(
-      (service) => service.serviceName === serviceId
-    );
-    return matchedService ? matchedService.serviceName : "ไม่พบบริการ";
+  //COST-WEEk
+
+  const countTotalCostWeek = () => {
+    const start = moment(week).startOf("week").toDate();
+    const end = moment(week).endOf("week").toDate();
+
+    const filteredCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const totalCostPerDay = {};
+
+    filteredCustomers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+
+      const dateString = customerEndDate.format("YYYY-MM-DD");
+
+      if (totalCostPerDay[dateString]) {
+        totalCostPerDay[dateString] += customer.totalCost;
+      } else {
+        totalCostPerDay[dateString] = customer.totalCost;
+      }
+    });
+
+    return totalCostPerDay;
   };
 
-  const countServicesByMechanic = (mechanicId) => {
-    const mechanicCustomers = searchResults.filter((customer) =>
+  const totalCostPerDayWeek = countTotalCostWeek();
+
+  const countTotalFeeWeek = () => {
+    const start = moment(week).startOf("week").toDate();
+    const end = moment(week).endOf("week").toDate();
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const totalFeePerDay = {};
+
+    filterCustomers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+
+      const dateString = customerEndDate.format("YYYY-MM-DD");
+
+      if (totalFeePerDay[dateString]) {
+        totalFeePerDay[dateString] += customer.serviceFee;
+      } else {
+        totalFeePerDay[dateString] = customer.serviceFee;
+      }
+    });
+
+    return totalFeePerDay;
+  };
+
+  const totalFeePerDayWeek = countTotalFeeWeek();
+
+  const countTotalSpareWeek = () => {
+    const totalSparePerDay = {};
+
+    Object.keys(totalCostPerDayWeek).forEach((date) => {
+      if (totalFeePerDayWeek[date]) {
+        totalSparePerDay[date] =
+          totalCostPerDayWeek[date] - totalFeePerDayWeek[date];
+      }
+    });
+
+    return totalSparePerDay;
+  };
+
+  const totalSparePerDayWeek = countTotalSpareWeek();
+
+  const sumTotalCostWeek = Object.values(totalCostPerDayWeek).reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  const sumTotalSpareWeek = Object.values(totalSparePerDayWeek).reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  const sumTotalFeeWeek = Object.values(totalFeePerDayWeek).reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  const countServiceWeek = () => {
+    const start = moment(week).startOf("week").toDate();
+    const end = moment(week).endOf("week").toDate();
+
+    const servicesUsed = {};
+
+    customers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+      if (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      ) {
+        customer.services.forEach((service) => {
+          const serviceName = service.serviceName;
+          if (!servicesUsed[serviceName]) {
+            servicesUsed[serviceName] = [];
+          }
+          servicesUsed[serviceName].push({
+            carBrand: customer.car.brand,
+            selectedModel: customer.car.selectedModel,
+          });
+        });
+      }
+    });
+
+    return servicesUsed;
+  };
+
+  const servicesUsedWeek = countServiceWeek();
+  // console.log(servicesUsed);
+
+  const toggleServiceDetailsWeek = (serviceName) => {
+    setShowServiceDetails({
+      ...showServiceDetails,
+      [serviceName]: !showServiceDetails[serviceName],
+    });
+  };
+
+  const getServiceWeek = (serviceName) => {
+    const start = moment(week).startOf("week").toDate();
+    const end = moment(week).endOf("week").toDate();
+
+    const carModelCounts = {};
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const totalFeePerDay = {};
+
+    filterCustomers.forEach((customer) => {
+      customer.services.forEach((service) => {
+        const serviceInfo = service.serviceName;
+        const carInfo = `${customer.car.brand} ${customer.car.selectedModel}`;
+        if (serviceInfo === serviceName) {
+          if (carModelCounts[carInfo]) {
+            carModelCounts[carInfo]++;
+          } else {
+            carModelCounts[carInfo] = 1;
+          }
+        }
+      });
+    });
+
+    return carModelCounts;
+  };
+
+  //MECHANIC-WEEK
+  const countServicesByMechanicWeek = (mechanicId) => {
+    const start = moment(week).startOf("week").toDate();
+    const end = moment(week).endOf("week").toDate();
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const mechanicCustomers = filterCustomers.filter((customer) =>
       customer.mechanics.includes(mechanicId)
     );
     const serviceCounts = {};
 
     mechanicCustomers.forEach((customer) => {
       customer.services.forEach((service) => {
-        const serviceName = getServiceNameById(service.serviceName);
+        const serviceName = service.serviceName;
+        if (serviceCounts[serviceName]) {
+          serviceCounts[serviceName]++;
+        } else {
+          serviceCounts[serviceName] = 1;
+        }
+      });
+    });
+
+    return serviceCounts;
+  };
+
+  const getServiceCountsByCarModelWeek = (mechanicId, serviceName) => {
+    const start = moment(week).startOf("week").toDate();
+    const end = moment(week).endOf("week").toDate();
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+    const mechanicCustomers = filterCustomers.filter((customer) =>
+      customer.mechanics.includes(mechanicId)
+    );
+    const carModelCounts = {};
+
+    mechanicCustomers.forEach((customer) => {
+      customer.services.forEach((service) => {
+        const serviceInfo = service.serviceName;
+        const carInfo = `${customer.car.brand} ${customer.car.selectedModel}`;
+        if (serviceInfo === serviceName) {
+          if (carModelCounts[carInfo]) {
+            carModelCounts[carInfo]++;
+          } else {
+            carModelCounts[carInfo] = 1;
+          }
+        }
+      });
+    });
+
+    return carModelCounts;
+  };
+
+  const toggleServiceDetailsByMechanicWeek = (mechanicId, serviceName) => {
+    setShowServiceDetailsByMechanic((prevDetails) => ({
+      ...prevDetails,
+      [mechanicId]: {
+        ...prevDetails[mechanicId],
+        [serviceName]: !prevDetails[mechanicId]?.[serviceName],
+      },
+    }));
+  };
+
+  //********************-----------MONTH-----------********************//
+  //CAR-MONTH
+  const previousMonth = moment(month).subtract(1, "month").format("YYYY-MM");
+  const handlePreviousMonthClick = () => {
+    setMonth(previousMonth);
+    setShowServiceDetails(false);
+  };
+
+  const nextMonth = moment(month).add(1, "month").format("YYYY-MM");
+  const handleNextMonthClick = () => {
+    setMonth(nextMonth);
+    setShowServiceDetails(false);
+  };
+
+  const countCarsWithStartDate = () => {
+    const start = moment(`${month}-01T00:00:00`);
+    const end = start
+      .clone()
+      .endOf("month")
+      .set({ hour: 23, minute: 59, second: 59 });
+
+    const carsWithStartDatePerDay = {};
+    customers.forEach((customer) => {
+      const customerStartDate = moment(customer.startdate);
+      if (customerStartDate >= start && customerStartDate <= end) {
+        const dateString = customerStartDate.toISOString().split("T")[0];
+        if (carsWithStartDatePerDay[dateString]) {
+          carsWithStartDatePerDay[dateString]++;
+        } else {
+          carsWithStartDatePerDay[dateString] = 1;
+        }
+      }
+    });
+
+    return carsWithStartDatePerDay;
+  };
+
+  const carsWithStartDate = countCarsWithStartDate();
+  const sumCarsWithStartDate = Object.values(carsWithStartDate).reduce(
+    (sum, count) => sum + count,
+    0
+  );
+
+  const countCarsWithOutEndDate = () => {
+    const start = moment(`${month}-01T00:00:00`);
+    const end = moment(start).endOf("month");
+
+    const carsWithOutEndDate = {};
+
+    let currentDate = moment(start);
+    while (currentDate <= end) {
+      const dateString = currentDate.format("YYYY-MM-DD");
+
+      const count = customers.reduce((accumulator, customer) => {
+        const customerStartDate = moment(customer.startdate).startOf("day");
+        const customerEndDate = customer.enddate
+          ? moment(customer.enddate).startOf("day")
+          : null;
+
+        if (
+          customerStartDate.isSameOrBefore(currentDate, "day") &&
+          (!customerEndDate || customerEndDate.isAfter(currentDate, "day"))
+        ) {
+          return accumulator + 1;
+        }
+        return accumulator;
+      }, 0);
+
+      carsWithOutEndDate[dateString] = count;
+
+      currentDate.add(1, "day"); // เพิ่มวันที่ 1 วัน
+
+      if (currentDate.isAfter(moment(), "day") || currentDate > end) {
+        break;
+      }
+    }
+
+    return carsWithOutEndDate;
+  };
+
+  const carsWithOutEndDate = countCarsWithOutEndDate();
+
+  const countCarsWithEndDate = () => {
+    const start = moment(`${month}-01T00:00:00`);
+    const end = start
+      .clone()
+      .endOf("month")
+      .set({ hour: 23, minute: 59, second: 59 });
+
+    const carsWithEndDatePerDay = {};
+    customers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+      if (customerEndDate >= start && customerEndDate <= end) {
+        const dateString = customerEndDate.toISOString().split("T")[0];
+        if (carsWithEndDatePerDay[dateString]) {
+          carsWithEndDatePerDay[dateString]++;
+        } else {
+          carsWithEndDatePerDay[dateString] = 1;
+        }
+      }
+    });
+
+    return carsWithEndDatePerDay;
+  };
+
+  const carsWithEndDate = countCarsWithEndDate();
+  const sumCarsWithEndDate = Object.values(carsWithEndDate).reduce(
+    (sum, count) => sum + count,
+    0
+  );
+
+  const lastDate = Object.keys(carsWithOutEndDate).pop();
+  const lastValue = carsWithOutEndDate[lastDate];
+
+  //COST-MONTH
+
+  const countTotalCost = () => {
+    const start = moment(`${month}-01T00:00:00`);
+    const end = start
+      .clone()
+      .endOf("month")
+      .set({ hour: 23, minute: 59, second: 59 });
+
+    const filteredCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const totalCostPerDay = {};
+
+    filteredCustomers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+
+      const dateString = customerEndDate.format("YYYY-MM-DD");
+
+      if (totalCostPerDay[dateString]) {
+        totalCostPerDay[dateString] += customer.totalCost;
+      } else {
+        totalCostPerDay[dateString] = customer.totalCost;
+      }
+    });
+
+    return totalCostPerDay;
+  };
+
+  const totalCostPerDay = countTotalCost();
+
+  const countTotalFee = () => {
+    const start = moment(`${month}-01T00:00:00`);
+    const end = start
+      .clone()
+      .endOf("month")
+      .set({ hour: 23, minute: 59, second: 59 });
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const totalFeePerDay = {};
+
+    filterCustomers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+
+      const dateString = customerEndDate.format("YYYY-MM-DD");
+
+      if (totalFeePerDay[dateString]) {
+        totalFeePerDay[dateString] += customer.serviceFee;
+      } else {
+        totalFeePerDay[dateString] = customer.serviceFee;
+      }
+    });
+
+    return totalFeePerDay;
+  };
+
+  const totalFeePerDay = countTotalFee();
+
+  const countTotalSpare = () => {
+    const totalSparePerDay = {};
+
+    Object.keys(totalCostPerDay).forEach((date) => {
+      if (totalFeePerDay[date]) {
+        totalSparePerDay[date] = totalCostPerDay[date] - totalFeePerDay[date];
+      }
+    });
+
+    return totalSparePerDay;
+  };
+
+  const totalSparePerDay = countTotalSpare();
+
+  const sumTotalCost = Object.values(totalCostPerDay).reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  const sumTotalSpare = Object.values(totalSparePerDay).reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  const sumTotalFee = Object.values(totalFeePerDay).reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  const countService = () => {
+    const start = moment(`${month}-01T00:00:00`);
+    const end = start.clone().endOf("month");
+
+    const servicesUsed = {};
+
+    customers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+      if (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      ) {
+        customer.services.forEach((service) => {
+          const serviceName = service.serviceName;
+          if (!servicesUsed[serviceName]) {
+            servicesUsed[serviceName] = [];
+          }
+          servicesUsed[serviceName].push({
+            carBrand: customer.car.brand,
+            selectedModel: customer.car.selectedModel,
+          });
+        });
+      }
+    });
+
+    return servicesUsed;
+  };
+
+  const servicesUsed = countService();
+  // console.log(servicesUsed);
+
+  const toggleServiceDetails = (serviceName) => {
+    setShowServiceDetails({
+      ...showServiceDetails,
+      [serviceName]: !showServiceDetails[serviceName],
+    });
+  };
+
+  const getService = (serviceName) => {
+    const carModelCounts = {};
+
+    const start = moment(`${month}-01T00:00:00`);
+    const end = start
+      .clone()
+      .endOf("month")
+      .set({ hour: 23, minute: 59, second: 59 });
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const totalFeePerDay = {};
+
+    filterCustomers.forEach((customer) => {
+      customer.services.forEach((service) => {
+        const serviceInfo = service.serviceName;
+        const carInfo = `${customer.car.brand} ${customer.car.selectedModel}`;
+        if (serviceInfo === serviceName) {
+          if (carModelCounts[carInfo]) {
+            carModelCounts[carInfo]++;
+          } else {
+            carModelCounts[carInfo] = 1;
+          }
+        }
+      });
+    });
+
+    return carModelCounts;
+  };
+
+  //MECHANIC-MONTH
+  const countServicesByMechanic = (mechanicId) => {
+    const start = moment(`${month}-01T00:00:00`);
+    const end = start
+      .clone()
+      .endOf("month")
+      .set({ hour: 23, minute: 59, second: 59 });
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const mechanicCustomers = filterCustomers.filter((customer) =>
+      customer.mechanics.includes(mechanicId)
+    );
+    const serviceCounts = {};
+
+    mechanicCustomers.forEach((customer) => {
+      customer.services.forEach((service) => {
+        const serviceName = service.serviceName;
         if (serviceCounts[serviceName]) {
           serviceCounts[serviceName]++;
         } else {
@@ -308,14 +1140,28 @@ function Report() {
   };
 
   const getServiceCountsByCarModel = (mechanicId, serviceName) => {
-    const mechanicCustomers = searchResults.filter((customer) =>
+    const start = moment(`${month}-01T00:00:00`);
+    const end = start
+      .clone()
+      .endOf("month")
+      .set({ hour: 23, minute: 59, second: 59 });
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+    const mechanicCustomers = filterCustomers.filter((customer) =>
       customer.mechanics.includes(mechanicId)
     );
     const carModelCounts = {};
 
     mechanicCustomers.forEach((customer) => {
       customer.services.forEach((service) => {
-        const serviceInfo = getServiceNameById(service.serviceName);
+        const serviceInfo = service.serviceName;
         const carInfo = `${customer.car.brand} ${customer.car.selectedModel}`;
         if (serviceInfo === serviceName) {
           if (carModelCounts[carInfo]) {
@@ -328,57 +1174,6 @@ function Report() {
     });
 
     return carModelCounts;
-  };
-
-  const getServiceCountsCarModel = (serviceName) => {
-    const carModelCounts = {};
-
-    searchServiceResults.forEach((customer) => {
-      customer.services.forEach((service) => {
-        const serviceInfo = getServiceNameById(service.serviceName);
-        const carInfo = `${customer.car.brand} ${customer.car.selectedModel}`;
-        if (serviceInfo === serviceName) {
-          if (carModelCounts[carInfo]) {
-            carModelCounts[carInfo]++;
-          } else {
-            carModelCounts[carInfo] = 1;
-          }
-        }
-      });
-    });
-
-    return carModelCounts;
-  };
-  
-  const countServicesByType = () => {
-    const serviceCounts = {};
-
-    searchServiceResults.forEach((customer) => {
-      customer.services.forEach((service) => {
-        const serviceName = getServiceNameById(service.serviceName);
-        if (serviceCounts[serviceName]) {
-          serviceCounts[serviceName].count++;
-          const carModel = `${customer.car.brand} ${customer.car.selectedModel}`;
-          if (!serviceCounts[serviceName].carModels.includes(carModel)) {
-            serviceCounts[serviceName].carModels.push(carModel);
-          }
-        } else {
-          serviceCounts[serviceName] = {
-            count: 1,
-            carModels: [`${customer.car.brand} ${customer.car.selectedModel}`],
-          };
-        }
-      });
-    });
-
-    return serviceCounts;
-  };
-
-  const toggleServiceDetailsByType = (serviceName) => {
-    setShowServiceDetailsByType((prevDetails) => ({
-      ...prevDetails,
-      [serviceName]: !prevDetails[serviceName],
-    }));
   };
 
   const toggleServiceDetailsByMechanic = (mechanicId, serviceName) => {
@@ -391,288 +1186,694 @@ function Report() {
     }));
   };
 
-
-  const filterAndSortCustomers = () => {
-    const startDateObject = new Date(`${startDate}T00:00:00`);
-    const endDateObject = new Date(`${endDate}T23:59:59`);
-
-    const filteredAndSortedCustomers = customers.filter((customer) => {
-      const customerEndDate = new Date(customer.enddate);
-      return (
-        customerEndDate >= startDateObject &&
-        customerEndDate <= endDateObject &&
-        customer.status.state5
-      );
-    });
-
-    // setSearchResults(filteredAndSortedCustomers);
-    // setSearchServiceResults(filteredAndSortedCustomers);
-
-    const dailyTotalCost = filteredAndSortedCustomers.reduce(
-      (accumulator, customer) => {
-        const customerEndDate = new Date(customer.enddate);
-        const dateKey = customerEndDate.toISOString().split("T")[0]; // ใช้วันที่เป็น key ในการรวมยอด totalCost
-
-        if (!accumulator[dateKey]) {
-          accumulator[dateKey] = 0;
-        }
-
-        if (customer.totalCost) {
-          accumulator[dateKey] += customer.totalCost;
-        }
-
-        return accumulator;
-      },
-      {}
-    );
-
-    setDailyTotalCost(dailyTotalCost);
-
-    const dailyServiceFee = filteredAndSortedCustomers.reduce(
-      (accumulator, customer) => {
-        const customerEndDate = new Date(customer.enddate);
-        const dateKey = customerEndDate.toISOString().split("T")[0]; // ใช้วันที่เป็น key ในการรวบรวมยอด servicefee
-
-        if (!accumulator[dateKey]) {
-          accumulator[dateKey] = 0;
-        }
-
-        if (customer.serviceFee) {
-          accumulator[dateKey] += customer.serviceFee;
-        }
-
-        return accumulator;
-      },
-      {}
-    );
-
-    setDailyServiceFee(dailyServiceFee);
-  };
-
-
-  const sumTotalCost = Object.values(dailyTotalCost).reduce(
-    (accumulator, currentValue) => accumulator + currentValue,
-    0
-  );
-  const sumServiceFee = Object.values(dailyServiceFee).reduce(
-    (accumulator, currentValue) => accumulator + currentValue,
-    0
-  );
-
-  const toggleShowAll = () => {
-    setStartDate("");
-    setEndDate("");
-    setSearchResults(allCustomersFiltered);
-    setSearchResultAll(allCustomers);
-
-    setSearchServiceResults(allCustomersFiltered);
-  };
-
-
-
   return (
     <div className="report">
       <div className="report-head-container">
         <div className="report-head">รายงานสรุป</div>
       </div>
+
       <div className="report-filter">
-        <div className="report-daily" onClick={handleDailyClick}>
-          DAILY
+        <div
+          className={`report-daily ${dayOn ? "active" : ""}`}
+          onClick={handleDayClick}
+        >
+          วัน
         </div>
-        <div className="report-weekly" onClick={handleWeeklyClick}>
-          WEEKLY
+        <div
+          className={`report-weekly ${weekOn ? "active" : ""}`}
+          onClick={handleWeekClick}
+        >
+          สัปดาห์
         </div>
-        <div className="report-monthly" onClick={handleMonthlyClick}>
-          MONTHLY
+        <div
+          className={`report-monthly ${monthOn ? "active" : ""}`}
+          onClick={handleMonthClick}
+        >
+          เดือน
         </div>
-        <div className="report-yearly" onClick={handleYearlyClick}>
-          YEARLY
-        </div>
-      </div>
-
-      <div className="report-filter1">
-        <label htmlFor="startDateSelect">เลือกวันเริ่มต้น: </label>
-        <input
-          type="date"
-          id="startDateSelect"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <label htmlFor="endDateSelect">เลือกวันสิ้นสุด: </label>
-        <input
-          type="date"
-          id="endDateSelect"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-        <div className="report-filterbutton" onClick={filterAndSortCustomers}>
-          ยืนยัน
-        </div>
-        <div className="report-filterbutton" onClick={toggleShowAll}>
-          แสดงทั้งหมด
+        <div
+          className={`report-yearly ${yearOn ? "active" : ""}`}
+          onClick={handleYearClick}
+        >
+          ปี
         </div>
       </div>
 
-      <div>
-        <ReportCarGraph
-          carsWithStartDatePerDay={carsWithStartDatePerDay}
-          carsWithoutEndDatePerDay={carsWithOutEndDatePerDay}
-          carsWithEndDatePerDay={carsWithEndDatePerDay}
-        />
-      </div>
+      <div className="daily-filter">
+        {dayOn ? (
+          <div>
+            <div>
+              <button onClick={handlePreviousDateClick}>ย้อนหลัง 1 วัน</button>
+              <input
+                type="date"
+                id="dateSelect"
+                value={date}
+                onChange={(e) => {
+                  setDate(e.target.value);
+                }}
+              />
+              <button onClick={handleNextDateClick}>ไปข้างหน้า 1 วัน</button>
+            </div>
 
-      <div className="reportsumtotalcost">
-        ยอดรวมรถที่รับเข้ามา: {sumCarsWithStartDatePerDay}
-      </div>
-      <div className="reportsumservicefee">
-        รถที่ยังอยู่ในอู่: {countCarsWithoutEndDateAtEndDate}
-      </div>
-      <div className="reportsumtotalcost">
-        ยอดรวมรถที่รับเข้ามา: {sumCarsWithEndDatePerDay}
-      </div>
+            <div>
+              <input
+                type="date"
+                id="dateSelect"
+                value={date}
+                onChange={(e) => {
+                  setDate(e.target.value);
+                }}
+              />
+            </div>
 
-      <div className="reportrepair-head">สรุปรายได้</div>
+            <h1>รายงานสรุป {moment(date).format("DD MMMM YYYY ")}</h1>
 
-      <div className="daily-total-cost">
-        <ReportGraph
-          dailyTotalCost={dailyTotalCost}
-          dailyServiceFee={dailyServiceFee}
-        />
-      </div>
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1 }}>
+                <DonutChart
+                  data={[
+                    {
+                      name: `รถที่รับเข้ามา : ${sumCarsWithStartDateDate}`,
+                      value: sumCarsWithStartDateDate,
+                    },
+                    {
+                      name: `รถที่ส่งออก : ${sumCarsWithEndDateDate}`,
+                      value: sumCarsWithEndDateDate,
+                    },
+                    {
+                      name: `รถที่ยังอยู่ในอู่ : ${lastValueDate}`,
+                      value: lastValueDate,
+                    },
+                  ]}
+                />
 
-      <div className="reportsumtotalcost">Sum Total Cost: {sumTotalCost}</div>
-      <div className="reportsumservicefee">Sum ServiceFee: {sumServiceFee}</div>
+                <div>
+                  <h5>รถที่รับเข้ามา: {sumCarsWithStartDateDate}</h5>
+                  <h5>รถที่ส่งออก: {sumCarsWithEndDateDate}</h5>
+                  <h5>รถที่ยังอยู่ในอู่: {lastValueDate}</h5>
+                </div>
+              </div>
+              <div style={{ flex: 2 }}></div>
+            </div>
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1 }}>
+                <DonutChart
+                  data={[
+                    {
+                      name: `TotalSpareDatet : ${sumTotalSpareDate}`,
+                      value: sumCarsWithEndDateDate,
+                    },
+                    {
+                      name: `TotalFeeDate : ${sumTotalFeeDate}`,
+                      value: sumTotalFeeDate,
+                    },
+                  ]}
+                />
+                <div>
+                  <h5>TotalCost={sumTotalCostDate}</h5>
+                  <h5>TotalSpare={sumTotalSpareDate}</h5>
+                  <h5>TotalFee={sumTotalFeeDate}</h5>
+                </div>
+              </div>
+              <div style={{ flex: 2 }}>
+                <div />
+              </div>
+            </div>
+            <div className="reportmechanic-head">สรุปรายการซ่อม</div>
 
-      <div className="reportrepair-head">สรุปรายการซ่อม</div>
-
-      <div className="reportrepair-table-container">
-        <table className="reportrepair-table">
-          <thead>
-            <tr>
-              <th>รายการซ่อม</th>
-              <th>จำนวน</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(countServicesByType()).map(
-              ([serviceName, serviceInfo]) => (
-                <React.Fragment key={serviceName}>
+            <div className="reportrepair-table-container">
+              <table className="reportrepair-table">
+                <thead>
                   <tr>
-                    <td style={{ paddingLeft: "15px" }}>
-                      {serviceName}
-                      <img
-                        onClick={() => toggleServiceDetailsByType(serviceName)}
-                        src="./assets/image/down-arrow.png"
-                      />
-                    </td>
-                    <td>{serviceInfo.count}</td>
+                    <th>รายการซ่อม</th>
+                    <th>จำนวน</th>
                   </tr>
-                  {showServiceDetailsByType[serviceName] && (
-                    <tr>
-                      <td colSpan={2}>
-                        {Object.entries(
-                          getServiceCountsCarModel(serviceName)
-                        ).map(([carModel, carModelCount]) => (
-                          <div key={carModel}>
-                            <table className="reportrepair-subrow">
-                              <tr>
-                                <td>{carModel}</td>
-                                <td style={{ width: "20%" }}>
-                                  {carModelCount}
-                                </td>
-                                <td></td>
-                              </tr>
-                            </table>
-                          </div>
-                        ))}
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              )
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="reportmechanic-head">สรุปการทำงานของช่าง</div>
-
-      <div className="reportmechanic-table-container">
-        <table className="reportmechanic-table">
-          <thead>
-            <tr>
-              <th>ช่าง</th>
-              <th>รายการซ่อม</th>
-              <th>จำนวน</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mechanics.map((mechanic) => {
-              const services = countServicesByMechanic(mechanic.name);
-
-              return (
-                <React.Fragment key={mechanic._id}>
-                  {Object.keys(services).map((serviceName, index) => {
-                    const carModelCounts = Object.entries(
-                      getServiceCountsByCarModel(mechanic.name, serviceName)
-                    );
-                    const serviceTotal = carModelCounts.reduce(
-                      (acc, [carModel, carModelCount]) => acc + carModelCount,
-                      0
-                    );
-
-                    return (
-                      <tr key={`${mechanic._id}-${serviceName}`}>
-                        {index === 0 && (
-                          <td rowSpan={Object.keys(services).length}>
-                            {mechanic.name}
+                </thead>
+                <tbody>
+                  {Object.entries(servicesUsedDate).map(
+                    ([serviceName, index]) => (
+                      <React.Fragment key={serviceName}>
+                        <tr>
+                          <td style={{ paddingLeft: "15px" }}>
+                            {serviceName}
+                            <img
+                              onClick={() => toggleServiceDetails(serviceName)}
+                              src="./assets/image/down-arrow.png"
+                            />
                           </td>
-                        )}
-                        <td style={{ textAlign: "left" }}>
-                          {serviceName}
-                          <img
-                            onClick={() =>
-                              toggleServiceDetailsByMechanic(
-                                mechanic.name,
-                                serviceName
-                              )
-                            }
-                            src="./assets/image/down-arrow.png"
-                          />
-                          {showServiceDetailsByMechanic[mechanic.name]?.[
-                            serviceName
-                          ] && (
-                            <div>
-                              {carModelCounts.map(
+                          <td>{servicesUsedDate[serviceName].length}</td>
+                        </tr>
+                        {showServiceDetails[serviceName] && (
+                          <tr>
+                            <td colSpan={2}>
+                              {Object.entries(getServiceDate(serviceName)).map(
                                 ([carModel, carModelCount]) => (
-                                  <table className="reportmechanic-subrow">
-                                    <tr key={carModel}>
-                                      <td style={{ paddingLeft: "20px" }}>
-                                        {carModel}
-                                      </td>
-                                      <td style={{ width: "10%" }}>
-                                        {carModelCount}
-                                      </td>
-                                    </tr>
-                                  </table>
+                                  <div key={carModel}>
+                                    <table className="reportrepair-subrow">
+                                      <tr>
+                                        <td>{carModel}</td>
+                                        <td style={{ width: "20%" }}>
+                                          {carModelCount}
+                                        </td>
+                                        <td></td>
+                                      </tr>
+                                    </table>
+                                  </div>
                                 )
                               )}
-                            </div>
-                          )}
-                        </td>
-                        <td>{serviceTotal}</td>
-                      </tr>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="reportmechanic-head">สรุปการทำงานของช่าง</div>
+
+            <div className="reportmechanic-table-container">
+              <table className="reportmechanic-table">
+                <thead>
+                  <tr>
+                    <th>ช่าง</th>
+                    <th>รายการซ่อม</th>
+                    <th>จำนวน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {mechanics.map((mechanic) => {
+                    const services = countServicesByMechanicDate(mechanic.name);
+
+                    return (
+                      <React.Fragment key={mechanic._id}>
+                        {Object.keys(services).map((serviceName, index) => {
+                          const carModelCounts = Object.entries(
+                            getServiceCountsByCarModelDate(
+                              mechanic.name,
+                              serviceName
+                            )
+                          );
+                          const serviceTotal = carModelCounts.reduce(
+                            (acc, [carModel, carModelCount]) =>
+                              acc + carModelCount,
+                            0
+                          );
+
+                          return (
+                            <tr key={`${mechanic._id}-${serviceName}`}>
+                              {index === 0 && (
+                                <td rowSpan={Object.keys(services).length}>
+                                  {mechanic.name}
+                                </td>
+                              )}
+                              <td style={{ textAlign: "left" }}>
+                                {serviceName}
+                                <img
+                                  onClick={() =>
+                                    toggleServiceDetailsByMechanicDate(
+                                      mechanic.name,
+                                      serviceName
+                                    )
+                                  }
+                                  src="./assets/image/down-arrow.png"
+                                />
+                                {showServiceDetailsByMechanicDate[
+                                  mechanic.name
+                                ]?.[serviceName] && (
+                                    <div>
+                                      {carModelCounts.map(
+                                        ([carModel, carModelCount]) => (
+                                          <table className="reportmechanic-subrow">
+                                            <tr key={carModel}>
+                                              <td style={{ paddingLeft: "20px" }}>
+                                                {carModel}
+                                              </td>
+                                              <td style={{ width: "10%" }}>
+                                                {carModelCount}
+                                              </td>
+                                            </tr>
+                                          </table>
+                                        )
+                                      )}
+                                    </div>
+                                  )}
+                              </td>
+                              <td>{serviceTotal}</td>
+                            </tr>
+                          );
+                        })}
+                      </React.Fragment>
                     );
                   })}
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
-        ;
+                </tbody>
+              </table>
+              ;
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+      </div>
+
+      <div className="monthly-filter">
+        {weekOn ? (
+          <div>
+            <div>
+              <button onClick={handlePreviousWeekClick}>
+                ย้อนหลัง 1 สัปดาห์
+              </button>
+              <input
+                type="week"
+                id="weekSelect"
+                value={week}
+                onChange={(e) => {
+                  setWeek(e.target.value);
+                }}
+              />
+              <button onClick={handleNextWeekClick}>
+                ไปข้างหน้า 1 สัปดาห์
+              </button>
+            </div>
+
+            <h1>รายงานสรุปสัปดาห์ที่ {moment(week).format("w")}</h1>
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1 }}>
+                <DonutChart
+                  data={[
+                    {
+                      name: `รถที่รับเข้ามา : ${sumCarsWithStartDateWeek}`,
+                      value: sumCarsWithStartDateWeek,
+                    },
+                    {
+                      name: `รถที่ส่งออก : ${sumCarsWithEndDateWeek}`,
+                      value: sumCarsWithEndDateWeek,
+                    },
+                    {
+                      name: `รถที่ยังอยู่ในอู่ : ${lastValueWeek}`,
+                      value: lastValueWeek,
+                    },
+                  ]}
+                />
+
+                <div>
+                  {/* <h5>รถที่รับเข้ามา: {sumCarsWithStartDate}</h5>
+                  <h5>รถที่ส่งออก: {sumCarsWithEndDate}</h5>
+                  <h5>รถที่ยังอยู่ในอู่: {lastValue}</h5> */}
+                </div>
+              </div>
+              <div style={{ flex: 2 }}>
+                {/* <BarCar
+                  carsWithStartDate={carsWithStartDate}
+                  carsWithEndDate={carsWithEndDate}
+                  carsWithOutEndDate={carsWithOutEndDate}
+                /> */}
+              </div>
+            </div>
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1 }}>
+                {/* <DonutChart
+                  data={[
+                    {
+                      name: `ค่าอะไหล่ทั้งหมด`,
+                      value: sumTotalSpare,
+                    },
+                    {
+                      name: `ค่าบริการทั้งหมด`,
+                      value: sumTotalFee,
+                    },
+                  ]}
+                /> */}
+              </div>
+              <div style={{ flex: 2 }}>
+                {/* <BarCost
+                  TotalCost={totalCostPerDay}
+                  TotalFee={totalFeePerDay}
+                  TotalSpare={totalSparePerDay}
+                  carsWithOutEndDate={carsWithOutEndDate}
+                /> */}
+              </div>
+            </div>
+            <div>
+              {/* <h5>รายได้ทั้งหมด : {sumTotalCost}</h5>
+              <h5>ค่าอะไหล่ทั้งหมด : {sumTotalSpare}</h5>
+              <h5>ค่าบริการทั้งหมด : {sumTotalFee}</h5> */}
+            </div>
+            <div className="reportrepair-table-container">
+              <table className="reportrepair-table">
+                <thead>
+                  <tr>
+                    <th>รายการซ่อม</th>
+                    <th>จำนวน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* {Object.entries(servicesUsed).map(([serviceName, index]) => (
+                    <React.Fragment key={serviceName}>
+                      <tr>
+                        <td style={{ paddingLeft: "15px" }}>
+                          {serviceName}
+                          <img
+                            onClick={() => toggleServiceDetails(serviceName)}
+                            src="./assets/image/down-arrow.png"
+                          />
+                        </td>
+                        <td>{servicesUsed[serviceName].length}</td>
+                      </tr>
+                      {showServiceDetails[serviceName] && (
+                        <tr>
+                          <td colSpan={2}>
+                            {Object.entries(getService(serviceName)).map(
+                              ([carModel, carModelCount]) => (
+                                <div key={carModel}>
+                                  <table className="reportrepair-subrow">
+                                    <tr>
+                                      <td>{carModel}</td>
+                                      <td style={{ width: "20%" }}>
+                                        {carModelCount}
+                                      </td>
+                                      <td></td>
+                                    </tr>
+                                  </table>
+                                </div>
+                              )
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  ))} */}
+                </tbody>
+              </table>
+            </div>
+            <div className="reportmechanic-head">สรุปการทำงานของช่าง</div>
+
+            <div className="reportmechanic-head">สรุปการทำงานของช่าง</div>
+
+            <div className="reportmechanic-table-container">
+              <table className="reportmechanic-table">
+                <thead>
+                  <tr>
+                    <th>ช่าง</th>
+                    <th>รายการซ่อม</th>
+                    <th>จำนวน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* {mechanics.map((mechanic) => {
+                    const services = countServicesByMechanic(mechanic.name);
+
+                    return (
+                      <React.Fragment key={mechanic._id}>
+                        {Object.keys(services).map((serviceName, index) => {
+                          const carModelCounts = Object.entries(
+                            getServiceCountsByCarModel(
+                              mechanic.name,
+                              serviceName
+                            )
+                          );
+                          const serviceTotal = carModelCounts.reduce(
+                            (acc, [carModel, carModelCount]) =>
+                              acc + carModelCount,
+                            0
+                          );
+
+                          return (
+                            <tr key={`${mechanic._id}-${serviceName}`}>
+                              {index === 0 && (
+                                <td rowSpan={Object.keys(services).length}>
+                                  {mechanic.name}
+                                </td>
+                              )}
+                              <td style={{ textAlign: "left" }}>
+                                {serviceName}
+                                <img
+                                  onClick={() =>
+                                    toggleServiceDetailsByMechanic(
+                                      mechanic.name,
+                                      serviceName
+                                    )
+                                  }
+                                  src="./assets/image/down-arrow.png"
+                                />
+                                {showServiceDetailsByMechanic[mechanic.name]?.[
+                                  serviceName
+                                ] && (
+                                  <div>
+                                    {carModelCounts.map(
+                                      ([carModel, carModelCount]) => (
+                                        <table className="reportmechanic-subrow">
+                                          <tr key={carModel}>
+                                            <td style={{ paddingLeft: "20px" }}>
+                                              {carModel}
+                                            </td>
+                                            <td style={{ width: "10%" }}>
+                                              {carModelCount}
+                                            </td>
+                                          </tr>
+                                        </table>
+                                      )
+                                    )}
+                                  </div>
+                                )}
+                              </td>
+                              <td>{serviceTotal}</td>
+                            </tr>
+                          );
+                        })}
+                      </React.Fragment>
+                    );
+                  })} */}
+                </tbody>
+              </table>
+              ;
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+      </div>
+
+      <div className="monthly-filter">
+        {monthOn ? (
+          <div>
+            <div>
+              <button onClick={handlePreviousMonthClick}>
+                ย้อนหลัง 1 เดือน
+              </button>
+              <input
+                type="month"
+                id="monthSelect"
+                value={month}
+                onChange={(e) => {
+                  setMonth(e.target.value);
+                }}
+              />
+              <button onClick={handleNextMonthClick}>ไปข้างหน้า 1 เดือน</button>
+            </div>
+
+            <h1>รายงานสรุป {moment(month).format("MMMM YYYY")}</h1>
+
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1 }}>
+                <DonutChart
+                  data={[
+                    {
+                      name: `รถที่รับเข้ามา : ${sumCarsWithStartDate}`,
+                      value: sumCarsWithStartDate,
+                    },
+                    {
+                      name: `รถที่ส่งออก : ${sumCarsWithEndDate}`,
+                      value: sumCarsWithEndDate,
+                    },
+                    {
+                      name: `รถที่ยังอยู่ในอู่ : ${lastValue}`,
+                      value: lastValue,
+                    },
+                  ]}
+                />
+
+                <div>
+                  <h5>รถที่รับเข้ามา: {sumCarsWithStartDate}</h5>
+                  <h5>รถที่ส่งออก: {sumCarsWithEndDate}</h5>
+                  <h5>รถที่ยังอยู่ในอู่: {lastValue}</h5>
+                </div>
+              </div>
+              <div style={{ flex: 2 }}>
+                <BarCar
+                  carsWithStartDate={carsWithStartDate}
+                  carsWithEndDate={carsWithEndDate}
+                  carsWithOutEndDate={carsWithOutEndDate}
+                />
+              </div>
+            </div>
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1 }}>
+                <DonutChart
+                  data={[
+                    {
+                      name: `ค่าอะไหล่ทั้งหมด`,
+                      value: sumTotalSpare,
+                    },
+                    {
+                      name: `ค่าบริการทั้งหมด`,
+                      value: sumTotalFee,
+                    },
+                  ]}
+                />
+              </div>
+              <div style={{ flex: 2 }}>
+                <BarCost
+                  TotalCost={totalCostPerDay}
+                  TotalFee={totalFeePerDay}
+                  TotalSpare={totalSparePerDay}
+                  carsWithOutEndDate={carsWithOutEndDate}
+                />
+              </div>
+            </div>
+            <div>
+              <h5>รายได้ทั้งหมด : {sumTotalCost}</h5>
+              <h5>ค่าอะไหล่ทั้งหมด : {sumTotalSpare}</h5>
+              <h5>ค่าบริการทั้งหมด : {sumTotalFee}</h5>
+            </div>
+            <div></div>
+            <div className="reportmechanic-head">สรุปรายการซ่อม</div>
+
+            <div className="reportrepair-table-container">
+              <table className="reportrepair-table">
+                <thead>
+                  <tr>
+                    <th>รายการซ่อม</th>
+                    <th>จำนวน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(servicesUsed).map(([serviceName, index]) => (
+                    <React.Fragment key={serviceName}>
+                      <tr>
+                        <td style={{ paddingLeft: "15px" }}>
+                          {serviceName}
+                          <img
+                            onClick={() => toggleServiceDetails(serviceName)}
+                            src="./assets/image/down-arrow.png"
+                          />
+                        </td>
+                        <td>{servicesUsed[serviceName].length}</td>
+                      </tr>
+                      {showServiceDetails[serviceName] && (
+                        <tr>
+                          <td colSpan={2}>
+                            {Object.entries(getService(serviceName)).map(
+                              ([carModel, carModelCount]) => (
+                                <div key={carModel}>
+                                  <table className="reportrepair-subrow">
+                                    <tr>
+                                      <td>{carModel}</td>
+                                      <td style={{ width: "20%" }}>
+                                        {carModelCount}
+                                      </td>
+                                      <td></td>
+                                    </tr>
+                                  </table>
+                                </div>
+                              )
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="reportmechanic-head">สรุปการทำงานของช่าง</div>
+            <div className="reportmechanic-table-container">
+              <table className="reportmechanic-table">
+                <thead>
+                  <tr>
+                    <th>ช่าง</th>
+                    <th>รายการซ่อม</th>
+                    <th>จำนวน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {mechanics.map((mechanic) => {
+                    const services = countServicesByMechanic(mechanic.name);
+
+                    return (
+                      <React.Fragment key={mechanic._id}>
+                        {Object.keys(services).map((serviceName, index) => {
+                          const carModelCounts = Object.entries(
+                            getServiceCountsByCarModel(
+                              mechanic.name,
+                              serviceName
+                            )
+                          );
+                          const serviceTotal = carModelCounts.reduce(
+                            (acc, [carModel, carModelCount]) =>
+                              acc + carModelCount,
+                            0
+                          );
+
+                          return (
+                            <tr key={`${mechanic._id}-${serviceName}`}>
+                              {index === 0 && (
+                                <td rowSpan={Object.keys(services).length}>
+                                  {mechanic.name}
+                                </td>
+                              )}
+                              <td style={{ textAlign: "left" }}>
+                                {serviceName}
+                                <img
+                                  onClick={() =>
+                                    toggleServiceDetailsByMechanic(
+                                      mechanic.name,
+                                      serviceName
+                                    )
+                                  }
+                                  src="./assets/image/down-arrow.png"
+                                />
+                                {showServiceDetailsByMechanic[mechanic.name]?.[
+                                  serviceName
+                                ] && (
+                                    <div>
+                                      {carModelCounts.map(
+                                        ([carModel, carModelCount]) => (
+                                          <table className="reportmechanic-subrow">
+                                            <tr key={carModel}>
+                                              <td style={{ paddingLeft: "20px" }}>
+                                                {carModel}
+                                              </td>
+                                              <td style={{ width: "10%" }}>
+                                                {carModelCount}
+                                              </td>
+                                            </tr>
+                                          </table>
+                                        )
+                                      )}
+                                    </div>
+                                  )}
+                              </td>
+                              <td>{serviceTotal}</td>
+                            </tr>
+                          );
+                        })}
+                      </React.Fragment>
+                    );
+                  })}
+                </tbody>
+              </table>
+              ;
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );
 }
 
 export default Report;
+
