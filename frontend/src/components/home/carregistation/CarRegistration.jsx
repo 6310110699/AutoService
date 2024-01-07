@@ -21,6 +21,8 @@ const CarRegistration = () => {
     const [customColor, setCustomColor] = useState('');
     const [startdate, setStartDate] = useState('');
 
+    const [isFormEdited, setIsFormEdited] = useState(false);
+
     const [uniqueCustomerNumplates, setUniqueCustomerNumplates] = useState([]);
     const [uniqueCustomerLineId, setUniqueCustomerLineId] = useState([]);
     const [uniqueCustomerNames, setUniqueCustomerNames] = useState([]);
@@ -125,6 +127,8 @@ const CarRegistration = () => {
         setSelectedModel('');
         setCustomBrand('');
         setCustomModel('');
+
+        setIsFormEdited(true);
     };
 
     const handleModelChange = (e) => {
@@ -132,12 +136,24 @@ const CarRegistration = () => {
         if (e.target.value === 'custom-model') {
             setCustomModel('');
         }
+
+        setIsFormEdited(true);
     };
 
     const handleColorChange = (e) => {
         setSelectedColor(e.target.value);
         if (e.target.value === 'custom-color') {
             setCustomColor('');
+        }
+
+        setIsFormEdited(true);
+    };
+
+    const handleConfirmBackModal = () => {
+        if (isFormEdited) {
+            setShowConfirmBackModal(true);
+        } else {
+            navigate('/home');
         }
     };
 
@@ -167,7 +183,12 @@ const CarRegistration = () => {
                             type="text"
                             className="form-control"
                             value={numPlate}
-                            onChange={(e) => setNumPlate(e.target.value)}
+                            onChange={(e) => {
+                                setNumPlate(e.target.value)
+                                if (e.target.value !== numPlate) {
+                                    setIsFormEdited(true);
+                                }
+                            }}
                             list='customerNumplatesList'
                         />
                         <datalist id="customerNumplatesList">
@@ -182,7 +203,12 @@ const CarRegistration = () => {
                             type="text"
                             className="form-control"
                             value={lineId}
-                            onChange={(e) => setLineId(e.target.value)}
+                            onChange={(e) => {
+                                setLineId(e.target.value)
+                                if (e.target.value !== lineId) {
+                                    setIsFormEdited(true);
+                                }
+                            }}
                             list='customerLineIdList'
                         />
                         <datalist id="customerLineIdList">
@@ -219,7 +245,12 @@ const CarRegistration = () => {
                             type="text"
                             className="form-control"
                             value={customerName}
-                            onChange={(e) => setCustomerName(e.target.value)}
+                            onChange={(e) => {
+                                setCustomerName(e.target.value)
+                                if (e.target.value !== customerName) {
+                                    setIsFormEdited(true);
+                                }
+                            }}
                             list='customerNamesList'
                         />
                         <datalist id="customerNamesList">
@@ -264,7 +295,12 @@ const CarRegistration = () => {
                             id="phone"
                             pattern="[0]{1}[0-9]{9}"
                             value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            onChange={(e) => {
+                                setPhoneNumber(e.target.value)
+                                if (e.target.value !== phoneNumber) {
+                                    setIsFormEdited(true);
+                                }
+                            }}
                         />
                         {error &&
                             <div className="danger">
@@ -308,13 +344,18 @@ const CarRegistration = () => {
                             type="datetime-local"
                             className="form-control"
                             value={startdate}
-                            onChange={(e) => setStartDate(e.target.value)}
+                            onChange={(e) => {
+                                setStartDate(e.target.value)
+                                if (e.target.value !== startdate) {
+                                    setIsFormEdited(true);
+                                }
+                            }}
                         />
                     </div>
                 </div>
             </form>
             <div className='button-carregis'>
-                <span className='button-regis' onClick={setShowConfirmBackModal}>
+                <span className='button-regis' onClick={handleConfirmBackModal}>
                     CANCEL
                 </span>
 

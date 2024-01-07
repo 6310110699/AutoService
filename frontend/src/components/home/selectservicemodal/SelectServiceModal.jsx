@@ -21,7 +21,9 @@ const SelectServiceModal = ({
   setServiceFee,
   handleAddService,
   editingCustomerId,
-  loadServices
+  loadServices,
+  isFormEdited,
+  setIsFormEdited
 }) => {
 
   const [showConfirmCancelEditServiceModal, setShowConfirmCancelEditServiceModal] = useState(false);
@@ -39,6 +41,7 @@ const SelectServiceModal = ({
   const handleCancelUpdateService = () => {
     handleConfirmCancelEditServiceModalClose();
     handleSelectServiceModalClose();
+    setIsFormEdited(false);
   };
 
   const [serviceName, setServiceName] = useState('');
@@ -53,6 +56,14 @@ const SelectServiceModal = ({
       setServiceName("");
     } catch (error) {
       console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลบริการ:', error);
+    }
+  };
+
+  const handleConfirmBackModal = () => {
+    if (isFormEdited) {
+      setShowConfirmCancelEditServiceModal(true);
+    } else {
+      handleSelectServiceModalClose();
     }
   };
 
@@ -203,7 +214,7 @@ const SelectServiceModal = ({
           <div>
             {currentStep === 1 && (
               <>
-                <div className="button-no" onClick={setShowConfirmCancelEditServiceModal}>
+                <div className="button-no" onClick={handleConfirmBackModal}>
                   CANCEL
                 </div>
                 <div className="button-yes" onClick={handleNextStep}>

@@ -11,7 +11,9 @@ const SelectSpareModal = ({
   selectedSparePartsByService,
   currentStepServiceId,
   handleSelectSparePart,
-  loadSpareParts
+  loadSpareParts,
+  isFormEdited,
+  setIsFormEdited
 }) => {
 
   const [showConfirmCancelEditSpareModal, setShowConfirmCancelEditSpareModal] = useState(false);
@@ -29,6 +31,7 @@ const SelectSpareModal = ({
   const handleCancelUpdateSpare = () => {
     handleConfirmCancelEditSpareModalClose();
     handleSelectSparePartModalClose();
+    setIsFormEdited(false);
   };
 
   const [spareName, setSpareName] = useState('');
@@ -47,6 +50,14 @@ const SelectSpareModal = ({
       setSparePrice('');
     } catch (error) {
       console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลอะไหล่:', error);
+    }
+  };
+
+  const handleConfirmBackModal = () => {
+    if (isFormEdited) {
+      setShowConfirmCancelEditSpareModal(true);
+    } else {
+      handleSelectSparePartModalClose();
     }
   };
 
@@ -115,7 +126,7 @@ const SelectSpareModal = ({
           </ul>
         </Modal.Body>
         <Modal.Footer>
-          <div className='button-no' onClick={setShowConfirmCancelEditSpareModal}>
+          <div className='button-no' onClick={handleConfirmBackModal}>
             CANCEL
           </div>
           <div className='button-yes' onClick={handleSaveSpareParts}>

@@ -38,12 +38,23 @@ const EditCarRegistrationModal = ({
   setCustomColor,
   setShowConfirmBackModal,
   showConfirmBackModal,
-  handleConfirmBackModalClose
+  handleConfirmBackModalClose,
+  isFormEdited,
+  setIsFormEdited
 }) => {
 
   const handleCancelUpdateCustomer = () => {
     handleConfirmBackModalClose();
     handleAddCustomerModalClose();
+    setIsFormEdited(false);
+  };
+
+  const handleConfirmBackModal = () => {
+    if (isFormEdited) {
+      setShowConfirmBackModal(true);
+    } else {
+      handleAddCustomerModalClose();
+    }
   };
 
   return (
@@ -76,7 +87,12 @@ const EditCarRegistrationModal = ({
                     type="text"
                     className="form-control"
                     value={numPlate}
-                    onChange={(e) => setNumPlate(e.target.value)}
+                    onChange={(e) => {
+                      setNumPlate(e.target.value)
+                      if (e.target.value !== numPlate) {
+                        setIsFormEdited(true);
+                      }
+                    }}
                     list='customerNumplatesList'
                   />
                   <datalist id="customerNumplatesList">
@@ -91,7 +107,12 @@ const EditCarRegistrationModal = ({
                     type="text"
                     className="form-control"
                     value={lineId}
-                    onChange={(e) => setLineId(e.target.value)}
+                    onChange={(e) => {
+                      setLineId(e.target.value)
+                      if (e.target.value !== lineId) {
+                        setIsFormEdited(true);
+                      }
+                    }}
                     list='customerLineIdList'
                   />
                   <datalist id="customerLineIdList">
@@ -128,7 +149,12 @@ const EditCarRegistrationModal = ({
                     type="text"
                     className="form-control"
                     value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
+                    onChange={(e) => {
+                      setCustomerName(e.target.value)
+                      if (e.target.value !== customerName) {
+                        setIsFormEdited(true);
+                      }
+                    }}
                     list='customerNamesList'
                   />
                   <datalist id="customerNamesList">
@@ -177,7 +203,12 @@ const EditCarRegistrationModal = ({
                     id="phone"
                     pattern="[0]{1}[0-9]{9}"
                     value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    onChange={(e) => {
+                      setPhoneNumber(e.target.value)
+                      if (e.target.value !== phoneNumber) {
+                        setIsFormEdited(true);
+                      }
+                    }}
                   />
                   {error &&
                     <div className="danger">
@@ -221,7 +252,12 @@ const EditCarRegistrationModal = ({
                   <input
                     type="datetime-local"
                     value={startdate}
-                    onChange={(e) => setStartDate(e.target.value)}
+                    onChange={(e) => {
+                      setStartDate(e.target.value)
+                      if (e.target.value !== startdate) {
+                        setIsFormEdited(true);
+                      }
+                    }}
                     className="form-control"
                   />
                 </div>
@@ -230,7 +266,7 @@ const EditCarRegistrationModal = ({
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <div className='button-no' onClick={setShowConfirmBackModal}>
+          <div className='button-no' onClick={handleConfirmBackModal}>
             CANCEL
           </div>
           <div className='button-yes' onClick={() => handleUpdateCustomer(editingCustomerId)}>
@@ -258,9 +294,9 @@ const EditCarRegistrationModal = ({
             NO
           </div>
 
-            <div className='button-yes' onClick={handleCancelUpdateCustomer}>
-              YES
-            </div>
+          <div className='button-yes' onClick={handleCancelUpdateCustomer}>
+            YES
+          </div>
         </Modal.Footer>
       </Modal>
     </div>

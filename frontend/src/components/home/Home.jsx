@@ -37,6 +37,8 @@ const Repair = () => {
   const [startdate, setStartDate] = useState('');
   const [enddate, setEndDate] = useState('');
 
+  const [isFormEdited, setIsFormEdited] = useState(false);
+
   const [serviceFee, setServiceFee] = useState(0);
 
   const [selectedServices, setSelectedServices] = useState([]);
@@ -202,6 +204,7 @@ const Repair = () => {
 
   const handleAddCustomerModalClose = () => {
     setShowCarRigisterModal(false);
+    setIsFormEdited(false);
   };
 
   const handleUpdateCustomer = async (id) => {
@@ -266,6 +269,8 @@ const Repair = () => {
     setSelectedModel('');
     setCustomBrand('');
     setCustomModel('');
+
+    setIsFormEdited(true);
   };
 
   const handleModelChange = (e) => {
@@ -273,6 +278,8 @@ const Repair = () => {
     if (e.target.value === 'custom-model') {
       setCustomModel('');
     }
+
+    setIsFormEdited(true);
   };
 
   const handleColorChange = (e) => {
@@ -280,6 +287,8 @@ const Repair = () => {
     if (e.target.value === 'custom-color') {
       setCustomColor('');
     }
+
+    setIsFormEdited(true);
   };
 
   const handleDeleteCustomer = async (id) => {
@@ -313,6 +322,8 @@ const Repair = () => {
     setCurrentStep(1);
     setShowSelectServiceModal(false);
     setSelectedSparePartsForService(selectedSparePartsForService);
+
+    setIsFormEdited(false);
   };
 
   const handleSelectService = (serviceId) => {
@@ -326,6 +337,8 @@ const Repair = () => {
       }
 
       setSelectedServices(updatedSelectedServices);
+
+      setIsFormEdited(true);
     }
   };
 
@@ -400,6 +413,8 @@ const Repair = () => {
   const handleSelectSparePartModalClose = () => {
     setShowSparePartsModal(false);
     setSelectedSparePartsByService(selectedSparePartsForService);
+
+    setIsFormEdited(false);
   };
 
   const handleEditSpareParts = (service) => {
@@ -420,6 +435,8 @@ const Repair = () => {
       }
 
       setSelectedSpareParts(updatedSelectedSpareParts);
+
+      setIsFormEdited(true);
 
       const updatedSelectedSparePartsByService = { ...selectedSparePartsByService };
       updatedSelectedSparePartsByService[currentStepServiceId] = updatedSelectedSpareParts;
@@ -457,6 +474,7 @@ const Repair = () => {
 
   const handleSelectMechanicModalClose = () => {
     setShowSelectMechanicModal(false);
+    setIsFormEdited(false);
   };
 
   const handleEditMecanics = (customer) => {
@@ -473,6 +491,8 @@ const Repair = () => {
     } else {
       setSelectedMechanics([...selectedMechanics, mechanicId]);
     }
+
+    setIsFormEdited(true);
   };
 
   const handleAddMechanic = async (id) => {
@@ -801,6 +821,8 @@ const Repair = () => {
         setShowConfirmBackModal={setShowConfirmBackModal}
         showConfirmBackModal={showConfirmBackModal}
         handleConfirmBackModalClose={handleConfirmBackModalClose}
+        isFormEdited={isFormEdited}
+        setIsFormEdited={setIsFormEdited}
       />
 
       <SelectServiceModal
@@ -822,6 +844,8 @@ const Repair = () => {
         handleAddService={handleAddService}
         editingCustomerId={editingCustomerId}
         loadServices={loadServices}
+        isFormEdited={isFormEdited}
+        setIsFormEdited={setIsFormEdited}
       />
 
       <SelectSpareModal
@@ -833,6 +857,8 @@ const Repair = () => {
         currentStepServiceId={currentStepServiceId}
         handleSelectSparePart={handleSelectSparePart}
         loadSpareParts={loadSpareParts}
+        isFormEdited={isFormEdited}
+        setIsFormEdited={setIsFormEdited}
       />
 
       <SelectMechanicModal
@@ -844,6 +870,8 @@ const Repair = () => {
         handleAddMechanic={handleAddMechanic}
         editingCustomerId={editingCustomerId}
         loadMechanics={loadMechanics}
+        isFormEdited={isFormEdited}
+        setIsFormEdited={setIsFormEdited}
       />
 
       <StatusModal

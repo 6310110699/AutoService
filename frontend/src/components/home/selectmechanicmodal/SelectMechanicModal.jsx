@@ -11,7 +11,9 @@ const SelectMechanicModal = ({
   handleSelectMechanic,
   handleAddMechanic,
   editingCustomerId,
-  loadMechanics
+  loadMechanics,
+  isFormEdited,
+  setIsFormEdited
 }) => {
 
   const [showConfirmCancelEditMechanicModal, setShowConfirmCancelEditMechanicModal] = useState(false);
@@ -29,6 +31,7 @@ const SelectMechanicModal = ({
   const handleCancelUpdateMechanic = () => {
     handleConfirmCancelEditMechanicModalClose();
     handleSelectMechanicModalClose();
+    setIsFormEdited(false);
   };
 
   const [name, setName] = useState('');
@@ -48,6 +51,14 @@ const SelectMechanicModal = ({
       setName('');
     } catch (error) {
       console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลช่าง:', error);
+    }
+  };
+
+  const handleConfirmBackModal = () => {
+    if (isFormEdited) {
+      setShowConfirmCancelEditMechanicModal(true);
+    } else {
+      handleSelectMechanicModalClose();
     }
   };
 
@@ -112,7 +123,7 @@ const SelectMechanicModal = ({
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <div className='button-no' onClick={setShowConfirmCancelEditMechanicModal}>
+          <div className='button-no' onClick={handleConfirmBackModal}>
             CANCEL
           </div>
           <div className='button-yes' onClick={() => handleAddMechanic(editingCustomerId)}>
