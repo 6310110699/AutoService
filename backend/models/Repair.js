@@ -4,7 +4,7 @@ const customerSchema = new mongoose.Schema({
   customer: {
     lineId: {
       type: String,
-      required: true,
+      // required: true,
     },
     customerName: {
       type: String,
@@ -12,7 +12,7 @@ const customerSchema = new mongoose.Schema({
     },
     phoneNumber: {
       type: String,
-      required: true,
+      // required: true,
     },
   },
   car: {
