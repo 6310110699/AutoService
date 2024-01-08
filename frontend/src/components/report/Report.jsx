@@ -15,7 +15,7 @@ function Report() {
   const [monthOn, setMonthOn] = useState([]);
   const [yearOn, setYearOn] = useState([]);
   const [date, setDate] = useState([]);
-  const [week, setWeek] = useState(moment().format("YYYY-MM-DD"));
+  const [week, setWeek] = useState(moment().format("YYYY-[W]WW"));
   const [month, setMonth] = useState([]);
   const [year, setYear] = useState([]);
   const [showServiceDetails, setShowServiceDetails] = useState({});
@@ -70,8 +70,8 @@ function Report() {
   };
 
   const handleWeekClick = () => {
-    const currentWeek = moment().startOf("week").format("YYYY-MM-DD");
-    setWeek("Week: " + currentWeek);
+    const currentWeek = moment().startOf('isoWeek').format('YYYY-[W]WW');
+    setWeek(currentWeek);
 
     setDayOn(false);
     setWeekOn(true);
@@ -460,17 +460,25 @@ function Report() {
   //********************-----------WEEK-----------********************//
   //CAR-WEEK
   const handlePreviousWeekClick = () => {
-    const previousWeek = moment(week).subtract(1, "week").startOf("week");
-    setWeek(previousWeek.format("YYYY-MM-DD"));
+    const previousWeek = moment(week, "YYYY-WW").subtract(1, "week");
+    const previousYear = previousWeek.isoWeekYear();
+    const previousWeekNumber = previousWeek.isoWeek().toString().padStart(2, '0');
+    const previousYearWeek = `${previousYear}-W${previousWeekNumber}`;
+    
+    setWeek(previousYearWeek);
     setShowServiceDetails(false);
   };
-
+  
   const handleNextWeekClick = () => {
-    const nextWeek = moment(week).add(1, "week").startOf("week");
-    setWeek(nextWeek.format("YYYY-MM-DD"));
+    const nextWeek = moment(week, "YYYY-WW").add(1, "week");
+    const nextYear = nextWeek.isoWeekYear();
+    const nextWeekNumber = nextWeek.isoWeek().toString().padStart(2, '0');
+    const nextYearWeek = `${nextYear}-W${nextWeekNumber}`;
+    
+    setWeek(nextYearWeek);
     setShowServiceDetails(false);
   };
-
+  
 
   const countCarsWithStartDateWeek = () => {
     const start = moment(week).startOf("week").toDate();
@@ -1457,7 +1465,7 @@ function Report() {
               </button>
             </div>
 
-            <h1>รายงานสรุปสัปดาห์ที่ {moment(week).format("w")}</h1>
+            <h1>รายงานสรุปสัปดาห์ที่ {moment(week, "YYYY-WW").isoWeek()}</h1>
             <div style={{ display: "flex" }}>
               <div style={{ flex: 1 }}>
                 <DonutChart
