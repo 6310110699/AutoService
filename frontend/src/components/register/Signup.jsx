@@ -8,6 +8,7 @@ function Signup() {
     const [password, setPassword] = useState('')
     // const [role, setRole] = useState('employee')
     const [message, setMessage] = useState('')
+    const [error, setError] = useState('');
 
     const navigate = useNavigate()
 
@@ -21,13 +22,18 @@ function Signup() {
             })
             .then(result => {
                 setMessage('ลงทะเบียนผู้ใช้งานสำเร็จ')
+                setError('');
+                setUsername('');
+                setPassword('');
             })
             .catch(err => {
-                if (err.response && err.response.data && err.response.data.message) {
-                    setMessage(err.response.data.message);
+                if (err.response && err.response.data && err.response.data.error) {
+                    setError(err.response.data.error);
+                    setMessage('');
                 }
                 else {
-                    setMessage('เกิดข้อผิดพลาดในการลงทะเบียน')
+                    setError('เกิดข้อผิดพลาดในการลงทะเบียน')
+                    setMessage('');
                 }
             })
     }
@@ -43,6 +49,7 @@ function Signup() {
                         placeholder="Enter Username"
                         name="username"
                         className="form-control"
+                        value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
                     <label>Password</label>
@@ -50,6 +57,7 @@ function Signup() {
                         type="password"
                         placeholder="Enter Password"
                         name="password"
+                        value={password}
                         className="form-control"
                         onChange={(e) => setPassword(e.target.value)}
                     />
@@ -65,7 +73,8 @@ function Signup() {
                         <option value="employee">Employee</option>
                         <option value="boss">Boss</option>
                     </select> */}
-                    <div className="error-form">{message}</div>
+                    <div className="message-form">{message}</div>
+                    <div className="error-form">{error}</div>
                     <button type="submit" className="button-register">
                         Register
                     </button>

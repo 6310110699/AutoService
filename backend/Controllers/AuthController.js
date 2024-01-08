@@ -41,11 +41,11 @@ const login = (req, res) => {
 const register = (req, res) => {
   const { username, password } = req.body;
   if (password.length < 8) {
-    res.status(400).json({ message: "รหัสผ่านต้องมีอย่างน้อย 8 ตัว" });
+    res.status(400).json({ error: "รหัสผ่านต้องมีอย่างน้อย 8 ตัว" });
   } else {
     bcrypt.hash(password, 10, (err, hashedPassword) => {
       if (err) {
-        res.status(500).json({ message: "เกิดข้อผิดพลาดในการลงทะเบียน" });
+        res.status(500).json({ error: "เกิดข้อผิดพลาดในการลงทะเบียน" });
       } else {
         userModel.create({ username, password: hashedPassword })
           .then(user => {
@@ -53,9 +53,9 @@ const register = (req, res) => {
           })
           .catch(err => {
             if (err.errors && err.errors.username && err.errors.username.message) {
-              res.status(400).json({ message: "ชื่อผู้ใช้งานนี้ถูกใช้งานแล้ว" });
+              res.status(400).json({ error: "ชื่อผู้ใช้งานนี้ถูกใช้งานแล้ว" });
             } else {
-              res.status(500).json({ message: "เกิดข้อผิดพลาดในการลงทะเบียน" });
+              res.status(500).json({ error: "เกิดข้อผิดพลาดในการลงทะเบียน" });
             }
           });
       }
