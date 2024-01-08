@@ -24,6 +24,11 @@ const SelectMechanicModal = ({
     return mechanic.name.toLowerCase().includes(searchMechanic.toLowerCase())
   });
 
+  const selectedChoice = filteredMechanics.filter(mechanic => selectedMechanics.includes(mechanic.name));
+  const unselectedChoice = filteredMechanics.filter(mechanic => !selectedMechanics.includes(mechanic.name));
+
+  const reorderedMechanics = [...selectedChoice, ...unselectedChoice];
+
   const handleConfirmCancelEditMechanicModalClose = () => {
     setShowConfirmCancelEditMechanicModal(false);
   }
@@ -88,7 +93,7 @@ const SelectMechanicModal = ({
             </div>
 
             <ul className='mechanic-choice'>
-              {filteredMechanics.map((mechanic) => (
+              {reorderedMechanics.map((mechanic) => (
                 <div key={mechanic._id} value={mechanic.name}>
                   <span className='input-checkbox'>
                     <input

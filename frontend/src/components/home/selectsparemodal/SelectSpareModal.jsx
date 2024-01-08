@@ -24,6 +24,15 @@ const SelectSpareModal = ({
     return sparePart.spareName.toLowerCase().includes(searchSpare.toLowerCase())
   });
 
+  const selectedChoice = filteredSpares.filter(sparePart =>
+    selectedSparePartsByService[currentStepServiceId]?.some(sparePartData => sparePartData.sparePartId === sparePart.spareName)
+  );
+  const unselectedChoice = filteredSpares.filter(sparePart =>
+    !selectedSparePartsByService[currentStepServiceId]?.some(sparePartData => sparePartData.sparePartId === sparePart.spareName)
+  );
+
+  const reorderedSpareParts = [...selectedChoice, ...unselectedChoice];
+
   const handleConfirmCancelEditSpareModalClose = () => {
     setShowConfirmCancelEditSpareModal(false);
   }
@@ -86,7 +95,7 @@ const SelectSpareModal = ({
           </div>
 
           <ul className='spare-choice'>
-            {filteredSpares.map((sparePart) => (
+            {reorderedSpareParts.map((sparePart) => (
               <div key={sparePart._id}>
                 <span className='input-checkbox'>
                   <input

@@ -34,6 +34,11 @@ const SelectServiceModal = ({
     return service.serviceName.toLowerCase().includes(searchService.toLowerCase())
   });
 
+  const selectedChoice = filteredServices.filter(service => selectedServices.includes(service.serviceName));
+  const unselectedChoice = filteredServices.filter(service => !selectedServices.includes(service.serviceName));
+
+  const reorderedServices = [...selectedChoice, ...unselectedChoice];
+
   const handleConfirmCancelEditServiceModalClose = () => {
     setShowConfirmCancelEditServiceModal(false);
   }
@@ -107,7 +112,7 @@ const SelectServiceModal = ({
               </div>
 
               <ul className='service-choice'>
-                {filteredServices.map((service) => (
+                {reorderedServices.map((service) => (
                   <div key={service._id} value={service.serviceName}>
                     <span className='input-checkbox'>
                       <input
