@@ -23,12 +23,14 @@ const SelectServiceModal = ({
   editingCustomerId,
   loadServices,
   isFormEdited,
-  setIsFormEdited
+  setIsFormEdited,
+  searchService,
+  setSearchService,
+  serviceName,
+  setServiceName
 }) => {
 
   const [showConfirmCancelEditServiceModal, setShowConfirmCancelEditServiceModal] = useState(false);
-
-  const [searchService, setSearchService] = useState('');
 
   const filteredServices = services.filter((service) => {
     return service.serviceName.toLowerCase().includes(searchService.toLowerCase())
@@ -48,8 +50,6 @@ const SelectServiceModal = ({
     handleSelectServiceModalClose();
     setIsFormEdited(false);
   };
-
-  const [serviceName, setServiceName] = useState('');
 
   const handleAddOptionService = async () => {
     try {
@@ -248,6 +248,7 @@ const SelectServiceModal = ({
         backdrop="static"
         size="lg"
         centered
+        style={{ backgroundColor: "#7b7b7ba7" }}
       >
         <Modal.Header closeButton>
           <Modal.Title>ยกเลิกการแก้ไข</Modal.Title>

@@ -13,12 +13,16 @@ const SelectSpareModal = ({
   handleSelectSparePart,
   loadSpareParts,
   isFormEdited,
-  setIsFormEdited
+  setIsFormEdited,
+  searchSpare,
+  setSearchSpare,
+  spareName,
+  setSpareName,
+  sparePrice,
+  setSparePrice
 }) => {
 
   const [showConfirmCancelEditSpareModal, setShowConfirmCancelEditSpareModal] = useState(false);
-
-  const [searchSpare, setSearchSpare] = useState('');
 
   const filteredSpares = spareParts.filter((sparePart) => {
     return sparePart.spareName.toLowerCase().includes(searchSpare.toLowerCase())
@@ -42,9 +46,6 @@ const SelectSpareModal = ({
     handleSelectSparePartModalClose();
     setIsFormEdited(false);
   };
-
-  const [spareName, setSpareName] = useState('');
-  const [sparePrice, setSparePrice] = useState('');
 
   const handleAddOptionSpare = async () => {
     try {
@@ -79,6 +80,7 @@ const SelectSpareModal = ({
         backdrop="static"
         size="xl"
         centered
+        style={{ backgroundColor: "#7b7b7ba7" }}
       >
         <Modal.Header closeButton>
           <Modal.Title>เพิ่มอะไหล่</Modal.Title>
@@ -151,6 +153,7 @@ const SelectSpareModal = ({
         backdrop="static"
         size="lg"
         centered
+        style={{ backgroundColor: "#7b7b7ba7" }}
       >
         <Modal.Header closeButton>
           <Modal.Title>ยกเลิกการแก้ไข</Modal.Title>

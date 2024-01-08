@@ -47,6 +47,16 @@ const Repair = () => {
   const [selectedSparePartsForService, setSelectedSparePartsForService] = useState({});
   const [selectedMechanics, setSelectedMechanics] = useState([]);
 
+  const [searchService, setSearchService] = useState('');
+  const [serviceName, setServiceName] = useState('');
+
+  const [searchSpare, setSearchSpare] = useState('');
+  const [spareName, setSpareName] = useState('');
+  const [sparePrice, setSparePrice] = useState('');
+
+  const [searchMechanic, setSearchMechanic] = useState('');
+  const [name, setName] = useState('');
+
   const [state1, setState1] = useState(true);
   const [state2, setState2] = useState(false);
   const [state3, setState3] = useState(false);
@@ -322,7 +332,8 @@ const Repair = () => {
     setCurrentStep(1);
     setShowSelectServiceModal(false);
     setSelectedSparePartsForService(selectedSparePartsForService);
-
+    setSearchService('');
+    setServiceName('');
     setIsFormEdited(false);
   };
 
@@ -413,7 +424,9 @@ const Repair = () => {
   const handleSelectSparePartModalClose = () => {
     setShowSparePartsModal(false);
     setSelectedSparePartsByService(selectedSparePartsForService);
-
+    setSearchSpare('');
+    setSpareName('');
+    setSparePrice('');
     setIsFormEdited(false);
   };
 
@@ -474,6 +487,8 @@ const Repair = () => {
 
   const handleSelectMechanicModalClose = () => {
     setShowSelectMechanicModal(false);
+    setSearchMechanic('');
+    setName('');
     setIsFormEdited(false);
   };
 
@@ -846,6 +861,10 @@ const Repair = () => {
         loadServices={loadServices}
         isFormEdited={isFormEdited}
         setIsFormEdited={setIsFormEdited}
+        searchService={searchService}
+        setSearchService={setSearchService}
+        serviceName={serviceName}
+        setServiceName={setServiceName}
       />
 
       <SelectSpareModal
@@ -859,6 +878,12 @@ const Repair = () => {
         loadSpareParts={loadSpareParts}
         isFormEdited={isFormEdited}
         setIsFormEdited={setIsFormEdited}
+        searchSpare={searchSpare}
+        setSearchSpare={setSearchSpare}
+        spareName={spareName}
+        setSpareName={setSpareName}
+        sparePrice={sparePrice}
+        setSparePrice={setSparePrice}
       />
 
       <SelectMechanicModal
@@ -872,6 +897,10 @@ const Repair = () => {
         loadMechanics={loadMechanics}
         isFormEdited={isFormEdited}
         setIsFormEdited={setIsFormEdited}
+        searchMechanic={searchMechanic}
+        setSearchMechanic={setSearchMechanic}
+        name={name}
+        setName={setName}
       />
 
       <StatusModal

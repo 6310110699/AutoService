@@ -13,12 +13,14 @@ const SelectMechanicModal = ({
   editingCustomerId,
   loadMechanics,
   isFormEdited,
-  setIsFormEdited
+  setIsFormEdited,
+  searchMechanic,
+  setSearchMechanic,
+  name,
+  setName
 }) => {
 
   const [showConfirmCancelEditMechanicModal, setShowConfirmCancelEditMechanicModal] = useState(false);
-
-  const [searchMechanic, setSearchMechanic] = useState('');
 
   const filteredMechanics = mechanics.filter((mechanic) => {
     return mechanic.name.toLowerCase().includes(searchMechanic.toLowerCase())
@@ -38,8 +40,6 @@ const SelectMechanicModal = ({
     handleSelectMechanicModalClose();
     setIsFormEdited(false);
   };
-
-  const [name, setName] = useState('');
 
   const handleAddOptionMechanic = async () => {
     try {
@@ -144,6 +144,7 @@ const SelectMechanicModal = ({
         backdrop="static"
         size="lg"
         centered
+        style={{ backgroundColor: "#7b7b7ba7" }}
       >
         <Modal.Header closeButton>
           <Modal.Title>ยกเลิกการแก้ไข</Modal.Title>
