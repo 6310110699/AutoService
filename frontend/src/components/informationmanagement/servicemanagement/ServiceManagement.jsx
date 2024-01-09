@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // import Select from 'react-select';
 import './ServiceManagement.scss';
+import Modal from 'react-bootstrap/Modal';
 
 const ServiceManagement = () => {
   const [services, setServices] = useState([]);
@@ -10,15 +11,28 @@ const ServiceManagement = () => {
   // const [spares, setSpares] = useState([]);
   // const [sparesByCategory, setSparesByCategory] = useState([]);
   // const [sparePrices, setSparePrices] = useState({});
-  
+
   const [editingServiceId, setEditingServiceId] = useState(null);
   const [message, setMessage] = useState('');
+
+  const [showAddEditServiceModal, setShowAddEditServiceModal] = useState('');
 
   const [searchText, setSearchText] = useState('');
 
   const filteredServices = services.filter((service) => {
     return service.serviceName.toLowerCase().includes(searchText.toLowerCase())
   });
+
+  const sortByService = (data) => {
+    return data.sort((a, b) => {
+      if (a.serviceName.toLowerCase() < b.serviceName.toLowerCase()) return -1;
+      if (a.serviceName.toLowerCase() > b.serviceName.toLowerCase()) return 1;
+      return 0;
+    });
+  };
+
+  // นำฟังก์ชัน sortByBrand มาใช้กับข้อมูลที่ต้องการเรียง
+  const sortedServices = sortByService(filteredServices);
 
   useEffect(() => {
     loadServices();
@@ -81,18 +95,35 @@ const ServiceManagement = () => {
   //   }
   // };
 
-  const handleAddService = async () => {
+  const handleAddService = (service) => {
+    setShowAddEditServiceModal(true);
+
+    setServiceName(service.serviceName);
+    // setSelectedModels(spare.compatibleCarModels);
+    setEditingServiceId(service._id);
+  };
+
+  const handlePushService = async () => {
     try {
       await axios.post('http://localhost:3001/services', {
         serviceName,
         // spares: selectedSpares,
       });
+
+      setShowAddEditServiceModal(false);
       loadServices();
       clearForm();
     } catch (error) {
       console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลบริการ:', error);
-      setMessage('เกิดข้อผิดพลาดในการเพิ่มข้อมูลบริการ');
+      setMessage(error.response.data.message);
     }
+  };
+
+  const handleEditService = (service) => {
+    setShowAddEditServiceModal(true);
+    setServiceName(service.serviceName);
+    // setSelectedSpares(service.spares);
+    setEditingServiceId(service._id);
   };
 
   const handleUpdateService = async () => {
@@ -101,23 +132,24 @@ const ServiceManagement = () => {
         serviceName,
         // spares: selectedSpares,
       });
+
+      setShowAddEditServiceModal(false);
       loadServices();
       clearForm();
     } catch (error) {
       console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูลบริการ:', error);
-      setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูลบริการ');
+      setMessage(error.response.data.message);
     }
   };
-
 
   const handleDeleteService = async (id) => {
     try {
       await axios.delete(`http://localhost:3001/services/${id}`);
       loadServices();
-      setMessage('ลบข้อมูลบริการเรียบร้อยแล้ว');
+      setMessage(error.response.data.message);
     } catch (error) {
       console.error('เกิดข้อผิดพลาดในการลบข้อมูลบริการ:', error);
-      setMessage('เกิดข้อผิดพลาดในการลบข้อมูลบริการ');
+      setMessage(error.response.data.message);
     }
   };
 
@@ -128,29 +160,101 @@ const ServiceManagement = () => {
     setMessage('');
   };
 
-
-  const handleEditService = (service) => {
-    setServiceName(service.serviceName);
-    // setSelectedSpares(service.spares);
-    setEditingServiceId(service._id);
+  const handleAddEditServiceModalClose = () => {
+    setShowAddEditServiceModal(false)
+    clearForm();
   };
 
-
   return (
-    <div>
-      <div className='servicemanagement-title'>
-        จัดการข้อมูลบริการ
+    <div className='service-management'>
+      <div className='servicemanagement-data'>
+        <div className='search-title'>
+          ค้นหาบริการ
+        </div>
+
+        <div className='row'>
+          <div className='col-10'>
+            <input
+              type="text"
+              class='form-control'
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              placeholder="ค้นหาบริการ"
+            />
+          </div>
+
+          <div className='col-2 add-button' onClick={handleAddService}>
+            เพิ่มอะไหล่
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>ชื่อบริการ</th>
+              {/* <th>อะไหล่ที่ใช้ในบริการ</th>
+              <th>ราคา</th> */}
+              <th>การดำเนินการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedServices.map((service) => (
+              <tr key={service._id}>
+                <td>{service.serviceName}</td>
+                {/* <td>
+                  {service.spares.map((spareId) => {
+                    const spare = spares.find((spare) => spare._id === spareId);
+                    return (
+                      <div key={spareId}>
+                        {spare ? `${spare.spareName}` : 'อะไหล่ไม่ถูกพบ'}
+                      </div>
+                    );
+                  })}
+                </td>
+                <td>
+                  {service.spares.map((spareId) => {
+                    const sparePrice = sparePrices[spareId];
+                    return (
+                      <div key={spareId}>
+                        {sparePrice ? `${sparePrice} บาท` : '-'}
+                      </div>
+                    );
+                  })}
+                </td> */}
+                <td>
+                  <div className='edit-button' onClick={() => handleEditService(service)}>แก้ไข</div>
+                  <div className='delete-button' onClick={() => handleDeleteService(service._id)}>ลบ</div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      <form className='servicemanagement-form'>
-        <label>ชื่อบริการ:</label>
-        <input
-          type='text'
-          class="form-control"
-          value={serviceName}
-          onChange={(e) => setServiceName(e.target.value)}
-        />
-        {/* <label>อะไหล่ที่ใช้ในบริการ:</label>
+      <Modal
+        className='addeditservicemodal'
+        show={showAddEditServiceModal}
+        onHide={handleAddEditServiceModalClose}
+        backdrop="static"
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <div>
+              {editingServiceId ? 'แก้ไขชื่อบริการ' : 'เพิ่มบริการ'}
+            </div>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <label>ชื่อบริการ:</label>
+          <input
+            type='text'
+            class="form-control"
+            value={serviceName}
+            onChange={(e) => setServiceName(e.target.value)}
+          />
+          {/* <label>อะไหล่ที่ใช้ในบริการ:</label>
         <Select
           isMulti
           styles={{
@@ -189,77 +293,23 @@ const ServiceManagement = () => {
           }
         /> */}
 
-        {message &&
-          <div className='error-form'>
-            {message}
+          {message &&
+            <div className='error-form'>
+              {message}
+            </div>
+          }
+        </Modal.Body>
+        <Modal.Footer>
+          <div className='button-no' onClick={handleAddEditServiceModalClose}>
+            ยกเลิก
           </div>
-        }
-
-        <div>
-          <button
-            type="button"
-            className='save-button'
+          <div className='button-yes'
             onClick={editingServiceId ? () =>
-              handleUpdateService(editingServiceId) : handleAddService}
-          >
+              handleUpdateService(editingServiceId) : handlePushService}>
             {editingServiceId ? 'แก้ไข' : 'เพิ่ม'}
-          </button>
-        </div>
-      </form>
-
-      <div className='servicemanagement-data'>
-        <div className='search-title'>
-          ค้นหาบริกาาร
-        </div>
-        <input
-          type="text"
-          class='form-control'
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          placeholder="ค้นหาบริการ"
-        />
-        <table>
-          <thead>
-            <tr>
-              <th>ชื่อบริการ</th>
-              {/* <th>อะไหล่ที่ใช้ในบริการ</th>
-              <th>ราคา</th> */}
-              <th>การดำเนินการ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredServices.map((service) => (
-              <tr key={service._id}>
-                <td>{service.serviceName}</td>
-                {/* <td>
-                  {service.spares.map((spareId) => {
-                    const spare = spares.find((spare) => spare._id === spareId);
-                    return (
-                      <div key={spareId}>
-                        {spare ? `${spare.spareName}` : 'อะไหล่ไม่ถูกพบ'}
-                      </div>
-                    );
-                  })}
-                </td>
-                <td>
-                  {service.spares.map((spareId) => {
-                    const sparePrice = sparePrices[spareId];
-                    return (
-                      <div key={spareId}>
-                        {sparePrice ? `${sparePrice} บาท` : '-'}
-                      </div>
-                    );
-                  })}
-                </td> */}
-                <td>
-                  <button className='edit-button' onClick={() => handleEditService(service)}>แก้ไข</button>
-                  <button className='delete-button' onClick={() => handleDeleteService(service._id)}>ลบ</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

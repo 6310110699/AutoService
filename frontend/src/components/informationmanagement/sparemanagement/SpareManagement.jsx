@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './SpareManagement.scss';
+import Modal from 'react-bootstrap/Modal';
 // import Select from 'react-select';
 
 const SpareManagement = () => {
@@ -15,6 +16,8 @@ const SpareManagement = () => {
     const [editingSpareId, setEditingSpareId] = useState(null);
     const [message, setMessage] = useState('');
 
+    const [showAddEditSpareModal, setShowAddEditSpareModal] = useState('');
+
     const [searchText, setSearchText] = useState('');
 
     const filteredSpares = spares.filter((spare) => {
@@ -22,7 +25,19 @@ const SpareManagement = () => {
             spare.spareType.toLowerCase().includes(searchText.toLowerCase())
     });
 
-    const editButtonRef = useRef(null);
+    const sortBySpare = (data) => {
+        return data.sort((a, b) => {
+            if (a.spareType.toLowerCase() < b.spareType.toLowerCase()) return -1;
+            if (a.spareType.toLowerCase() > b.spareType.toLowerCase()) return 1;
+
+            if (a.spareName.toLowerCase() < b.spareName.toLowerCase()) return -1;
+            if (a.spareName.toLowerCase() > b.spareName.toLowerCase()) return 1;
+            return 0;
+        });
+    };
+    
+    // นำฟังก์ชัน sortByBrand มาใช้กับข้อมูลที่ต้องการเรียง
+    const sortedSpares = sortBySpare(filteredSpares);
 
     useEffect(() => {
         loadSpares();
@@ -69,7 +84,17 @@ const SpareManagement = () => {
     //     }
     // };
 
-    const handleAddSpare = async () => {
+    const handleAddSpare = (spare) => {
+        setShowAddEditSpareModal(true);
+
+        setSpareName(spare.spareName);
+        setSpareType(spare.spareType)
+        setSparePrice(spare.sparePrice);
+        // setSelectedModels(spare.compatibleCarModels);
+        setEditingSpareId(spare._id);
+    };
+
+    const handlePushSpare = async () => {
         try {
             await axios.post('http://localhost:3001/spares', {
                 spareName,
@@ -77,12 +102,23 @@ const SpareManagement = () => {
                 sparePrice,
                 // compatibleCarModels: selectedModels,
             });
+
+            setShowAddEditSpareModal(false);
             loadSpares();
             clearForm();
         } catch (error) {
             console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลอะไหล่:', error);
-            setMessage('เกิดข้อผิดพลาดในการเพิ่มข้อมูลอะไหล่');
+            setMessage(error.response.data.message);
         }
+    };
+
+    const handleEditSpare = (spare) => {
+        setShowAddEditSpareModal(true);
+        setSpareName(spare.spareName);
+        setSpareType(spare.spareType)
+        setSparePrice(spare.sparePrice);
+        // setSelectedModels(spare.compatibleCarModels);
+        setEditingSpareId(spare._id);
     };
 
     const handleUpdateSpare = async (id) => {
@@ -93,16 +129,13 @@ const SpareManagement = () => {
                 sparePrice,
                 // compatibleCarModels: selectedModels,
             });
+
+            setShowAddEditSpareModal(false);
             loadSpares();
             clearForm();
-            
-            if (editButtonRef.current) {
-                editButtonRef.current.scrollIntoView({ behavior: 'smooth' });
-            }
-            
         } catch (error) {
             console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูลอะไหล่:', error);
-            setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูลอะไหล่');
+            setMessage(error.response.data.message);
         }
     };
 
@@ -110,10 +143,10 @@ const SpareManagement = () => {
         try {
             await axios.delete(`http://localhost:3001/spares/${id}`);
             loadSpares();
-            setMessage('ลบข้อมูลอะไหล่เรียบร้อยแล้ว');
+            setMessage(error.response.data.message);
         } catch (error) {
             console.error('เกิดข้อผิดพลาดในการลบข้อมูลอะไหล่:', error);
-            setMessage('เกิดข้อผิดพลาดในการลบข้อมูลอะไหล่');
+            setMessage(error.response.data.message);
         }
     };
 
@@ -126,113 +159,34 @@ const SpareManagement = () => {
         setMessage('');
     };
 
-    const handleEditSpare = (spare) => {
-        window.scrollTo(0, 0);
-
-        setSpareName(spare.spareName);
-        setSpareType(spare.spareType)
-        setSparePrice(spare.sparePrice);
-        // setSelectedModels(spare.compatibleCarModels);
-        setEditingSpareId(spare._id);
+    const handleAddEditSpareModalClose = () => {
+        setShowAddEditSpareModal(false)
+        clearForm();
     };
 
     return (
-        <div>
-            <div className='sparemanagement-title'>
-                จัดการข้อมูลอะไหล่
-            </div>
-
-            <form className='sparemanagement-form'>
-                <label>ชื่ออะไหล่:</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    value={spareName}
-                    onChange={(e) => setSpareName(e.target.value)}
-                />
-                <label>ประเภท:</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    value={spareType}
-                    onChange={(e) => setSpareType(e.target.value)}
-                />
-                <label>ราคา:</label>
-                <input
-                    type="number"
-                    class="form-control"
-                    value={sparePrice}
-                    onChange={(e) => setSparePrice(e.target.value)}
-                />
-
-                {/* <label>รุ่นรถที่ใช้ได้:</label>
-                <Select
-                    isMulti
-                    styles={{
-                        groupHeading: (defaultStyles) => ({
-                            ...defaultStyles,
-                            fontSize: "20px"
-                        }),
-
-                        option: (defaultStyles, state) => ({
-                            ...defaultStyles,
-                            fontSize: "18px"
-                        }),
-
-                        control: (defaultStyles) => ({
-                            ...defaultStyles,
-                            padding: "5px",
-                            borderRadius: "8px",
-                            fontSize: "20px"
-                        }),
-                    }}
-                    value={selectedModels.map((modelId) => ({
-                        value: modelId,
-                        label: compatibleCarModels.find((model) => model._id === modelId)?.model || 'รุ่นรถไม่ถูกพบ',
-                    }))}
-                    options={modelsByCategory.flatMap((category) => [
-                        {
-                            label: category.categoryName,
-                            options: category.compatibleCarModels.map((model) => ({
-                                value: model._id,
-                                label: model.model,
-                            })),
-                        },
-                    ])}
-                    onChange={(selectedOptions) =>
-                        setSelectedModels(selectedOptions.map((option) => option.value))
-                    }
-                /> */}
-
-                {message &&
-                    <div className='error-form'>
-                        {message}
-                    </div>
-                }
-
-                <div>
-                    <button
-                        type="button"
-                        className='save-button'
-                        onClick={editingSpareId ? () =>
-                            handleUpdateSpare(editingSpareId) : handleAddSpare}
-                    >
-                        {editingSpareId ? 'แก้ไข' : 'เพิ่ม'}
-                    </button>
-                </div>
-            </form>
-
+        <div className='spare-management'>
             <div className='sparemanagement-data'>
                 <div className='search-title'>
                     ค้นหาอะไหล่
                 </div>
-                <input
-                    type="text"
-                    class='form-control'
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    placeholder="ค้นหาอะไหล่"
-                />
+
+                <div className='row'>
+                    <div className='col-10'>
+                        <input
+                            type="text"
+                            class='form-control'
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            placeholder="ค้นหาอะไหล่"
+                        />
+                    </div>
+
+                    <div className='col-2 add-button' onClick={handleAddSpare}>
+                        เพิ่มอะไหล่
+                    </div>
+                </div>
+
                 <table>
                     <thead>
                         <tr>
@@ -244,7 +198,7 @@ const SpareManagement = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredSpares.map((spare) => (
+                        {sortedSpares.map((spare) => (
                             <tr key={spare._id}>
                                 <td>{spare.spareName}</td>
                                 <td>{spare.spareType}</td>
@@ -260,14 +214,109 @@ const SpareManagement = () => {
                                 </td> */}
                                 <td>{spare.sparePrice}</td>
                                 <td>
-                                    <button ref={editButtonRef} className='edit-button' onClick={() => handleEditSpare(spare)}>แก้ไข</button>
-                                    <button className='delete-button' onClick={() => handleDeleteSpare(spare._id)}>ลบ</button>
+                                    <div className='edit-button' onClick={() => handleEditSpare(spare)}>แก้ไข</div>
+                                    <div className='delete-button' onClick={() => handleDeleteSpare(spare._id)}>ลบ</div>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+
+            <Modal
+                className='addeditsparemodal'
+                show={showAddEditSpareModal}
+                onHide={handleAddEditSpareModalClose}
+                backdrop="static"
+                size="lg"
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        <div>
+                            {editingSpareId ? 'แก้ไขอะไหล่' : 'เพิ่มอะไหล่'}
+                        </div>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <label>ชื่ออะไหล่:</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            value={spareName}
+                            onChange={(e) => setSpareName(e.target.value)}
+                        />
+                        <label>ประเภท:</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            value={spareType}
+                            onChange={(e) => setSpareType(e.target.value)}
+                        />
+                        <label>ราคา:</label>
+                        <input
+                            type="number"
+                            class="form-control"
+                            value={sparePrice}
+                            onChange={(e) => setSparePrice(e.target.value)}
+                        />
+                        {/* <label>รุ่นรถที่ใช้ได้:</label>
+                        <Select
+                            isMulti
+                            styles={{
+                                groupHeading: (defaultStyles) => ({
+                                    ...defaultStyles,
+                                    fontSize: "20px"
+                                }),
+
+                                option: (defaultStyles, state) => ({
+                                    ...defaultStyles,
+                                    fontSize: "18px"
+                                }),
+
+                                control: (defaultStyles) => ({
+                                    ...defaultStyles,
+                                    padding: "5px",
+                                    borderRadius: "8px",
+                                    fontSize: "20px"
+                                }),
+                            }}
+                            value={selectedModels.map((modelId) => ({
+                                value: modelId,
+                                label: compatibleCarModels.find((model) => model._id === modelId)?.model || 'รุ่นรถไม่ถูกพบ',
+                            }))}
+                            options={modelsByCategory.flatMap((category) => [
+                                {
+                                    label: category.categoryName,
+                                    options: category.compatibleCarModels.map((model) => ({
+                                        value: model._id,
+                                        label: model.model,
+                                    })),
+                                },
+                            ])}
+                            onChange={(selectedOptions) =>
+                                setSelectedModels(selectedOptions.map((option) => option.value))
+                            }
+                        /> */}
+                    </div>
+                    {message &&
+                        <div className='error-form'>
+                            {message}
+                        </div>
+                    }
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className='button-no' onClick={handleAddEditSpareModalClose}>
+                        ยกเลิก
+                    </div>
+                    <div className='button-yes'
+                        onClick={editingSpareId ? () =>
+                            handleUpdateSpare(editingSpareId) : handlePushSpare}>
+                        {editingSpareId ? 'แก้ไข' : 'เพิ่ม'}
+                    </div>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

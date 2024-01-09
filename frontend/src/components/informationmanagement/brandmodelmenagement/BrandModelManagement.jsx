@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './BrandModelManagement.scss';
+import Modal from 'react-bootstrap/Modal';
 
 const BrandModelManagement = () => {
     const [brandmodels, setBrandModels] = useState([]);
@@ -11,12 +12,28 @@ const BrandModelManagement = () => {
     const [editingBrandModelId, setEditingBrandModelId] = useState(null);
     const [message, setMessage] = useState('');
 
+    const [showAddEditBrandModelModal, setShowAddEditBrandModelModal] = useState('');
+
     const [searchText, setSearchText] = useState('');
 
     const filteredBrandModels = brandmodels.filter((brandmodel) => {
         return brandmodel.model.toLowerCase().includes(searchText.toLowerCase()) ||
             brandmodel.brand.toLowerCase().includes(searchText.toLowerCase())
     });
+
+    const sortByBrand = (data) => {
+        return data.sort((a, b) => {
+            if (a.brand.toLowerCase() < b.brand.toLowerCase()) return -1;
+            if (a.brand.toLowerCase() > b.brand.toLowerCase()) return 1;
+
+            if (a.model.toLowerCase() < b.model.toLowerCase()) return -1;
+            if (a.model.toLowerCase() > b.model.toLowerCase()) return 1;
+            return 0;
+        });
+    };
+    
+    // นำฟังก์ชัน sortByBrand มาใช้กับข้อมูลที่ต้องการเรียง
+    const sortedBrandModels = sortByBrand(filteredBrandModels);
 
     useEffect(() => {
         loadBrandModels();
@@ -33,18 +50,35 @@ const BrandModelManagement = () => {
         }
     };
 
-    const handleAddBrandModel = async () => {
+    const handleAddBrandModel = (brandmodel) => {
+        setShowAddEditBrandModelModal(true);
+
+        setModel(brandmodel.model);
+        setBrand(brandmodel.brand);
+        setEditingBrandModelId(brandmodel._id);
+    };
+
+    const handlePushBrandModel = async () => {
         try {
             await axios.post('http://localhost:3001/brandmodels', {
                 model,
                 brand,
             });
+
+            setShowAddEditBrandModelModal();
             loadBrandModels();
             clearForm();
         } catch (error) {
             console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลรุ่นรถ:', error);
-            setMessage('เกิดข้อผิดพลาดในการเพิ่มข้อมูลรุ่นรถ');
+            setMessage(error.response.data.message);
         }
+    };
+
+    const handleEditBrandModel = (brandmodel) => {
+        setShowAddEditBrandModelModal(true);
+        setModel(brandmodel.model);
+        setBrand(brandmodel.brand);
+        setEditingBrandModelId(brandmodel._id);
     };
 
     const handleUpdateBrandModel = async (id) => {
@@ -53,11 +87,13 @@ const BrandModelManagement = () => {
                 model,
                 brand,
             });
+
+            setShowAddEditBrandModelModal(false);
             loadBrandModels();
             clearForm();
         } catch (error) {
             console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูลรุ่นรถ:', error);
-            setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูลรุ่นรถ');
+            setMessage(error.response.data.message);
         }
     };
 
@@ -65,10 +101,10 @@ const BrandModelManagement = () => {
         try {
             await axios.delete(`http://localhost:3001/brandmodels/${id}`);
             loadBrandModels();
-            setMessage('ลบข้อมูลรุ่นรถเรียบร้อยแล้ว');
+            setMessage(error.response.data.message);
         } catch (error) {
             console.error('เกิดข้อผิดพลาดในการลบข้อมูลรุ่นรถ:', error);
-            setMessage('เกิดข้อผิดพลาดในการลบข้อมูลรุ่นรถ');
+            setMessage(error.response.data.message);
         }
     };
 
@@ -79,64 +115,33 @@ const BrandModelManagement = () => {
         setMessage('');
     };
 
-    const handleEditBrandModel = (brandmodel) => {
-        setModel(brandmodel.model);
-        setBrand(brandmodel.brand);
-        setEditingBrandModelId(brandmodel._id);
+    const handleAddEditBrandModelModalClose = () => {
+        setShowAddEditBrandModelModal(false)
+        clearForm();
     };
 
     return (
-        <div className=''>
-            <div className='brandmodelmanagement-title'>
-                จัดการข้อมูลรุ่นและยี่ห้อรถ
-            </div>
-
-            <form className='brandmodelmanagement-form'>
-                <label>รุ่นรถ:</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
-                />
-                <label>ยี่ห้อ:</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
-                />
-
-                {message &&
-                    <div className='error-form'>
-                        {message}
-                    </div>
-                }
-
-                <div>
-                    <button
-                        type="button"
-                        className='save-button'
-                        onClick={editingBrandModelId ? () =>
-                            handleUpdateBrandModel(editingBrandModelId) : handleAddBrandModel}
-                    >
-                        {editingBrandModelId ? 'แก้ไข' : 'เพิ่ม'}
-                    </button>
-                </div>
-            </form>
-
+        <div className='brandmodel-management'>
             <div className='brandmodelmanagement-data'>
                 <div className='search-title'>
                     ค้นหารุ่นหรือยี่ห้อรถ
                 </div>
 
-                <input
-                    type="text"
-                    class='form-control'
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    placeholder="ค้นหารุ่นหรือยี่ห้อรถ"
-                />
+                <div className='row'>
+                    <div className='col-10'>
+                        <input
+                            type="text"
+                            class='form-control'
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            placeholder="ค้นหารุ่นหรือยี่ห้อรถ"
+                        />
+                    </div>
+
+                    <div className='col-2 add-button' onClick={handleAddBrandModel}>
+                        เพิ่มรุ่นรถ
+                    </div>
+                </div>
 
                 <table>
                     <thead>
@@ -147,22 +152,23 @@ const BrandModelManagement = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredBrandModels.map((brandmodel) => (
+                        {sortedBrandModels.map((brandmodel) => (
                             <tr key={brandmodel._id}>
                                 <td>{brandmodel.model}</td>
                                 <td>{brandmodel.brand}</td>
                                 <td>
-                                    <button
+                                    <div
                                         className='edit-button'
                                         onClick={() => handleEditBrandModel(brandmodel)}
                                     >
                                         แก้ไข
-                                    </button>
-                                    <button
+                                    </div>
+                                    <div
                                         className='delete-button'
                                         onClick={() => handleDeleteBrandModel(brandmodel._id)}
-                                    >ลบ
-                                    </button>
+                                    >
+                                        ลบ
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -170,6 +176,54 @@ const BrandModelManagement = () => {
                 </table>
             </div>
 
+            <Modal
+                className='addeditbrandmodelmodal'
+                show={showAddEditBrandModelModal}
+                onHide={handleAddEditBrandModelModalClose}
+                backdrop="static"
+                size="lg"
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        <div>
+                            {editingBrandModelId ? 'แก้ไขรุ่นหรือยี่ห้อรถ' : 'เพิ่มรุ่นรถ'}
+                        </div>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <label>รุ่นรถ:</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        value={model}
+                        onChange={(e) => setModel(e.target.value)}
+                    />
+                    <label>ยี่ห้อ:</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        value={brand}
+                        onChange={(e) => setBrand(e.target.value)}
+                    />
+
+                    {message &&
+                        <div className='error-form'>
+                            {message}
+                        </div>
+                    }
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className='button-no' onClick={handleAddEditBrandModelModalClose}>
+                        ยกเลิก
+                    </div>
+                    <div className='button-yes'
+                        onClick={editingBrandModelId ? () =>
+                            handleUpdateBrandModel(editingBrandModelId) : handlePushBrandModel}>
+                        {editingBrandModelId ? 'แก้ไข' : 'เพิ่ม'}
+                    </div>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

@@ -1,17 +1,50 @@
 @import '../../../assets/styles';
-  
-button {
-    font-size: 20px;
-    font-weight: bold;
-    background-color: $seventh-color;
-    color: $first-color;
-    padding: 15px;
-    margin: 25px 20px;
-    border: none;
-    border-radius: 20px;
-}
 
-button.active {
-    background-color: $sixth-color;
-    color: $second-color;
+.management {
+
+    .management-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    
+    
+        .management-title {
+            width: 300px;
+            background-color: $fifth-color;
+            padding: 10px;
+            font-size: 25px;
+            font-weight: 700;
+            border-radius: 30px;
+            text-align: center;
+        }
+    }
+    
+    .tabview {
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-size: 20px;
+        font-weight: 600;
+    
+        .non-active {
+            width: 250px;
+            margin: 0px 10px;
+            padding: 10px;
+            border-radius: 20px;
+            background-color: $fourth-color;
+            cursor: pointer;
+        }
+    
+        .active {
+            width: 250px;
+            margin: 0px 10px;
+            padding: 10px;
+            border-radius: 20px;
+            background-color: $fifth-color;
+            cursor: pointer;
+        }
+    }
 }
