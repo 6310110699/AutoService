@@ -179,10 +179,16 @@ const EmployeeManagement = () => {
                                 <td>{employee.name}</td>
                                 <td>{employee.nickname}</td>
                                 <td>{employee.phone}</td>
-                                <td>{employee.address.subdistrict}, {employee.address.district}, {employee.address.province}</td>
                                 <td>
-                                    <div className='edit-button' onClick={() => handleEditEmployee(employee)}>แก้ไข</div>
-                                    <div className='delete-button' onClick={() => handleDeleteEmployee(employee._id)}>ลบ</div>
+                                    {employee.address.subdistrict}, {employee.address.district}, {employee.address.province}
+                                </td>
+                                <td>
+                                    <div className='edit-button' onClick={() => handleEditEmployee(employee)}>
+                                        แก้ไข
+                                    </div>
+                                    <div className='delete-button' onClick={() => handleDeleteEmployee(employee._id)}>
+                                        ลบ
+                                    </div>
                                 </td>
                             </tr>
                         ))}

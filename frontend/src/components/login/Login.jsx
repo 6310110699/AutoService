@@ -47,7 +47,6 @@ const Login = ({ onLogin }) => {
     <div className="login">
       <div>
         <div className="title-login">LOGIN</div>
-
         <form onSubmit={handleSubmit} className="login-form">
           <label>Username</label>
           <input
@@ -64,7 +63,6 @@ const Login = ({ onLogin }) => {
             className="form-control"
             onChange={(e) => setPassword(e.target.value)}
           />
-
           <div className="error-form">{message}</div>
 
           <button type="submit" className="button-login">

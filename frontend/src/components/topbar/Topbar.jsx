@@ -28,10 +28,18 @@ const Topbar = ({ isLoggedIn, onLogout }) => {
             <div className="login-logout">
                 {isLoggedIn ? (
                     <>
-                        <Link to="/home" className={location.pathname === '/home' ? 'menu-active' : 'menu'}>หน้าหลัก</Link>
-                        <Link to="/history" className={location.pathname === '/history' ? 'menu-active' : 'menu'}>ประวัติการซ่อม</Link>
-                        <Link to="/report" className={location.pathname === '/report' ? 'menu-active' : 'menu'}>รายงานสรุป</Link>
-
+                        <Link to="/home"
+                            className={location.pathname === '/home' ? 'menu-active' : 'menu'}>
+                            หน้าหลัก
+                        </Link>
+                        <Link to="/history"
+                            className={location.pathname === '/history' ? 'menu-active' : 'menu'}>
+                            ประวัติการซ่อม
+                        </Link>
+                        <Link to="/report"
+                            className={location.pathname === '/report' ? 'menu-active' : 'menu'}>
+                            รายงานสรุป
+                        </Link>
                         <div className='user'>
                             <Dropdown show={showDropdown} onToggle={handleDropdownToggle}>
                                 <Dropdown.Toggle className='dropdown-toggle' id="dropdown-basic">
@@ -39,10 +47,9 @@ const Topbar = ({ isLoggedIn, onLogout }) => {
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     <Dropdown.Item>{localStorage.getItem('username')}</Dropdown.Item>
-                                    <Dropdown.Item href="/register">ลงทะเบียนผู้ใช้</Dropdown.Item>
+                                    <Dropdown.Item href="/register">เพิ่มผู้ใช้งาน</Dropdown.Item>
                                     <Dropdown.Item href="/infomanage">จัดการข้อมูล</Dropdown.Item>
-                                    <div className='logout' onClick={handleLogout}>
-                                        Log out</div>
+                                    <div className='logout' onClick={handleLogout}>Log out</div>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>

@@ -41,7 +41,7 @@ function Signup() {
     return (
         <div className="register">
             <div>
-                <div className="title-register">Register</div>
+                <div className="title-register">Add User</div>
                 <form onSubmit={handleSubmit} className="register-form">
                     <label>Username</label>
                     <input
@@ -76,7 +76,7 @@ function Signup() {
                     <div className="message-form">{message}</div>
                     <div className="error-form">{error}</div>
                     <button type="submit" className="button-register">
-                        Register
+                        ADD
                     </button>
                 </form>
             </div>

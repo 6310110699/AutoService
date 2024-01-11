@@ -31,7 +31,7 @@ const BrandModelManagement = () => {
             return 0;
         });
     };
-    
+
     // นำฟังก์ชัน sortByBrand มาใช้กับข้อมูลที่ต้องการเรียง
     const sortedBrandModels = sortByBrand(filteredBrandModels);
 
@@ -157,10 +157,16 @@ const BrandModelManagement = () => {
                                 <td>{brandmodel.model}</td>
                                 <td>{brandmodel.brand}</td>
                                 <td>
-                                    <div className='edit-button' onClick={() => handleEditBrandModel(brandmodel)}>
+                                    <div
+                                        className='edit-button'
+                                        onClick={() => handleEditBrandModel(brandmodel)}
+                                    >
                                         แก้ไข
                                     </div>
-                                    <div className='delete-button' onClick={() => handleDeleteBrandModel(brandmodel._id)}>
+                                    <div
+                                        className='delete-button'
+                                        onClick={() => handleDeleteBrandModel(brandmodel._id)}
+                                    >
                                         ลบ
                                     </div>
                                 </td>
