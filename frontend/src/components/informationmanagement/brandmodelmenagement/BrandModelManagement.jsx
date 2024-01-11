@@ -157,16 +157,10 @@ const BrandModelManagement = () => {
                                 <td>{brandmodel.model}</td>
                                 <td>{brandmodel.brand}</td>
                                 <td>
-                                    <div
-                                        className='edit-button'
-                                        onClick={() => handleEditBrandModel(brandmodel)}
-                                    >
+                                    <div className='edit-button' onClick={() => handleEditBrandModel(brandmodel)}>
                                         แก้ไข
                                     </div>
-                                    <div
-                                        className='delete-button'
-                                        onClick={() => handleDeleteBrandModel(brandmodel._id)}
-                                    >
+                                    <div className='delete-button' onClick={() => handleDeleteBrandModel(brandmodel._id)}>
                                         ลบ
                                     </div>
                                 </td>

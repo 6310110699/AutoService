@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Report.scss";
 import moment from "moment";
-import BarCar from "./BarCar";
+import LineChartCar from "./LineChartCar";
 import DonutChart from "./DonutChart";
-import BarCost from "./BarCost";
+import LineChartCost from "./LineChartCost";
+import BarChartPerMonth from "./BarChartPerMonth";
+import BarChartPerDay from "./BarChartPerDay";
 
 function Report() {
   const [customers, setCustomers] = useState([]);
@@ -30,7 +32,7 @@ function Report() {
     loadCustomers();
     loadServices();
     loadMechanics();
-    handleWeekClick();
+    handleDayClick();
   }, []);
 
   const loadCustomers = async () => {
@@ -70,7 +72,7 @@ function Report() {
   };
 
   const handleWeekClick = () => {
-    const currentWeek = moment().startOf('isoWeek').format('YYYY-[W]WW');
+    const currentWeek = moment().startOf("isoWeek").format("YYYY-[W]WW");
     setWeek(currentWeek);
 
     setDayOn(false);
@@ -89,11 +91,14 @@ function Report() {
   };
 
   const handleYearClick = () => {
+    const currentYear = moment().format("YYYY");
+    setYear(currentYear);
     setDayOn(false);
     setWeekOn(false);
     setMonthOn(false);
     setYearOn(true);
   };
+
   //********************-----------DAY-----------********************//
   //CAR-DAY
   const handlePreviousDateClick = () => {
@@ -134,9 +139,6 @@ function Report() {
     0
   );
 
-  console.log("ลองงง start", carsWithStartDateDate);
-  console.log("ลอง start", sumCarsWithStartDateDate);
-
   const countCarsWithOutEndDateDate = () => {
     const start = moment(`${date}T00:00:00`);
     const end = moment(`${date}T23:59:59`);
@@ -164,7 +166,7 @@ function Report() {
 
       carsWithOutEndDate[dateString] = count;
 
-      currentDate.add(1, "day"); // เพิ่มวันที่ 1 วัน
+      currentDate.add(1, "day");
 
       if (currentDate.isAfter(moment(), "day") || currentDate > end) {
         break;
@@ -178,9 +180,6 @@ function Report() {
 
   const lastDateDate = Object.keys(carsWithOutEndDateDate).pop();
   const lastValueDate = carsWithOutEndDateDate[lastDateDate];
-
-  console.log("ลองงง WithOut", carsWithOutEndDateDate);
-  console.log("ลอง WithOut", lastValueDate);
 
   const countCarsWithEndDateDate = () => {
     const start = moment(`${date}T00:00:00`);
@@ -207,8 +206,6 @@ function Report() {
     (sum, count) => sum + count,
     0
   );
-  console.log("ลองงง End", carsWithEndDateDate);
-  console.log("ลอง End", sumCarsWithEndDateDate);
 
   //COST-DAY
 
@@ -243,7 +240,6 @@ function Report() {
   };
 
   const totalCostPerDayDate = countTotalCostDate();
-  console.log("totalCostPerDayDated", totalCostPerDayDate);
 
   const countTotalFeeDate = () => {
     const start = moment(`${date}T00:00:00`);
@@ -276,7 +272,6 @@ function Report() {
   };
 
   const totalFeePerDayDate = countTotalFeeDate();
-  console.log("totalFeePerDayDate", totalFeePerDayDate);
 
   const countTotalSpareDate = () => {
     const totalSparePerDay = {};
@@ -292,7 +287,6 @@ function Report() {
   };
 
   const totalSparePerDayDate = countTotalSpareDate();
-  console.log("totalSparePerDayDate", totalSparePerDayDate);
 
   const sumTotalCostDate = Object.values(totalCostPerDayDate).reduce(
     (accumulator, currentValue) => accumulator + currentValue,
@@ -339,14 +333,6 @@ function Report() {
   };
 
   const servicesUsedDate = countServiceDate();
-  console.log(servicesUsedDate);
-
-  const toggleServiceDetailsDate = (serviceName) => {
-    setShowServiceDetails({
-      ...showServiceDetails,
-      [serviceName]: !showServiceDetails[serviceName],
-    });
-  };
 
   const getServiceDate = (serviceName) => {
     const start = moment(`${date}T00:00:00`);
@@ -397,6 +383,7 @@ function Report() {
     const mechanicCustomers = filterCustomers.filter((customer) =>
       customer.mechanics.includes(mechanicId)
     );
+
     const serviceCounts = {};
 
     mechanicCustomers.forEach((customer) => {
@@ -462,27 +449,29 @@ function Report() {
   const handlePreviousWeekClick = () => {
     const previousWeek = moment(week, "YYYY-WW").subtract(1, "week");
     const previousYear = previousWeek.isoWeekYear();
-    const previousWeekNumber = previousWeek.isoWeek().toString().padStart(2, '0');
+    const previousWeekNumber = previousWeek
+      .isoWeek()
+      .toString()
+      .padStart(2, "0");
     const previousYearWeek = `${previousYear}-W${previousWeekNumber}`;
-    
+
     setWeek(previousYearWeek);
     setShowServiceDetails(false);
   };
-  
+
   const handleNextWeekClick = () => {
     const nextWeek = moment(week, "YYYY-WW").add(1, "week");
     const nextYear = nextWeek.isoWeekYear();
-    const nextWeekNumber = nextWeek.isoWeek().toString().padStart(2, '0');
+    const nextWeekNumber = nextWeek.isoWeek().toString().padStart(2, "0");
     const nextYearWeek = `${nextYear}-W${nextWeekNumber}`;
-    
+
     setWeek(nextYearWeek);
     setShowServiceDetails(false);
   };
-  
 
   const countCarsWithStartDateWeek = () => {
-    const start = moment(week).startOf("week").toDate();
-    const end = moment(week).endOf("week").toDate();
+    const start = moment(week).startOf("week").add(1, "day").toDate();
+    const end = moment(week).endOf("week").add(1, "day").toDate();
 
     const carsWithStartDatePerDay = {};
     customers.forEach((customer) => {
@@ -507,8 +496,8 @@ function Report() {
   );
 
   const countCarsWithOutEndDateWeek = () => {
-    const start = moment(week).startOf("week").toDate();
-    const end = moment(week).endOf("week").toDate();
+    const start = moment(week).startOf("week").add(1, "day").toDate();
+    const end = moment(week).endOf("week").add(1, "day").toDate();
 
     const carsWithOutEndDate = {};
 
@@ -533,7 +522,7 @@ function Report() {
 
       carsWithOutEndDate[dateString] = count;
 
-      currentDate.add(1, "day"); // เพิ่มวันที่ 1 วัน
+      currentDate.add(1, "day");
 
       if (currentDate.isAfter(moment(), "day") || currentDate > end) {
         break;
@@ -546,8 +535,8 @@ function Report() {
   const carsWithOutEndDateWeek = countCarsWithOutEndDateWeek();
 
   const countCarsWithEndDateWeek = () => {
-    const start = moment(week).startOf("week").toDate();
-    const end = moment(week).endOf("week").toDate();
+    const start = moment(week).startOf("week").add(1, "day").toDate();
+    const end = moment(week).endOf("week").add(1, "day").toDate();
 
     const carsWithEndDatePerDay = {};
     customers.forEach((customer) => {
@@ -574,11 +563,11 @@ function Report() {
   const lastDateWeek = Object.keys(carsWithOutEndDateWeek).pop();
   const lastValueWeek = carsWithOutEndDateWeek[lastDateWeek];
 
-  //COST-WEEk
+  //COST-WEEK
 
   const countTotalCostWeek = () => {
-    const start = moment(week).startOf("week").toDate();
-    const end = moment(week).endOf("week").toDate();
+    const start = moment(week).startOf("week").add(1, "day").toDate();
+    const end = moment(week).endOf("week").add(1, "day").toDate();
 
     const filteredCustomers = customers.filter((customer) => {
       const customerEndDate = new Date(customer.enddate);
@@ -609,8 +598,8 @@ function Report() {
   const totalCostPerDayWeek = countTotalCostWeek();
 
   const countTotalFeeWeek = () => {
-    const start = moment(week).startOf("week").toDate();
-    const end = moment(week).endOf("week").toDate();
+    const start = moment(week).startOf("week").add(1, "day").toDate();
+    const end = moment(week).endOf("week").add(1, "day").toDate();
 
     const filterCustomers = customers.filter((customer) => {
       const customerEndDate = new Date(customer.enddate);
@@ -654,7 +643,7 @@ function Report() {
   };
 
   const totalSparePerDayWeek = countTotalSpareWeek();
-
+  console.log(totalSparePerDayWeek);
   const sumTotalCostWeek = Object.values(totalCostPerDayWeek).reduce(
     (accumulator, currentValue) => accumulator + currentValue,
     0
@@ -670,9 +659,10 @@ function Report() {
     0
   );
 
+  //SERVICE-WEEK
   const countServiceWeek = () => {
-    const start = moment(week).startOf("week").toDate();
-    const end = moment(week).endOf("week").toDate();
+    const start = moment(week).startOf("week").add(1, "day").toDate();
+    const end = moment(week).endOf("week").add(1, "day").toDate();
 
     const servicesUsed = {};
 
@@ -700,7 +690,6 @@ function Report() {
   };
 
   const servicesUsedWeek = countServiceWeek();
-  // console.log(servicesUsed);
 
   const toggleServiceDetailsWeek = (serviceName) => {
     setShowServiceDetails({
@@ -710,9 +699,8 @@ function Report() {
   };
 
   const getServiceWeek = (serviceName) => {
-    const start = moment(week).startOf("week").toDate();
-    const end = moment(week).endOf("week").toDate();
-
+    const start = moment(week).startOf("week").add(1, "day").toDate();
+    const end = moment(week).endOf("week").add(1, "day").toDate();
     const carModelCounts = {};
 
     const filterCustomers = customers.filter((customer) => {
@@ -723,8 +711,6 @@ function Report() {
         customer.status.state5
       );
     });
-
-    const totalFeePerDay = {};
 
     filterCustomers.forEach((customer) => {
       customer.services.forEach((service) => {
@@ -745,8 +731,8 @@ function Report() {
 
   //MECHANIC-WEEK
   const countServicesByMechanicWeek = (mechanicId) => {
-    const start = moment(week).startOf("week").toDate();
-    const end = moment(week).endOf("week").toDate();
+    const start = moment(week).startOf("week").add(1, "day").toDate();
+    const end = moment(week).endOf("week").add(1, "day").toDate();
 
     const filterCustomers = customers.filter((customer) => {
       const customerEndDate = new Date(customer.enddate);
@@ -777,8 +763,8 @@ function Report() {
   };
 
   const getServiceCountsByCarModelWeek = (mechanicId, serviceName) => {
-    const start = moment(week).startOf("week").toDate();
-    const end = moment(week).endOf("week").toDate();
+    const start = moment(week).startOf("week").add(1, "day").toDate();
+    const end = moment(week).endOf("week").add(1, "day").toDate();
 
     const filterCustomers = customers.filter((customer) => {
       const customerEndDate = new Date(customer.enddate);
@@ -890,7 +876,7 @@ function Report() {
 
       carsWithOutEndDate[dateString] = count;
 
-      currentDate.add(1, "day"); // เพิ่มวันที่ 1 วัน
+      currentDate.add(1, "day");
 
       if (currentDate.isAfter(moment(), "day") || currentDate > end) {
         break;
@@ -902,12 +888,12 @@ function Report() {
 
   const carsWithOutEndDate = countCarsWithOutEndDate();
 
+  const lastDate = Object.keys(carsWithOutEndDate).pop();
+  const lastValue = carsWithOutEndDate[lastDate];
+
   const countCarsWithEndDate = () => {
     const start = moment(`${month}-01T00:00:00`);
-    const end = start
-      .clone()
-      .endOf("month")
-      .set({ hour: 23, minute: 59, second: 59 });
+    const end = moment(start).endOf("month");
 
     const carsWithEndDatePerDay = {};
     customers.forEach((customer) => {
@@ -926,22 +912,16 @@ function Report() {
   };
 
   const carsWithEndDate = countCarsWithEndDate();
+
   const sumCarsWithEndDate = Object.values(carsWithEndDate).reduce(
     (sum, count) => sum + count,
     0
   );
 
-  const lastDate = Object.keys(carsWithOutEndDate).pop();
-  const lastValue = carsWithOutEndDate[lastDate];
-
   //COST-MONTH
-
   const countTotalCost = () => {
     const start = moment(`${month}-01T00:00:00`);
-    const end = start
-      .clone()
-      .endOf("month")
-      .set({ hour: 23, minute: 59, second: 59 });
+    const end = moment(start).endOf("month");
 
     const filteredCustomers = customers.filter((customer) => {
       const customerEndDate = new Date(customer.enddate);
@@ -973,10 +953,7 @@ function Report() {
 
   const countTotalFee = () => {
     const start = moment(`${month}-01T00:00:00`);
-    const end = start
-      .clone()
-      .endOf("month")
-      .set({ hour: 23, minute: 59, second: 59 });
+    const end = moment(start).endOf("month");
 
     const filterCustomers = customers.filter((customer) => {
       const customerEndDate = new Date(customer.enddate);
@@ -1037,7 +1014,7 @@ function Report() {
 
   const countService = () => {
     const start = moment(`${month}-01T00:00:00`);
-    const end = start.clone().endOf("month");
+    const end = moment(start).endOf("month");
 
     const servicesUsed = {};
 
@@ -1065,7 +1042,6 @@ function Report() {
   };
 
   const servicesUsed = countService();
-  // console.log(servicesUsed);
 
   const toggleServiceDetails = (serviceName) => {
     setShowServiceDetails({
@@ -1075,13 +1051,10 @@ function Report() {
   };
 
   const getService = (serviceName) => {
-    const carModelCounts = {};
-
     const start = moment(`${month}-01T00:00:00`);
-    const end = start
-      .clone()
-      .endOf("month")
-      .set({ hour: 23, minute: 59, second: 59 });
+    const end = moment(start).endOf("month");
+
+    const carModelCounts = {};
 
     const filterCustomers = customers.filter((customer) => {
       const customerEndDate = new Date(customer.enddate);
@@ -1091,8 +1064,6 @@ function Report() {
         customer.status.state5
       );
     });
-
-    const totalFeePerDay = {};
 
     filterCustomers.forEach((customer) => {
       customer.services.forEach((service) => {
@@ -1114,10 +1085,7 @@ function Report() {
   //MECHANIC-MONTH
   const countServicesByMechanic = (mechanicId) => {
     const start = moment(`${month}-01T00:00:00`);
-    const end = start
-      .clone()
-      .endOf("month")
-      .set({ hour: 23, minute: 59, second: 59 });
+    const end = moment(start).endOf("month");
 
     const filterCustomers = customers.filter((customer) => {
       const customerEndDate = new Date(customer.enddate);
@@ -1149,10 +1117,7 @@ function Report() {
 
   const getServiceCountsByCarModel = (mechanicId, serviceName) => {
     const start = moment(`${month}-01T00:00:00`);
-    const end = start
-      .clone()
-      .endOf("month")
-      .set({ hour: 23, minute: 59, second: 59 });
+    const end = moment(start).endOf("month");
 
     const filterCustomers = customers.filter((customer) => {
       const customerEndDate = new Date(customer.enddate);
@@ -1194,6 +1159,367 @@ function Report() {
     }));
   };
 
+  //********************-----------YEAR-----------********************//
+  //CAR-YEAR
+  const previousYear = moment(year).subtract(1, "year").format("YYYY");
+  const handlePreviousYearClick = () => {
+    setYear(previousYear);
+    setShowServiceDetails(false);
+  };
+
+  const nextYear = moment(year).add(1, "year").format("YYYY");
+  const handleNextYearClick = () => {
+    setYear(nextYear);
+    setShowServiceDetails(false);
+  };
+
+  const countCarsWithStartDateYear = () => {
+    const start = moment(`${year}-01-01T00:00:00`);
+    const end = moment(`${year}-12-31T23:59:59`);
+
+    const carsWithStartDatePerMonth = {};
+    customers.forEach((customer) => {
+      const customerStartDate = moment(customer.startdate);
+      if (customerStartDate >= start && customerStartDate <= end) {
+        const dateString = customerStartDate.format("YYYY-MM");
+        if (carsWithStartDatePerMonth[dateString]) {
+          carsWithStartDatePerMonth[dateString]++;
+        } else {
+          carsWithStartDatePerMonth[dateString] = 1;
+        }
+      }
+    });
+
+    return carsWithStartDatePerMonth;
+  };
+
+  const carsWithStartDateYear = countCarsWithStartDateYear();
+
+  const sumCarsWithStartDateYear = Object.values(carsWithStartDateYear).reduce(
+    (sum, count) => sum + count,
+    0
+  );
+
+  const countCarsWithOutEndDateYear = () => {
+    const start = moment(`${year}-01-01T00:00:00`);
+    let end = moment(`${year}-12-31T23:59:59`);
+
+    if (moment() < end) {
+      end = moment();
+    }
+
+    const carsWithOutEndDate = {};
+
+    let currentMonth = moment(start).startOf("month");
+    while (currentMonth.isSameOrBefore(end, "month")) {
+      const monthString = currentMonth.format("YYYY-MM");
+
+      const count = customers.reduce((accumulator, customer) => {
+        const customerStartDate = moment(customer.startdate).startOf("day");
+        const customerEndDate = customer.enddate
+          ? moment(customer.enddate).startOf("day")
+          : null;
+
+        if (
+          customerStartDate.isSameOrBefore(
+            currentMonth.endOf("month"),
+            "day"
+          ) &&
+          (!customerEndDate ||
+            customerEndDate.isAfter(currentMonth.endOf("month"), "day"))
+        ) {
+          return accumulator + 1;
+        }
+        return accumulator;
+      }, 0);
+
+      carsWithOutEndDate[monthString] = count;
+
+      currentMonth.add(1, "month");
+    }
+
+    return carsWithOutEndDate;
+  };
+
+  const carsWithOutEndDateYear = countCarsWithOutEndDateYear();
+
+  const lastDateYear = Object.keys(carsWithOutEndDateYear).pop();
+  const lastValueYear = carsWithOutEndDateYear[lastDateYear];
+
+  const countCarsWithEndDateYear = () => {
+    const start = moment(`${year}-01-01T00:00:00`);
+    const end = moment(`${year}-12-31T23:59:59`);
+
+    const carsWithEndDatePerMonth = {};
+    customers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+      if (customerEndDate >= start && customerEndDate <= end) {
+        const dateString = customerEndDate.format("YYYY-MM");
+        if (carsWithEndDatePerMonth[dateString]) {
+          carsWithEndDatePerMonth[dateString]++;
+        } else {
+          carsWithEndDatePerMonth[dateString] = 1;
+        }
+      }
+    });
+
+    return carsWithEndDatePerMonth;
+  };
+
+  const carsWithEndDateYear = countCarsWithEndDateYear();
+
+  const sumCarsWithEndDateYear = Object.values(carsWithEndDateYear).reduce(
+    (sum, count) => sum + count,
+    0
+  );
+
+  //COST-YEAR
+
+  const countTotalCostYear = () => {
+    const start = moment(`${year}-01-01T00:00:00`);
+    const end = moment(`${year}-12-31T23:59:59`);
+
+    const filteredCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const totalCostPerMonth = {};
+
+    filteredCustomers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+
+      const dateString = customerEndDate.format("YYYY-MM");
+
+      if (totalCostPerMonth[dateString]) {
+        totalCostPerMonth[dateString] += customer.totalCost;
+      } else {
+        totalCostPerMonth[dateString] = customer.totalCost;
+      }
+    });
+
+    return totalCostPerMonth;
+  };
+
+  const totalCostPerMonthYear = countTotalCostYear();
+
+  const countTotalFeeYear = () => {
+    const start = moment(`${year}-01-01T00:00:00`);
+    const end = moment(`${year}-12-31T23:59:59`);
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const totalFeePerMonth = {};
+
+    filterCustomers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+
+      const dateString = customerEndDate.format("YYYY-MM");
+
+      if (totalFeePerMonth[dateString]) {
+        totalFeePerMonth[dateString] += customer.serviceFee;
+      } else {
+        totalFeePerMonth[dateString] = customer.serviceFee;
+      }
+    });
+
+    return totalFeePerMonth;
+  };
+
+  const totalFeePerMonthYear = countTotalFeeYear();
+
+  const countTotalSpareYear = () => {
+    const totalSparePerMonthYear = {};
+
+    Object.keys(totalCostPerMonthYear).forEach((date) => {
+      if (totalFeePerMonthYear[date]) {
+        totalSparePerMonthYear[date] =
+          totalCostPerMonthYear[date] - totalFeePerMonthYear[date];
+      }
+    });
+
+    return totalSparePerMonthYear;
+  };
+
+  const totalSparePerMonthYear = countTotalSpareYear();
+
+  const sumTotalCostYear = Object.values(totalCostPerMonthYear).reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  const sumTotalSpareYear = Object.values(totalSparePerMonthYear).reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  const sumTotalFeeYear = Object.values(totalFeePerMonthYear).reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  const countServiceYear = () => {
+    const start = moment(`${year}-01-01T00:00:00`);
+    const end = moment(`${year}-12-31T23:59:59`);
+
+    const servicesUsed = {};
+
+    customers.forEach((customer) => {
+      const customerEndDate = moment(customer.enddate);
+      if (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      ) {
+        customer.services.forEach((service) => {
+          const serviceName = service.serviceName;
+          if (!servicesUsed[serviceName]) {
+            servicesUsed[serviceName] = [];
+          }
+          servicesUsed[serviceName].push({
+            carBrand: customer.car.brand,
+            selectedModel: customer.car.selectedModel,
+          });
+        });
+      }
+    });
+
+    return servicesUsed;
+  };
+
+  const servicesUsedYear = countServiceYear();
+
+  const toggleServiceDetailsYear = (serviceName) => {
+    setShowServiceDetails({
+      ...showServiceDetails,
+      [serviceName]: !showServiceDetails[serviceName],
+    });
+  };
+
+  const getServiceYear = (serviceName) => {
+    const start = moment(`${year}-01-01T00:00:00`);
+    const end = moment(`${year}-12-31T23:59:59`);
+
+    const carModelCounts = {};
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    filterCustomers.forEach((customer) => {
+      customer.services.forEach((service) => {
+        const serviceInfo = service.serviceName;
+        const carInfo = `${customer.car.brand} ${customer.car.selectedModel}`;
+        if (serviceInfo === serviceName) {
+          if (carModelCounts[carInfo]) {
+            carModelCounts[carInfo]++;
+          } else {
+            carModelCounts[carInfo] = 1;
+          }
+        }
+      });
+    });
+
+    return carModelCounts;
+  };
+
+  //MECHANIC-MONTH
+  const countServicesByMechanicYear = (mechanicId) => {
+    const start = moment(`${year}-01-01T00:00:00`);
+    const end = moment(`${year}-12-31T23:59:59`);
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+
+    const mechanicCustomers = filterCustomers.filter((customer) =>
+      customer.mechanics.includes(mechanicId)
+    );
+    const serviceCounts = {};
+
+    mechanicCustomers.forEach((customer) => {
+      customer.services.forEach((service) => {
+        const serviceName = service.serviceName;
+        if (serviceCounts[serviceName]) {
+          serviceCounts[serviceName]++;
+        } else {
+          serviceCounts[serviceName] = 1;
+        }
+      });
+    });
+
+    return serviceCounts;
+  };
+
+  const getServiceCountsByCarModelYear = (mechanicId, serviceName) => {
+    const start = moment(`${year}-01-01T00:00:00`);
+    const end = moment(`${year}-12-31T23:59:59`);
+
+    const filterCustomers = customers.filter((customer) => {
+      const customerEndDate = new Date(customer.enddate);
+      return (
+        customerEndDate >= start &&
+        customerEndDate <= end &&
+        customer.status.state5
+      );
+    });
+    const mechanicCustomers = filterCustomers.filter((customer) =>
+      customer.mechanics.includes(mechanicId)
+    );
+    const carModelCounts = {};
+
+    mechanicCustomers.forEach((customer) => {
+      customer.services.forEach((service) => {
+        const serviceInfo = service.serviceName;
+        const carInfo = `${customer.car.brand} ${customer.car.selectedModel}`;
+        if (serviceInfo === serviceName) {
+          if (carModelCounts[carInfo]) {
+            carModelCounts[carInfo]++;
+          } else {
+            carModelCounts[carInfo] = 1;
+          }
+        }
+      });
+    });
+
+    return carModelCounts;
+  };
+
+  const toggleServiceDetailsByMechanicYear = (mechanicId, serviceName) => {
+    setShowServiceDetailsByMechanic((prevDetails) => ({
+      ...prevDetails,
+      [mechanicId]: {
+        ...prevDetails[mechanicId],
+        [serviceName]: !prevDetails[mechanicId]?.[serviceName],
+      },
+    }));
+  };
+
+  const allMonths = Array.from({ length: 12 }, (_, i) =>
+    moment().month(i).year(year).format("YYYY-MM")
+  );
+
   return (
     <div className="report">
       <div className="report-head-container">
@@ -1227,11 +1553,13 @@ function Report() {
         </div>
       </div>
 
-      <div className="daily-filter">
+      <div className="report-filtered">
         {dayOn ? (
           <div>
-            <div>
-              <button onClick={handlePreviousDateClick}>ย้อนหลัง 1 วัน</button>
+            <div className="report-filtered-input">
+              <div className="previous-arrow" onClick={handlePreviousDateClick}>
+                <img src="./assets/image/previous.png" />
+              </div>
               <input
                 type="date"
                 id="dateSelect"
@@ -1240,74 +1568,92 @@ function Report() {
                   setDate(e.target.value);
                 }}
               />
-              <button onClick={handleNextDateClick}>ไปข้างหน้า 1 วัน</button>
+              <div className="next-arrow" onClick={handleNextDateClick}>
+                <img src="./assets/image/next.png" />
+              </div>
             </div>
-
-            <div>
-              <input
-                type="date"
-                id="dateSelect"
-                value={date}
-                onChange={(e) => {
-                  setDate(e.target.value);
-                }}
-              />
-            </div>
-
-            <h1>รายงานสรุป {moment(date).format("DD MMMM YYYY ")}</h1>
 
             <div style={{ display: "flex" }}>
               <div style={{ flex: 1 }}>
-                <DonutChart
-                  data={[
-                    {
-                      name: `รถที่รับเข้ามา : ${sumCarsWithStartDateDate}`,
-                      value: sumCarsWithStartDateDate,
-                    },
-                    {
-                      name: `รถที่ส่งออก : ${sumCarsWithEndDateDate}`,
-                      value: sumCarsWithEndDateDate,
-                    },
-                    {
-                      name: `รถที่ยังอยู่ในอู่ : ${lastValueDate}`,
-                      value: lastValueDate,
-                    },
-                  ]}
-                />
+                <div className="title-container">
+                  <div className="title">สรุปจำนวนคัน</div>
+                </div>
 
-                <div>
-                  <h5>รถที่รับเข้ามา: {sumCarsWithStartDateDate}</h5>
-                  <h5>รถที่ส่งออก: {sumCarsWithEndDateDate}</h5>
-                  <h5>รถที่ยังอยู่ในอู่: {lastValueDate}</h5>
+                <div className="day-container">
+                  <div>
+                    <DonutChart
+                      data={[
+                        {
+                          name: `รถที่รับเข้ามา`,
+                          value: sumCarsWithStartDateDate,
+                          color: "#ec407a",
+                        },
+                        {
+                          name: `รถที่ส่งออก`,
+                          value: sumCarsWithEndDateDate,
+                          color: "#29b6f6",
+                        },
+                        {
+                          name: `รถที่ยังอยู่ในอู่`,
+                          value: lastValueDate,
+                          color: "##d7a421",
+                        },
+                      ]}
+                    />
+                    <div className="car-container">
+                      <div className="carWstart">
+                        รถที่รับเข้ามา: {sumCarsWithStartDateDate}
+                      </div>
+                      <div className="carWend">
+                        รถที่ส่งออก: {sumCarsWithEndDateDate}
+                      </div>
+                      <div className="carWOend">
+                        รถที่ยังอยู่ในอู่: {lastValueDate}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div style={{ flex: 2 }}></div>
-            </div>
-            <div style={{ display: "flex" }}>
               <div style={{ flex: 1 }}>
-                <DonutChart
-                  data={[
-                    {
-                      name: `TotalSpareDatet : ${sumTotalSpareDate}`,
-                      value: sumCarsWithEndDateDate,
-                    },
-                    {
-                      name: `TotalFeeDate : ${sumTotalFeeDate}`,
-                      value: sumTotalFeeDate,
-                    },
-                  ]}
-                />
-                <div>
-                  <h5>TotalCost={sumTotalCostDate}</h5>
-                  <h5>TotalSpare={sumTotalSpareDate}</h5>
-                  <h5>TotalFee={sumTotalFeeDate}</h5>
+                <div className="title-container">
+                  <div className="title">สรุปรายได้</div>
+                </div>
+                <div className="day-container">
+                  <div className="day-container-total">
+                    <DonutChart
+                      data={[
+                        {
+                          name: `ค่าอะไหล่ทั้งหมด`,
+                          value: sumTotalSpareDate,
+                          color: "#ac1c1b",
+                        },
+                        {
+                          name: `ค่าบริการทั้งหมด`,
+                          value: sumTotalFeeDate,
+                          color: "#17395c",
+                        },
+                      ]}
+                    />
+                    <div className="total-container">
+                      <div className="totalcost">
+                        รายได้ทั้งหมด : {sumTotalCostDate}
+                      </div>
+                      <div className="total-flex">
+                        <div className="totalspare">
+                          ค่าอะไหล่ทั้งหมด : {sumTotalSpareDate}
+                        </div>
+                        <div className="totalfee">
+                          ค่าบริการทั้งหมด : {sumTotalFeeDate}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div style={{ flex: 2 }}>
-                <div />
-              </div>
             </div>
-            <div className="reportmechanic-head">สรุปรายการซ่อม</div>
+            <div className="title-container">
+              <div className="title">สรุปรายการซ่อม</div>
+            </div>
 
             <div className="reportrepair-table-container">
               <table className="reportrepair-table">
@@ -1359,7 +1705,9 @@ function Report() {
               </table>
             </div>
 
-            <div className="reportmechanic-head">สรุปการทำงานของช่าง</div>
+            <div className="title-container">
+              <div className="title">สรุปการทำงานของช่าง</div>
+            </div>
 
             <div className="reportmechanic-table-container">
               <table className="reportmechanic-table">
@@ -1410,23 +1758,23 @@ function Report() {
                                 {showServiceDetailsByMechanicDate[
                                   mechanic.name
                                 ]?.[serviceName] && (
-                                    <div>
-                                      {carModelCounts.map(
-                                        ([carModel, carModelCount]) => (
-                                          <table className="reportmechanic-subrow">
-                                            <tr key={carModel}>
-                                              <td style={{ paddingLeft: "20px" }}>
-                                                {carModel}
-                                              </td>
-                                              <td style={{ width: "10%" }}>
-                                                {carModelCount}
-                                              </td>
-                                            </tr>
-                                          </table>
-                                        )
-                                      )}
-                                    </div>
-                                  )}
+                                  <div>
+                                    {carModelCounts.map(
+                                      ([carModel, carModelCount]) => (
+                                        <table className="reportmechanic-subrow">
+                                          <tr key={carModel}>
+                                            <td style={{ paddingLeft: "20px" }}>
+                                              {carModel}
+                                            </td>
+                                            <td style={{ width: "10%" }}>
+                                              {carModelCount}
+                                            </td>
+                                          </tr>
+                                        </table>
+                                      )
+                                    )}
+                                  </div>
+                                )}
                               </td>
                               <td>{serviceTotal}</td>
                             </tr>
@@ -1445,13 +1793,13 @@ function Report() {
         )}
       </div>
 
-      <div className="monthly-filter">
+      <div className="report-filtered">
         {weekOn ? (
           <div>
-            <div>
-              <button onClick={handlePreviousWeekClick}>
-                ย้อนหลัง 1 สัปดาห์
-              </button>
+            <div className="report-filtered-input">
+              <div className="previous-arrow" onClick={handlePreviousWeekClick}>
+                <img src="./assets/image/previous.png" />
+              </div>
               <input
                 type="week"
                 id="weekSelect"
@@ -1460,74 +1808,132 @@ function Report() {
                   setWeek(e.target.value);
                 }}
               />
-              <button onClick={handleNextWeekClick}>
-                ไปข้างหน้า 1 สัปดาห์
-              </button>
+              <div className="next-arrow" onClick={handleNextWeekClick}>
+                <img src="./assets/image/next.png" />
+              </div>
             </div>
 
-            <h1>รายงานสรุปสัปดาห์ที่ {moment(week, "YYYY-WW").isoWeek()}</h1>
-            <div style={{ display: "flex" }}>
-              <div style={{ flex: 1 }}>
+            <div className="title-container">
+              <div className="title">สรุปจำนวนคัน</div>
+            </div>
+
+            <div className="flex-container">
+              <div>
                 <DonutChart
                   data={[
                     {
-                      name: `รถที่รับเข้ามา : ${sumCarsWithStartDateWeek}`,
+                      name: `รถที่รับเข้ามา`,
                       value: sumCarsWithStartDateWeek,
+                      color: "#ec407a",
                     },
                     {
-                      name: `รถที่ส่งออก : ${sumCarsWithEndDateWeek}`,
+                      name: `รถที่ส่งออก`,
                       value: sumCarsWithEndDateWeek,
+                      color: "#29b6f6",
                     },
                     {
-                      name: `รถที่ยังอยู่ในอู่ : ${lastValueWeek}`,
+                      name: `รถที่ยังอยู่ในอู่`,
                       value: lastValueWeek,
+                      color: "##d7a421",
                     },
                   ]}
                 />
-
-                <div>
-                  {/* <h5>รถที่รับเข้ามา: {sumCarsWithStartDate}</h5>
-                  <h5>รถที่ส่งออก: {sumCarsWithEndDate}</h5>
-                  <h5>รถที่ยังอยู่ในอู่: {lastValue}</h5> */}
+                <div className="car-container">
+                  <div className="carWstart">
+                    รถที่รับเข้ามา: {sumCarsWithStartDateWeek}
+                  </div>
+                  <div className="carWend">
+                    รถที่ส่งออก: {sumCarsWithEndDateWeek}
+                  </div>
+                  <div className="carWOend">
+                    รถที่ยังอยู่ในอู่: {lastValueWeek}
+                  </div>
                 </div>
               </div>
-              <div style={{ flex: 2 }}>
-                {/* <BarCar
-                  carsWithStartDate={carsWithStartDate}
-                  carsWithEndDate={carsWithEndDate}
-                  carsWithOutEndDate={carsWithOutEndDate}
-                /> */}
+              <div className="bar-container">
+                <div>
+                  <BarChartPerDay
+                    data1={{
+                      name: "รถที่รับเข้ามา",
+                      fill: "#ec407a",
+                      ...carsWithStartDateWeek,
+                    }}
+                    data2={{
+                      name: "รถที่ส่งออก",
+                      fill: "#29b6f6",
+                      ...carsWithEndDateWeek,
+                    }}
+                    data3={{
+                      name: "รถที่ยังอยู่ในอู่",
+                      fill: "#d7a421",
+                      ...carsWithOutEndDateWeek,
+                    }}
+                  data4={carsWithOutEndDateWeek}
+                  />
+                </div>
               </div>
             </div>
-            <div style={{ display: "flex" }}>
-              <div style={{ flex: 1 }}>
-                {/* <DonutChart
+
+            <div className="title-container">
+              <div className="title">สรุปรายได้</div>
+            </div>
+
+            <div className="flex-container">
+              <div>
+                <DonutChart
                   data={[
                     {
                       name: `ค่าอะไหล่ทั้งหมด`,
-                      value: sumTotalSpare,
+                      value: sumTotalSpareWeek,
+                      color: "#ac1c1b",
                     },
                     {
                       name: `ค่าบริการทั้งหมด`,
-                      value: sumTotalFee,
+                      value: sumTotalFeeWeek,
+                      color: "#17395c",
                     },
                   ]}
-                /> */}
+                />
+                <div className="total-container">
+                  <div className="totalcost">
+                    รายได้ทั้งหมด : {sumTotalCostWeek}
+                  </div>
+                  <div className="total-flex">
+                    <div className="totalspare">
+                      ค่าอะไหล่ทั้งหมด : {sumTotalSpareWeek}
+                    </div>
+                    <div className="totalfee">
+                      ค่าบริการทั้งหมด : {sumTotalFeeWeek}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div style={{ flex: 2 }}>
-                {/* <BarCost
-                  TotalCost={totalCostPerDay}
-                  TotalFee={totalFeePerDay}
-                  TotalSpare={totalSparePerDay}
-                  carsWithOutEndDate={carsWithOutEndDate}
-                /> */}
+              <div className="bar-container">
+                <BarChartPerDay
+                  data1={{
+                    name: "รายได้ทั้งหมด",
+                    fill: "#688f4e",
+                    ...totalCostPerDayWeek,
+                  }}
+                  data2={{
+                    name: "ค่าอะไหล่",
+                    fill: "#ac1c1b",
+                    ...totalFeePerDayWeek,
+                  }}
+                  data3={{
+                    name: "ค่าบริการ",
+                    fill: "#17395c",
+                    ...totalSparePerDayWeek,
+                  }}
+                  data4={carsWithOutEndDateWeek}
+                />
               </div>
             </div>
-            <div>
-              {/* <h5>รายได้ทั้งหมด : {sumTotalCost}</h5>
-              <h5>ค่าอะไหล่ทั้งหมด : {sumTotalSpare}</h5>
-              <h5>ค่าบริการทั้งหมด : {sumTotalFee}</h5> */}
+
+            <div className="title-container">
+              <div className="title">สรุปรายการซ่อม</div>
             </div>
+
             <div className="reportrepair-table-container">
               <table className="reportrepair-table">
                 <thead>
@@ -1537,7 +1943,264 @@ function Report() {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* {Object.entries(servicesUsed).map(([serviceName, index]) => (
+                  {Object.entries(servicesUsedWeek).map(
+                    ([serviceName, index]) => (
+                      <React.Fragment key={serviceName}>
+                        <tr>
+                          <td style={{ paddingLeft: "15px" }}>
+                            {serviceName}
+                            <img
+                              onClick={() =>
+                                toggleServiceDetailsWeek(serviceName)
+                              }
+                              src="./assets/image/down-arrow.png"
+                            />
+                          </td>
+                          <td>{servicesUsedWeek[serviceName].length}</td>
+                        </tr>
+                        {showServiceDetails[serviceName] && (
+                          <tr>
+                            <td colSpan={2}>
+                              {Object.entries(getServiceWeek(serviceName)).map(
+                                ([carModel, carModelCount]) => (
+                                  <div key={carModel}>
+                                    <table className="reportrepair-subrow">
+                                      <tr>
+                                        <td>{carModel}</td>
+                                        <td style={{ width: "20%" }}>
+                                          {carModelCount}
+                                        </td>
+                                        <td></td>
+                                      </tr>
+                                    </table>
+                                  </div>
+                                )
+                              )}
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="title-container">
+              <div className="title">สรุปการทำงานของช่าง</div>
+            </div>
+
+            <div className="reportmechanic-table-container">
+              <table className="reportmechanic-table">
+                <thead>
+                  <tr>
+                    <th>ช่าง</th>
+                    <th>รายการซ่อม</th>
+                    <th>จำนวน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {mechanics.map((mechanic) => {
+                    const services = countServicesByMechanicWeek(mechanic.name);
+
+                    return (
+                      <React.Fragment key={mechanic._id}>
+                        {Object.keys(services).map((serviceName, index) => {
+                          const carModelCounts = Object.entries(
+                            getServiceCountsByCarModelWeek(
+                              mechanic.name,
+                              serviceName
+                            )
+                          );
+                          const serviceTotal = carModelCounts.reduce(
+                            (acc, [carModel, carModelCount]) =>
+                              acc + carModelCount,
+                            0
+                          );
+
+                          return (
+                            <tr key={`${mechanic._id}-${serviceName}`}>
+                              {index === 0 && (
+                                <td rowSpan={Object.keys(services).length}>
+                                  {mechanic.name}
+                                </td>
+                              )}
+                              <td style={{ textAlign: "left" }}>
+                                {serviceName}
+                                <img
+                                  onClick={() =>
+                                    toggleServiceDetailsByMechanicWeek(
+                                      mechanic.name,
+                                      serviceName
+                                    )
+                                  }
+                                  src="./assets/image/down-arrow.png"
+                                />
+                                {showServiceDetailsByMechanic[mechanic.name]?.[
+                                  serviceName
+                                ] && (
+                                  <div>
+                                    {carModelCounts.map(
+                                      ([carModel, carModelCount]) => (
+                                        <table className="reportmechanic-subrow">
+                                          <tr key={carModel}>
+                                            <td style={{ paddingLeft: "20px" }}>
+                                              {carModel}
+                                            </td>
+                                            <td style={{ width: "10%" }}>
+                                              {carModelCount}
+                                            </td>
+                                          </tr>
+                                        </table>
+                                      )
+                                    )}
+                                  </div>
+                                )}
+                              </td>
+                              <td>{serviceTotal}</td>
+                            </tr>
+                          );
+                        })}
+                      </React.Fragment>
+                    );
+                  })}
+                </tbody>
+              </table>
+              ;
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+      </div>
+
+      <div className="report-filtered">
+        {monthOn ? (
+          <div>
+            <div className="report-filtered-input">
+              <div
+                className="previous-arrow"
+                onClick={handlePreviousMonthClick}
+              >
+                <img src="./assets/image/previous.png" />
+              </div>
+              <input
+                type="month"
+                id="monthSelect"
+                value={month}
+                onChange={(e) => {
+                  setMonth(e.target.value);
+                }}
+              />
+              <div className="next-arrow" onClick={handleNextMonthClick}>
+                <img src="./assets/image/next.png" />
+              </div>
+            </div>
+
+            <div className="title-container">
+              <div className="title">สรุปจำนวนคัน</div>
+            </div>
+
+            <div className="flex-container">
+              <div>
+                <DonutChart
+                  data={[
+                    {
+                      name: `รถที่รับเข้ามา`,
+                      value: sumCarsWithStartDate,
+                      color: "#ec407a",
+                    },
+                    {
+                      name: `รถที่ส่งออก`,
+                      value: sumCarsWithEndDate,
+                      color: "#29b6f6",
+                    },
+                    {
+                      name: `รถที่ยังอยู่ในอู่`,
+                      value: lastValue,
+                      color: "##d7a421",
+                    },
+                  ]}
+                />
+
+                <div className="car-container">
+                  <div className="carWstart">
+                    รถที่รับเข้ามา: {sumCarsWithStartDate}
+                  </div>
+                  <div className="carWend">
+                    รถที่ส่งออก: {sumCarsWithEndDate}
+                  </div>
+                  <div className="carWOend">รถที่ยังอยู่ในอู่: {lastValue}</div>
+                </div>
+              </div>
+              <div className="bar-container">
+                <LineChartCar
+                  carsWithStartDate={carsWithStartDate}
+                  carsWithEndDate={carsWithEndDate}
+                  carsWithOutEndDate={carsWithOutEndDate}
+                />
+              </div>
+            </div>
+
+            <div className="title-container">
+              <div className="title">สรุปรายได้</div>
+            </div>
+
+            <div className="flex-container">
+              <div>
+                <DonutChart
+                  data={[
+                    {
+                      name: `ค่าอะไหล่ทั้งหมด`,
+                      value: sumTotalSpare,
+                      color: "#ac1c1b",
+                    },
+                    {
+                      name: `ค่าบริการทั้งหมด`,
+                      value: sumTotalFee,
+                      color: "#17395c",
+                    },
+                  ]}
+                />
+                <div className="total-container">
+                  <div className="totalcost">
+                    รายได้ทั้งหมด : {sumTotalCost}
+                  </div>
+                  <div className="total-flex">
+                    <div className="totalspare">
+                      ค่าอะไหล่ทั้งหมด : {sumTotalSpare}
+                    </div>
+                    <div className="totalfee">
+                      ค่าบริการทั้งหมด : {sumTotalFee}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bar-container">
+                <LineChartCost
+                  TotalCost={totalCostPerDay}
+                  TotalFee={totalFeePerDay}
+                  TotalSpare={totalSparePerDay}
+                  carsWithOutEndDate={carsWithOutEndDate}
+                />
+              </div>
+            </div>
+            <div></div>
+
+            <div className="title-container">
+              <div className="title">สรุปรายการซ่อม</div>
+            </div>
+
+            <div className="reportrepair-table-container">
+              <table className="reportrepair-table">
+                <thead>
+                  <tr>
+                    <th>รายการซ่อม</th>
+                    <th>จำนวน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(servicesUsed).map(([serviceName, index]) => (
                     <React.Fragment key={serviceName}>
                       <tr>
                         <td style={{ paddingLeft: "15px" }}>
@@ -1571,13 +2234,14 @@ function Report() {
                         </tr>
                       )}
                     </React.Fragment>
-                  ))} */}
+                  ))}
                 </tbody>
               </table>
             </div>
-            <div className="reportmechanic-head">สรุปการทำงานของช่าง</div>
 
-            <div className="reportmechanic-head">สรุปการทำงานของช่าง</div>
+            <div className="title-container">
+              <div className="title">สรุปการทำงานของช่าง</div>
+            </div>
 
             <div className="reportmechanic-table-container">
               <table className="reportmechanic-table">
@@ -1589,7 +2253,7 @@ function Report() {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* {mechanics.map((mechanic) => {
+                  {mechanics.map((mechanic) => {
                     const services = countServicesByMechanic(mechanic.name);
 
                     return (
@@ -1652,7 +2316,7 @@ function Report() {
                         })}
                       </React.Fragment>
                     );
-                  })} */}
+                  })}
                 </tbody>
               </table>
               ;
@@ -1663,91 +2327,146 @@ function Report() {
         )}
       </div>
 
-      <div className="monthly-filter">
-        {monthOn ? (
+      <div className="report-filtered">
+        {yearOn ? (
           <div>
-            <div>
-              <button onClick={handlePreviousMonthClick}>
-                ย้อนหลัง 1 เดือน
-              </button>
+            <div className="report-filtered-input">
+              <div className="previous-arrow" onClick={handlePreviousYearClick}>
+                <img src="./assets/image/previous.png" />
+              </div>
               <input
-                type="month"
-                id="monthSelect"
-                value={month}
+                type="year"
+                id="yearSelect"
+                value={year}
                 onChange={(e) => {
-                  setMonth(e.target.value);
+                  setYear(e.target.value);
                 }}
               />
-              <button onClick={handleNextMonthClick}>ไปข้างหน้า 1 เดือน</button>
+              <div className="next-arrow" onClick={handleNextYearClick}>
+                <img src="./assets/image/next.png" />
+              </div>
             </div>
-
-            <h1>รายงานสรุป {moment(month).format("MMMM YYYY")}</h1>
-
-            <div style={{ display: "flex" }}>
-              <div style={{ flex: 1 }}>
+            <div className="title-container">
+              <div className="title">สรุปจำนวนคัน</div>
+            </div>
+            <div className="flex-container">
+              <div>
                 <DonutChart
                   data={[
                     {
-                      name: `รถที่รับเข้ามา : ${sumCarsWithStartDate}`,
-                      value: sumCarsWithStartDate,
+                      name: `รถที่รับเข้ามา`,
+                      value: sumCarsWithStartDateYear,
+                      color: "#ec407a",
                     },
                     {
-                      name: `รถที่ส่งออก : ${sumCarsWithEndDate}`,
-                      value: sumCarsWithEndDate,
+                      name: `รถที่ส่งออก`,
+                      value: sumCarsWithEndDateYear,
+                      color: "#29b6f6",
                     },
                     {
-                      name: `รถที่ยังอยู่ในอู่ : ${lastValue}`,
-                      value: lastValue,
+                      name: `รถที่ยังอยู่ในอู่`,
+                      value: lastValueYear,
+                      color: "##d7a421",
                     },
                   ]}
                 />
 
-                <div>
-                  <h5>รถที่รับเข้ามา: {sumCarsWithStartDate}</h5>
-                  <h5>รถที่ส่งออก: {sumCarsWithEndDate}</h5>
-                  <h5>รถที่ยังอยู่ในอู่: {lastValue}</h5>
+                <div className="car-container">
+                  <div className="carWstart">
+                    รถที่รับเข้ามา: {sumCarsWithStartDateYear}
+                  </div>
+                  <div className="carWend">
+                    รถที่ส่งออก: {sumCarsWithEndDateYear}
+                  </div>
+                  <div className="carWOend">
+                    รถที่ยังอยู่ในอู่: {lastValueYear}
+                  </div>
                 </div>
               </div>
-              <div style={{ flex: 2 }}>
-                <BarCar
-                  carsWithStartDate={carsWithStartDate}
-                  carsWithEndDate={carsWithEndDate}
-                  carsWithOutEndDate={carsWithOutEndDate}
+              <div className="bar-container">
+                <BarChartPerMonth
+                  data1={{
+                    data: carsWithStartDateYear,
+                    name: "รถที่รับเข้ามา",
+                    fill: "#ec407a",
+                  }}
+                  data2={{
+                    data: carsWithEndDateYear,
+                    name: "รถที่ส่งออก",
+                    fill: "#29b6f6",
+                  }}
+                  data3={{
+                    data: carsWithOutEndDateYear,
+                    name: "รถที่ยังอยู่ในอู่",
+                    fill: "#d7a421",
+                  }}
+                  allMonths={allMonths}
                 />
               </div>
             </div>
-            <div style={{ display: "flex" }}>
-              <div style={{ flex: 1 }}>
+
+            <div className="title-container">
+              <div className="title">สรุปรายได้</div>
+            </div>
+
+            <div className="flex-container">
+              <div>
                 <DonutChart
                   data={[
                     {
                       name: `ค่าอะไหล่ทั้งหมด`,
-                      value: sumTotalSpare,
+                      value: sumTotalSpareYear,
+                      color: "#ac1c1b",
                     },
                     {
                       name: `ค่าบริการทั้งหมด`,
-                      value: sumTotalFee,
+                      value: sumTotalFeeYear,
+                      color: "#17395c",
                     },
                   ]}
                 />
+                <div className="total-container">
+                  <div className="totalcost">
+                    รายได้ทั้งหมด : {sumTotalCostYear}
+                  </div>
+                  <div className="total-flex">
+                    <div className="totalspare">
+                      ค่าอะไหล่ทั้งหมด : {sumTotalSpareYear}
+                    </div>
+                    <div className="totalfee">
+                      ค่าบริการทั้งหมด : {sumTotalFeeYear}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div style={{ flex: 2 }}>
-                <BarCost
-                  TotalCost={totalCostPerDay}
-                  TotalFee={totalFeePerDay}
-                  TotalSpare={totalSparePerDay}
-                  carsWithOutEndDate={carsWithOutEndDate}
-                />
-              </div>
-            </div>
-            <div>
-              <h5>รายได้ทั้งหมด : {sumTotalCost}</h5>
-              <h5>ค่าอะไหล่ทั้งหมด : {sumTotalSpare}</h5>
-              <h5>ค่าบริการทั้งหมด : {sumTotalFee}</h5>
-            </div>
-            <div></div>
-            <div className="reportmechanic-head">สรุปรายการซ่อม</div>
 
+              <div className="bar-container">
+                <div>
+                  <BarChartPerMonth
+                    data1={{
+                      data: totalCostPerMonthYear,
+                      name: "รายได้ทั้งหมด",
+                      fill: "#688f4e",
+                    }}
+                    data2={{
+                      data: totalSparePerMonthYear,
+                      name: "ค่าอะไหล่",
+                      fill: "#ac1c1b",
+                    }}
+                    data3={{
+                      data: totalFeePerMonthYear,
+                      name: "ค่าบริการ",
+                      fill: "#17395c",
+                    }}
+                    allMonths={allMonths}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="title-container">
+              <div className="title">สรุปรายการซ่อม</div>
+            </div>
             <div className="reportrepair-table-container">
               <table className="reportrepair-table">
                 <thead>
@@ -1757,45 +2476,53 @@ function Report() {
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.entries(servicesUsed).map(([serviceName, index]) => (
-                    <React.Fragment key={serviceName}>
-                      <tr>
-                        <td style={{ paddingLeft: "15px" }}>
-                          {serviceName}
-                          <img
-                            onClick={() => toggleServiceDetails(serviceName)}
-                            src="./assets/image/down-arrow.png"
-                          />
-                        </td>
-                        <td>{servicesUsed[serviceName].length}</td>
-                      </tr>
-                      {showServiceDetails[serviceName] && (
+                  {Object.entries(servicesUsedYear).map(
+                    ([serviceName, index]) => (
+                      <React.Fragment key={serviceName}>
                         <tr>
-                          <td colSpan={2}>
-                            {Object.entries(getService(serviceName)).map(
-                              ([carModel, carModelCount]) => (
-                                <div key={carModel}>
-                                  <table className="reportrepair-subrow">
-                                    <tr>
-                                      <td>{carModel}</td>
-                                      <td style={{ width: "20%" }}>
-                                        {carModelCount}
-                                      </td>
-                                      <td></td>
-                                    </tr>
-                                  </table>
-                                </div>
-                              )
-                            )}
+                          <td style={{ paddingLeft: "15px" }}>
+                            {serviceName}
+                            <img
+                              onClick={() =>
+                                toggleServiceDetailsYear(serviceName)
+                              }
+                              src="./assets/image/down-arrow.png"
+                            />
                           </td>
+                          <td>{servicesUsedYear[serviceName].length}</td>
                         </tr>
-                      )}
-                    </React.Fragment>
-                  ))}
+                        {showServiceDetails[serviceName] && (
+                          <tr>
+                            <td colSpan={2}>
+                              {Object.entries(getServiceYear(serviceName)).map(
+                                ([carModel, carModelCount]) => (
+                                  <div key={carModel}>
+                                    <table className="reportrepair-subrow">
+                                      <tr>
+                                        <td>{carModel}</td>
+                                        <td style={{ width: "20%" }}>
+                                          {carModelCount}
+                                        </td>
+                                        <td></td>
+                                      </tr>
+                                    </table>
+                                  </div>
+                                )
+                              )}
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    )
+                  )}
                 </tbody>
               </table>
             </div>
-            <div className="reportmechanic-head">สรุปการทำงานของช่าง</div>
+
+            <div className="title-container">
+              <div className="title">สรุปการทำงานของช่าง</div>
+            </div>
+
             <div className="reportmechanic-table-container">
               <table className="reportmechanic-table">
                 <thead>
@@ -1807,13 +2534,13 @@ function Report() {
                 </thead>
                 <tbody>
                   {mechanics.map((mechanic) => {
-                    const services = countServicesByMechanic(mechanic.name);
+                    const services = countServicesByMechanicYear(mechanic.name);
 
                     return (
                       <React.Fragment key={mechanic._id}>
                         {Object.keys(services).map((serviceName, index) => {
                           const carModelCounts = Object.entries(
-                            getServiceCountsByCarModel(
+                            getServiceCountsByCarModelYear(
                               mechanic.name,
                               serviceName
                             )
@@ -1835,7 +2562,7 @@ function Report() {
                                 {serviceName}
                                 <img
                                   onClick={() =>
-                                    toggleServiceDetailsByMechanic(
+                                    toggleServiceDetailsByMechanicYear(
                                       mechanic.name,
                                       serviceName
                                     )
@@ -1845,23 +2572,23 @@ function Report() {
                                 {showServiceDetailsByMechanic[mechanic.name]?.[
                                   serviceName
                                 ] && (
-                                    <div>
-                                      {carModelCounts.map(
-                                        ([carModel, carModelCount]) => (
-                                          <table className="reportmechanic-subrow">
-                                            <tr key={carModel}>
-                                              <td style={{ paddingLeft: "20px" }}>
-                                                {carModel}
-                                              </td>
-                                              <td style={{ width: "10%" }}>
-                                                {carModelCount}
-                                              </td>
-                                            </tr>
-                                          </table>
-                                        )
-                                      )}
-                                    </div>
-                                  )}
+                                  <div>
+                                    {carModelCounts.map(
+                                      ([carModel, carModelCount]) => (
+                                        <table className="reportmechanic-subrow">
+                                          <tr key={carModel}>
+                                            <td style={{ paddingLeft: "20px" }}>
+                                              {carModel}
+                                            </td>
+                                            <td style={{ width: "10%" }}>
+                                              {carModelCount}
+                                            </td>
+                                          </tr>
+                                        </table>
+                                      )
+                                    )}
+                                  </div>
+                                )}
                               </td>
                               <td>{serviceTotal}</td>
                             </tr>
@@ -1884,4 +2611,3 @@ function Report() {
 }
 
 export default Report;
-

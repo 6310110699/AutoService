@@ -2,285 +2,406 @@
 
 
 .report {
-    .report-head-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
+  .report-head-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 
 
-        .report-head {
-            width: 300px;
-            background-color: $fifth-color;
-            padding: 10px;
-            font-size: 25px;
-            font-weight: 700;
-            border-radius: 30px;
-            text-align: center;
-        }
+    .report-head {
+      width: 300px;
+      background-color: $fifth-color;
+      padding: 10px;
+      font-size: 25px;
+      font-weight: 700;
+      border-radius: 30px;
+      text-align: center;
+    }
+  }
+
+
+  .report-filter {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    .report-daily {
+      width: 150px;
+      margin: 0px 10px;
+      padding: 10px;
+      text-align: center;
+      border-radius: 20px;
+      font-size: 20px;
+      font-weight: 600;
+      background-color: $nineth-color;
+      display: inline-block;
+      cursor: pointer;
+      &.active {
+        background-color: $fifth-color;
+      }
     }
 
 
-    .report-filter {
-        margin-top: 40px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-
-        .report-daily {
-            width: 150px;
-            margin: 0px 10px;
-            padding: 10px;
-            text-align: center;
-            border-radius: 20px;
-            font-size: 20px;
-            font-weight: 600;
-            background-color: $fourth-color;
-            display: inline-block;
-            cursor: pointer;
-
-            &.active {
-                background-color: $fifth-color; // สีปุ่มเมื่อ active
-            }
-        }
-
-
-        .report-weekly {
-            width: 150px;
-            margin: 0px 10px;
-            padding: 10px;
-            text-align: center;
-            border-radius: 20px;
-            font-size: 20px;
-            font-weight: 600;
-            background-color: $fourth-color;
-            display: inline-block;
-            cursor: pointer;
-
-            &.active {
-                background-color: $fifth-color; // สีปุ่มเมื่อ active
-            }
-        }
-
-
-        .report-monthly {
-            width: 150px;
-            margin: 0px 10px;
-            padding: 10px;
-            text-align: center;
-            border-radius: 20px;
-            font-size: 20px;
-            font-weight: 600;
-            background-color: $fourth-color;
-            display: inline-block;
-            cursor: pointer;
-
-            &.active {
-                background-color: $fifth-color; // สีปุ่มเมื่อ active
-            }
-        }
-
-
-        .report-yearly {
-            width: 150px;
-            margin: 0px 10px;
-            padding: 10px;
-            text-align: center;
-            border-radius: 20px;
-            font-size: 20px;
-            font-weight: 600;
-            background-color: $fourth-color;
-            display: inline-block;
-            cursor: pointer;
-
-            &.active {
-                background-color: $fifth-color; // สีปุ่มเมื่อ active
-            }
-        }
-
-
+    .report-weekly {
+      width: 150px;
+      margin: 0px 10px;
+      padding: 10px;
+      text-align: center;
+      border-radius: 20px;
+      font-size: 20px;
+      font-weight: 600;
+      background-color: $nineth-color;
+      display: inline-block;
+      cursor: pointer;
+      &.active {
+        background-color: $fifth-color;
+      }
     }
 
 
-    .report-filter1 {
-        margin-top: 40px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-
-        label {
-            font-size: 20px;
-            margin-right: 10px;
-        }
-
-
-        input {
-            width: 400px;
-            height: 50px;
-            border-radius: 15px;
-            margin-right: 20px;
-            padding: 8px;
-        }
-
-
-        .report-filterbutton {
-            width: 150px;
-            margin: 0px 10px;
-            padding: 10px;
-            text-align: center;
-            border-radius: 20px;
-            font-size: 20px;
-            font-weight: 600;
-            background-color: $fourth-color;
-            display: inline-block;
-            cursor: pointer;
-        }
+    .report-monthly {
+      width: 150px;
+      margin: 0px 10px;
+      padding: 10px;
+      text-align: center;
+      border-radius: 20px;
+      font-size: 20px;
+      font-weight: 600;
+      background-color: $nineth-color;
+      display: inline-block;
+      cursor: pointer;
+      &.active {
+        background-color: $fifth-color;
+      }
     }
 
 
-    .reportrepair-table-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 10px;
-        padding-bottom: 50px;
-
-
-        .reportrepair-table {
-            width: 60%;
-            font-size: 18px;
-
-
-            th {
-                text-align: center;
-                border: 1px solid black;
-                background-color: $third-color;
-                color: $second-color;
-                padding: 10px;
-            }
-
-
-            td {
-                border: 1px solid black;
-                background-color: $fourteenth-color;
-            }
-
-
-            td:last-child {
-                width: 20%;
-                text-align: center;
-            }
-
-
-            .reportrepair-subrow {
-                width: 100%;
-
-
-                td {
-                    border-top: none;
-                    border-left: none;
-                    background-color: $second-color;
-                }
-
-
-                td:first-child {
-                    padding-left: 50px;
-                    text-align: left;
-                }
-
-
-                td:last-child {
-                    border-right: none;
-                    border-bottom: none;
-                    border-top: none;
-                }
-            }
-
-
-            img {
-                width: 30px;
-            }
-        }
+    .report-yearly {
+      width: 150px;
+      margin: 0px 10px;
+      padding: 10px;
+      text-align: center;
+      border-radius: 20px;
+      font-size: 20px;
+      font-weight: 600;
+      background-color: $nineth-color;
+      display: inline-block;
+      cursor: pointer;
+      &.active {
+        background-color: $fifth-color;
+      }
     }
+  }
 
 
-    .reportmechanic-table-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 10px;
-        padding-bottom: 50px;
+  .report-filtered-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+  }
 
 
-        .reportmechanic-table {
-            width: 60%;
-            font-size: 18px;
-
-
-            th {
-                text-align: center;
-                border: 1px solid black;
-                background-color: $third-color;
-                color: $second-color;
-                padding: 10px;
-            }
-
-
-            td {
-                border: 1px solid black;
-                background-color: $fourteenth-color;
-                width: 50%;
-            }
-
-
-            td:first-child {
-                width: 30%;
-                text-align: center;
-            }
-
-
-            td:last-child {
-                width: 20%;
-                text-align: center;
-            }
-
-
-            .reportmechanic-subrow {
-                width: 100%;
-
-
-                td {
-                    border-bottom: none;
-                    border-left: none;
-                    border-right: none;
-                    background-color: $second-color;
-                    text-align: left;
-                }
-
-
-                td:last-child {
-                    border-left: 1px solid black;
-                    text-align: center;
-                }
-            }
-
-
-            img {
-                width: 30px;
-            }
-        }
+  .previous-arrow {
+    width: 30px;
+    height: 30px;
+    margin-right: 200px;
+    cursor: pointer;
+    img {
+      width: 100%;
+      height: 100%;
     }
+  }
 
 
-    .reportmechanic-head {
+  input {
+    width: 210px;
+    height: 40px;
+    padding: 10px;
+    margin: 0 10px;
+    font-size: 20px;
+    border-radius: 4px;
+  }
+
+
+  .next-arrow {
+    width: 30px;
+    height: 30px;
+    margin-left: 200px;
+    cursor: pointer;
+
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+
+  .title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 50px;
+  }
+
+
+  .title {
+    width: 290px;
+    height: 60px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 20px;
+    font-size: 24px;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: black;
+    background-color: $fourth-color;
+  }
+
+
+  .flex-container {
+    display: flex;
+    margin-left: 20px;
+  }
+
+
+  .car-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+  .carWstart {
+    font-size: 18px;
+    font-weight: 500;
+    color: $sixthteenth-color;
+  }
+
+
+  .carWend {
+    font-size: 18px;
+    font-weight: 500;
+    color: $seventhteenth-color;
+    margin-left: 20px;
+  }
+
+
+  .carWOend {
+    font-size: 18px;
+    font-weight: 500;
+    color: $eighthteenth-color;
+    margin-left: 20px;
+  }
+
+
+  .bar-container {
+    padding-left: 50px;
+    margin-bottom: 20px;
+  }
+
+
+  .day-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -50px;
+  }
+
+
+  .day-container-total {
+    margin-left: 30px;
+  }
+
+
+  .total-container {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+  .totalcost {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 500;
+    color: $sixth-color;
+  }
+
+
+  .total-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+  .totalspare {
+    font-size: 18px;
+    font-weight: 500;
+    color: $eighth-color;
+    margin-left: 20px;
+  }
+
+
+  .totalfee {
+    font-size: 18px;
+    font-weight: 500;
+    color: $third-color;
+    margin-left: 20px;
+  }
+
+
+  .reportrepair-table-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    padding-bottom: 50px;
+
+
+    .reportrepair-table {
+      width: 60%;
+      font-size: 18px;
+
+
+      th {
         text-align: center;
-        font-size: 25px;
-    }
+        border: 1px solid black;
+        background-color: $third-color;
+        color: $second-color;
+        padding: 10px;
+      }
 
 
-    .reportrepair-head {
+      td {
+        border: 1px solid black;
+        background-color: $fourteenth-color;
+      }
+
+
+      td:last-child {
+        width: 20%;
         text-align: center;
-        font-size: 25px;
-        margin-top: 50px;
+      }
+
+
+      .reportrepair-subrow {
+        width: 100%;
+
+
+        td {
+          border-top: none;
+          border-left: none;
+          background-color: $second-color;
+        }
+
+
+        td:first-child {
+          padding-left: 50px;
+          text-align: left;
+        }
+
+
+        td:last-child {
+          border-right: none;
+          border-bottom: none;
+          border-top: none;
+        }
+      }
+
+
+      img {
+        width: 30px;
+      }
     }
+  }
+
+
+  .reportmechanic-table-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    padding-bottom: 50px;
+
+
+    .reportmechanic-table {
+      width: 60%;
+      font-size: 18px;
+
+
+      th {
+        text-align: center;
+        border: 1px solid black;
+        background-color: $third-color;
+        color: $second-color;
+        padding: 10px;
+      }
+
+
+      td {
+        border: 1px solid black;
+        background-color: $fourteenth-color;
+        width: 50%;
+      }
+
+
+      td:first-child {
+        width: 30%;
+        text-align: center;
+      }
+
+
+      td:last-child {
+        width: 20%;
+        text-align: center;
+      }
+
+
+      .reportmechanic-subrow {
+        width: 100%;
+
+
+        td {
+          border-bottom: none;
+          border-left: none;
+          border-right: none;
+          background-color: $second-color;
+          text-align: left;
+        }
+
+
+        td:last-child {
+          border-left: 1px solid black;
+          text-align: center;
+        }
+      }
+
+
+      img {
+        width: 30px;
+      }
+    }
+  }
+
+
+  .reportmechanic-head {
+    text-align: center;
+    font-size: 25px;
+  }
+
+
+  .reportrepair-head {
+    text-align: center;
+    font-size: 25px;
+    margin-top: 50px;
+  }
 }
+
+
+

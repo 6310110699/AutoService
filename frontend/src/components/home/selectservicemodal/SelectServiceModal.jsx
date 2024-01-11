@@ -122,7 +122,11 @@ const SelectServiceModal = ({
                       />
                     </span>
                     <span className="service-label">
-                      <div className={`service-name ${selectedServices.includes(service.serviceName) ? 'selected' : 'not-selected'}`}>
+                      <div
+                        className={
+                          `service-name ${selectedServices.includes(service.serviceName) ?
+                            'selected' : 'not-selected'}`}
+                      >
                         {service.serviceName}
                       </div>
                     </span>
@@ -165,20 +169,21 @@ const SelectServiceModal = ({
                                 || sparePart.spareName === selectedSparePartId.sparePartId);
                               return (
                                 <tr key={sparePart.spareName}>
-                                  <td className='selectservice-spare'>
-                                    {sparePart.spareName}
-                                  </td>
+                                  <td className='selectservice-spare'>{sparePart.spareName}</td>
                                   <td className='selectservice-quantity'>
                                     <input
                                       type="number"
                                       value={selectedSparePartId.quantity}
                                       onChange={(e) =>
-                                        handleQuantityChange(selectedService.serviceName, selectedSparePartId.sparePartId, e.target.value)}
+                                        handleQuantityChange(
+                                          selectedService.serviceName,
+                                          selectedSparePartId.sparePartId,
+                                          e.target.value
+                                        )
+                                      }
                                     />
                                   </td>
-                                  <td className='selectservice-price'>
-                                    {sparePart.sparePrice}
-                                  </td>
+                                  <td className='selectservice-price'>{sparePart.sparePrice}</td>
                                   <td className='delete-spare' onClick={() =>
                                     handleDeleteSparePart(selectedService.serviceName, sparePart.spareName)}>
                                     <img src='./assets/image/bin.png' />
