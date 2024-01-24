@@ -27,6 +27,10 @@ const SpareManagement = () => {
 
     const sortBySpare = (data) => {
         return data.sort((a, b) => {
+            if (!a.spareType && !b.spareType) return a.spareName.localeCompare(b.spareName);
+            if (!a.spareType) return 1;
+            if (!b.spareType) return -1;
+
             if (a.spareType.toLowerCase() < b.spareType.toLowerCase()) return -1;
             if (a.spareType.toLowerCase() > b.spareType.toLowerCase()) return 1;
 
@@ -35,7 +39,7 @@ const SpareManagement = () => {
             return 0;
         });
     };
-    
+
     // นำฟังก์ชัน sortByBrand มาใช้กับข้อมูลที่ต้องการเรียง
     const sortedSpares = sortBySpare(filteredSpares);
 
