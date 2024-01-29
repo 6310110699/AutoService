@@ -2,22 +2,24 @@ import React from "react";
 import { PieChart, Pie, Tooltip, Cell, Legend } from "recharts";
 
 
+
+
 const DonutChartComponent = ({ data }) => {
   return (
-    <PieChart width={450} height={400}>
+    <PieChart width={180} height={150}>
       <Pie
         data={data}
-        cx={200}
-        cy={200}
-        innerRadius={40}
-        outerRadius={160}
+        cx={80}
+        cy={65}
+        innerRadius={10}
+        outerRadius={55}
         fill="#8884d8"
         paddingAngle={2}
         dataKey="value"
         label={{
-          fontSize: 20,
+          fontSize: 12,
           position: "outside",
-          offset: -100,
+          offset: 0,
           formatter: (value) => `${value}`,
         }}
       >
@@ -30,8 +32,4 @@ const DonutChartComponent = ({ data }) => {
   );
 };
 
-
 export default DonutChartComponent;
-
-
-

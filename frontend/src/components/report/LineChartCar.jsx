@@ -1,11 +1,15 @@
 import React from "react";
-import {  LineChart,  Line,  XAxis,  YAxis,  CartesianGrid,  Tooltip,  Legend,} from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, } from "recharts";
 
 
-function LineChartComponent({  carsWithStartDate,  carsWithEndDate,  carsWithOutEndDate,}) {
+
+
+function LineChartComponent({ carsWithStartDate, carsWithEndDate, carsWithOutEndDate, }) {
   const dates = Object.keys(carsWithOutEndDate).sort(
     (dateA, dateB) => new Date(dateA) - new Date(dateB)
   );
+
+
 
 
   const data = dates.map((date) => ({
@@ -16,18 +20,22 @@ function LineChartComponent({  carsWithStartDate,  carsWithEndDate,  carsWithOut
   }));
 
 
- 
+
+
+
   return (
     <div>
       <LineChart
-        width={1120}
-        height={500}
+        width={700}
+        height={250}
         data={data}
         margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="date" />
         <YAxis />
+
+
 
 
         <Tooltip />
@@ -58,6 +66,4 @@ function LineChartComponent({  carsWithStartDate,  carsWithEndDate,  carsWithOut
   );
 }
 
-
 export default LineChartComponent;
-

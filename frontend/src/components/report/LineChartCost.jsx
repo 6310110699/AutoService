@@ -1,10 +1,12 @@
 import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, } from "recharts";
 
+
 function LineChartComponent({ TotalCost, TotalSpare, TotalFee, carsWithOutEndDate }) {
     const dates = Object.keys(carsWithOutEndDate).sort(
         (dateA, dateB) => new Date(dateA) - new Date(dateB)
     );
+
 
     const data = dates.map((date) => ({
         date: date.split("-")[2],
@@ -12,6 +14,7 @@ function LineChartComponent({ TotalCost, TotalSpare, TotalFee, carsWithOutEndDat
         TotalSpare: TotalSpare[date] || 0,
         TotalFee: TotalFee[date] || 0,
     }));
+
 
     return (
         <div>
@@ -24,6 +27,8 @@ function LineChartComponent({ TotalCost, TotalSpare, TotalFee, carsWithOutEndDat
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
+
+
 
 
                 <Tooltip />
@@ -40,6 +45,8 @@ function LineChartComponent({ TotalCost, TotalSpare, TotalFee, carsWithOutEndDat
                     dataKey="TotalSpare"
                     stroke="#ac1c1b"
                     strokeWidth={2}
+
+
 
 
                     name="ค่าอะไหล่"
