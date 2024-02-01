@@ -279,7 +279,6 @@ const Repair = () => {
     setSelectedModel('');
     setCustomBrand('');
     setCustomModel('');
-
     setIsFormEdited(true);
   };
 
@@ -348,7 +347,6 @@ const Repair = () => {
       }
 
       setSelectedServices(updatedSelectedServices);
-
       setIsFormEdited(true);
     }
   };
@@ -570,7 +568,6 @@ const Repair = () => {
         .filter(item => item.lineId === repairData)
         .map(item => item.userId);
 
-      // เช็ค state1 และส่งข้อความไปทางไลน์ถ้าเป็นจริง
       if (state1 && !state2) {
         const flexMessage = createFlexMessage('กำลังดำเนินการตรวจสภาพรถ 🔎🚗', numPlate, totalCost);
 
@@ -579,7 +576,6 @@ const Repair = () => {
         });
       }
 
-      // เช็ค state2 และส่งข้อความไปทางไลน์ถ้าเป็นจริง
       if (state2 && !state3) {
         const flexMessage = createFlexMessage('กำลังดำเนินการหาอะไหล่ 🔩🔋', numPlate, totalCost);
 
@@ -632,7 +628,6 @@ const Repair = () => {
   };
 
   const createFlexMessage = (message, numPlate, totalCost) => {
-    // สร้าง Flex Message ตามที่ต้องการ
     const flexMessage = {
       "type": "bubble",
       "direction": "ltr",
@@ -685,6 +680,7 @@ const Repair = () => {
     setSelectedCustomerStatus(customer);
     setShowStatusModal(true);
   };
+
   const currentDate = new Date();
   const offset = currentDate.getTimezoneOffset();
   currentDate.setMinutes(currentDate.getMinutes() - offset);
@@ -725,7 +721,6 @@ const Repair = () => {
 
   return (
     <div className="home-container">
-
       <div className='car-searchbox'>
         <input
           type="text"
@@ -736,8 +731,10 @@ const Repair = () => {
         />
       </div>
 
-      <div className="repair-title">
-        <h2>รายการรถที่อยู่ในอู่ ณ ขณะนี้</h2>
+      <div className='repair-title-container'>
+        <div className="repair-title">
+          รายการรถที่อยู่ในอู่ ณ ขณะนี้
+        </div>
       </div>
 
       <table className="repair-table">
@@ -747,8 +744,13 @@ const Repair = () => {
             .map((customer, index) => (
               <tr key={index}>
                 <td className="repair-car" onClick={() => handleEditStatus(customer)}>
-                  {customer.car.brand} {customer.car.selectedModel} {customer.car.selectedColor} {customer.car.numPlate}
-                </td>
+                  <div>
+                  {customer.car.numPlate}
+                  </div>
+                  <div className='repair-car-detail'>
+                    {customer.car.brand} {customer.car.selectedModel} {customer.car.selectedColor} 
+                  </div>
+                   </td>
                 <td className="repait-edit">
                   <img onClick={() => handleEditCustomer(customer)} src='./assets/image/edit.png' />
                 </td>
@@ -768,8 +770,8 @@ const Repair = () => {
             ))}
         </tbody>
       </table>
-      <Link to="/carregis">
-        <div className='carregis-button'>
+      <Link className='carregis-button' to="/carregis">
+        <div>
           ลงทะเบียนรถ
         </div>
       </Link>

@@ -23,8 +23,9 @@ const Topbar = ({ isLoggedIn, onLogout }) => {
         <div className="topbar">
             <div className="logo">
                 <img src='./assets/image/car.png' alt="Logo" />
-                <h3 className='webname'>AUTO SERVICE MANAGEMENT SYSTEM</h3>
+                <div className='webname'>AUTO SERVICE MANAGEMENT SYSTEM</div>
             </div>
+
             <div className="login-logout">
                 {isLoggedIn ? (
                     <>
@@ -40,6 +41,7 @@ const Topbar = ({ isLoggedIn, onLogout }) => {
                             className={location.pathname === '/report' ? 'menu-active' : 'menu'}>
                             รายงานสรุป
                         </Link>
+                        
                         <div className='user'>
                             <Dropdown show={showDropdown} onToggle={handleDropdownToggle}>
                                 <Dropdown.Toggle className='dropdown-toggle' id="dropdown-basic">

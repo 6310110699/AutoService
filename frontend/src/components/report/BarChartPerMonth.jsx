@@ -7,17 +7,13 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
 import moment from 'moment';
+import "./Report.scss";
 
 
-
-
-function BarChartPerMonth({ data1, data2, data3, allMonths }) {
-
-
-
-
+function BarChartPerMonth({ data1, data2, data3, allMonths, width = "100%", height = 300 }) {
   const data = allMonths.map((date) => ({
     month: moment(date).format("MMM"),
     data1: data1.data[date] || 0,
@@ -26,13 +22,13 @@ function BarChartPerMonth({ data1, data2, data3, allMonths }) {
   }));
 
 
-
-
   return (
     <div>
+      <ResponsiveContainer
+      width="100%"
+      height={300}
+      >
       <RechartBarChart
-        width={750}
-        height={300}
         data={data}
         margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
       >
@@ -41,12 +37,14 @@ function BarChartPerMonth({ data1, data2, data3, allMonths }) {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="data1" name={data1.name} fill={data1.fill} barSize={30} />
-        <Bar dataKey="data2" name={data2.name} fill={data2.fill} barSize={30} />
-        <Bar dataKey="data3" name={data3.name} fill={data3.fill} barSize={30} />
+        <Bar dataKey="data1" name={data1.name} fill={data1.fill} barSize={30}/>
+        <Bar dataKey="data2" name={data2.name} fill={data2.fill} barSize={30}/>
+        <Bar dataKey="data3" name={data3.name} fill={data3.fill} barSize={30}/>
       </RechartBarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
+
 
 export default BarChartPerMonth;

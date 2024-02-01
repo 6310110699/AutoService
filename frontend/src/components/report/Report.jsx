@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Report.scss";
 import moment from "moment";
-import LineChartCar from "./LineChartCar";
 import DonutChart from "./DonutChart";
-import LineChartCost from "./LineChartCost";
 import BarChartPerMonth from "./BarChartPerMonth";
 import BarChartPerDay from "./BarChartPerDay";
 
@@ -32,7 +30,7 @@ function Report() {
     loadCustomers();
     loadServices();
     loadMechanics();
-    handleDayClick();
+    handleMonthClick();
   }, []);
 
   const loadCustomers = async () => {
@@ -662,7 +660,6 @@ function Report() {
   };
 
   const totalSparePerDayWeek = countTotalSpareWeek();
-  console.log(totalSparePerDayWeek);
   const sumTotalCostWeek = Object.values(totalCostPerDayWeek).reduce(
     (accumulator, currentValue) => accumulator + currentValue,
     0
@@ -1592,7 +1589,7 @@ function Report() {
         </div>
       </div>
 
-      <div className="report-filtered">
+      <div>
         {dayOn ? (
           <div>
             <div className="report-filtered-input">
@@ -1612,141 +1609,93 @@ function Report() {
               </div>
             </div>
 
-            <div style={{ display: "flex" }}>
-              <div style={{ flex: 1 }}>
-                {/* <div className="title-container">
-                  <div className="title">สรุปจำนวนคัน</div>
-                </div> */}
-
-                <div className="day-container">
-                  <div className="day-container-title">สรุปจำนวนรถตลอดทั้งวัน</div>
-
-                  <div>
-                    {/* <DonutChart
-                      data={[
-                        {
-                          name: `รถที่รับเข้ามา`,
-                          value: sumCarsWithStartDateDate,
-                          color: "#ec407a",
-                        },
-                        {
-                          name: `รถที่ส่งออก`,
-                          value: sumCarsWithEndDateDate,
-                          color: "#29b6f6",
-                        },
-                        {
-                          name: `รถที่ยังอยู่ในอู่`,
-                          value: lastValueDate,
-                          color: "##d7a421",
-                        },
-                      ]}
-                    /> */}
-                    <div className="car-container">
-                      <div className="carWstart">
-                        รถที่รับเข้ามา: {sumCarsWithStartDateDate}
-                      </div>
-                      <div className="carWend">
-                        รถที่ส่งออก: {sumCarsWithEndDateDate}
-                      </div>
-                      <div className="carWOend">
-                        รถที่ยังอยู่ในอู่: {lastValueDate}
-                      </div>
+            <div className="row">
+              <div className="col-container">
+                <div className="in-col-container">
+                  <div className="title">สรุปจำนวนรถตลอดทั้งวัน</div>
+                  <div className="car-container">
+                    <div className="carWstart">
+                      รถที่รับเข้ามา: {sumCarsWithStartDateDate}
+                    </div>
+                    <div className="carWend">
+                      รถที่ส่งออก: {sumCarsWithEndDateDate}
+                    </div>
+                    <div className="carWOend">
+                      รถที่ยังอยู่ในอู่: {lastValueDate}
                     </div>
                   </div>
                 </div>
               </div>
-              <div style={{ flex: 1 }}>
-                {/* <div className="title-container">
-                  <div className="title">สรุปรายได้</div>
-                </div> */}
-                <div className="day-container">
-                  <div>สรุปรายได้ตลอดทั้งวัน</div>
-
-                  <div className="day-container-total">
-                    {/* <div className="donut">
-                    <DonutChart
-                      data={[
-                        {
-                          name: `ค่าอะไหล่ทั้งหมด`,
-                          value: sumTotalSpareDate,
-                          color: "#ac1c1b",
-                        },
-                        {
-                          name: `ค่าบริการทั้งหมด`,
-                          value: sumTotalFeeDate,
-                          color: "#17395c",
-                        },
-                      ]}
-                    />
-                    </div> */}
-                    <div className="total-container">
-                      <div className="total-flex">
-                        <div className="totalcost">
-                          รายได้ทั้งหมด : {sumTotalCostDate}
-                        </div>
-                        <div className="totalspare">
-                          ค่าอะไหล่ทั้งหมด : {sumTotalSpareDate}
-                        </div>
-                        <div className="totalfee">
-                          ค่าบริการทั้งหมด : {sumTotalFeeDate}
-                        </div>
-                        <div className="donut">
-                          <DonutChart
-                            data={[
-                              {
-                                name: `ค่าอะไหล่ทั้งหมด`,
-                                value: sumTotalSpareDate,
-                                color: "#ac1c1b",
-                              },
-                              {
-                                name: `ค่าบริการทั้งหมด`,
-                                value: sumTotalFeeDate,
-                                color: "#17395c",
-                              },
-                            ]}
-                          />
-                        </div>
-                      </div>
+              <div className="col-container">
+                <div className="in-col-container">
+                  <div className="title">สรุปรายได้ตลอดทั้งวัน</div>
+                  <div className="total-flex">
+                    <div className="totalcost">
+                      รายได้ทั้งหมด : {sumTotalCostDate}
+                    </div>
+                    <div className="totalspare">
+                      ค่าอะไหล่ : {sumTotalSpareDate}
+                    </div>
+                    <div className="totalfee">
+                      ค่าบริการ : {sumTotalFeeDate}
+                    </div>
+                    <div className="donut">
+                      <DonutChart
+                        data={[
+                          {
+                            name: `ค่าอะไหล่ทั้งหมด`,
+                            value: sumTotalSpareDate,
+                            color: "#ac1c1b",
+                          },
+                          {
+                            name: `ค่าบริการทั้งหมด`,
+                            value: sumTotalFeeDate,
+                            color: "#17395c",
+                          },
+                        ]}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            {/* <div className="title-container">
-              <div className="title">สรุปรายการซ่อม</div>
-            </div> */}
+            <div className="">
+              <br></br>
+            </div>
             <div className="row">
-              <div className="col-container col-6">
+              <div className="col-container">
                 <div className="reportrepair-table-container">
-                  <div className="container-title">
-                    สรุปรายการซ่อมตลอดทั้งวัน
-                  </div>
-                  <table className="reportrepair-table">
-                    <thead>
-                      <tr>
-                        <th>รายการซ่อม</th>
-                        <th>จำนวน</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(servicesUsedDate).map(
-                        ([serviceName, index]) => (
-                          <React.Fragment key={serviceName}>
-                            <tr>
-                              <td style={{ paddingLeft: "15px" }}>
-                                {serviceName}
-                                <img
-                                  onClick={() => toggleServiceDetails(serviceName)}
-                                  src="./assets/image/down-arrow.png"
-                                />
-                              </td>
-                              <td>{servicesUsedDate[serviceName].length}</td>
-                            </tr>
-                            {showServiceDetails[serviceName] && (
+                  <div className="title">สรุปรายการซ่อมตลอดทั้งวัน</div>
+                  <div className="table-container">
+                    <table className="reportrepair-table">
+                      <thead>
+                        <tr>
+                          <th>รายการซ่อม</th>
+                          <th>จำนวน</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(servicesUsedDate).map(
+                          ([serviceName, index]) => (
+                            <React.Fragment key={serviceName}>
                               <tr>
-                                <td colSpan={2}>
-                                  {Object.entries(getServiceDate(serviceName)).map(
-                                    ([carModel, carModelCount]) => (
+                                <td style={{ paddingLeft: "15px" }}>
+                                  {serviceName}
+                                  <img
+                                    onClick={() =>
+                                      toggleServiceDetails(serviceName)
+                                    }
+                                    src="./assets/image/down-arrow.png"
+                                  />
+                                </td>
+                                <td>{servicesUsedDate[serviceName].length}</td>
+                              </tr>
+                              {showServiceDetails[serviceName] && (
+                                <tr>
+                                  <td colSpan={2}>
+                                    {Object.entries(
+                                      getServiceDate(serviceName)
+                                    ).map(([carModel, carModelCount]) => (
                                       <div key={carModel}>
                                         <table className="reportrepair-subrow">
                                           <tr>
@@ -1758,103 +1707,110 @@ function Report() {
                                           </tr>
                                         </table>
                                       </div>
-                                    )
-                                  )}
-                                </td>
-                              </tr>
-                            )}
-                          </React.Fragment>
-                        )
-                      )}
-                    </tbody>
-                  </table>
+                                    ))}
+                                  </td>
+                                </tr>
+                              )}
+                            </React.Fragment>
+                          )
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-
-              {/* <div className="title-container">
-              <div className="title">สรุปการทำงานของช่าง</div>
-            </div> */}
-              <div className="col-container col-6">
-
+              <div className="col-container">
                 <div className="reportmechanic-table-container">
-                  <div className="container-title">
-                    สรุปการซ่อมของช่างตลอดทั้งวัน
-                  </div>
-                  <table className="reportmechanic-table">
-                    <thead>
-                      <tr>
-                        <th>ช่าง</th>
-                        <th>รายการซ่อม</th>
-                        <th>จำนวน</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {mechanics.map((mechanic) => {
-                        const services = countServicesByMechanicDate(mechanic.name);
+                  <div className="title">สรุปการซ่อมของช่างตลอดทั้งวัน</div>
+                  <div className="table-container">
+                    <table className="reportmechanic-table">
+                      <thead>
+                        <tr>
+                          <th>ช่าง</th>
+                          <th>รายการซ่อม</th>
+                          <th>จำนวน</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {mechanics.map((mechanic) => {
+                          const services = countServicesByMechanicDate(
+                            mechanic.name
+                          );
 
-                        return (
-                          <React.Fragment key={mechanic._id}>
-                            {Object.keys(services).map((serviceName, index) => {
-                              const carModelCounts = Object.entries(
-                                getServiceCountsByCarModelDate(
-                                  mechanic.name,
-                                  serviceName
-                                )
-                              );
-                              const serviceTotal = carModelCounts.reduce(
-                                (acc, [carModel, carModelCount]) =>
-                                  acc + carModelCount,
-                                0
-                              );
+                          return (
+                            <React.Fragment key={mechanic._id}>
+                              {Object.keys(services).map(
+                                (serviceName, index) => {
+                                  const carModelCounts = Object.entries(
+                                    getServiceCountsByCarModelDate(
+                                      mechanic.name,
+                                      serviceName
+                                    )
+                                  );
+                                  const serviceTotal = carModelCounts.reduce(
+                                    (acc, [carModel, carModelCount]) =>
+                                      acc + carModelCount,
+                                    0
+                                  );
 
-                              return (
-                                <tr key={`${mechanic._id}-${serviceName}`}>
-                                  {index === 0 && (
-                                    <td rowSpan={Object.keys(services).length}>
-                                      {mechanic.name}
-                                    </td>
-                                  )}
-                                  <td style={{ textAlign: "left" }}>
-                                    {serviceName}
-                                    <img
-                                      onClick={() =>
-                                        toggleServiceDetailsByMechanicDate(
-                                          mechanic.name,
-                                          serviceName
-                                        )
-                                      }
-                                      src="./assets/image/down-arrow.png"
-                                    />
-                                    {showServiceDetailsByMechanicDate[
-                                      mechanic.name
-                                    ]?.[serviceName] && (
-                                        <div>
-                                          {carModelCounts.map(
-                                            ([carModel, carModelCount]) => (
-                                              <table className="reportmechanic-subrow">
-                                                <tr key={carModel}>
-                                                  <td style={{ paddingLeft: "20px" }}>
-                                                    {carModel}
-                                                  </td>
-                                                  <td style={{ width: "10%" }}>
-                                                    {carModelCount}
-                                                  </td>
-                                                </tr>
-                                              </table>
-                                            )
-                                          )}
-                                        </div>
+                                  return (
+                                    <tr key={`${mechanic._id}-${serviceName}`}>
+                                      {index === 0 && (
+                                        <td
+                                          rowSpan={Object.keys(services).length}
+                                        >
+                                          {mechanic.name}
+                                        </td>
                                       )}
-                                  </td>
-                                  <td>{serviceTotal}</td>
-                                </tr>
-                              );
-                            })}
-                          </React.Fragment>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                                      <td style={{ textAlign: "left" }}>
+                                        {serviceName}
+                                        <img
+                                          onClick={() =>
+                                            toggleServiceDetailsByMechanicDate(
+                                              mechanic.name,
+                                              serviceName
+                                            )
+                                          }
+                                          src="./assets/image/down-arrow.png"
+                                        />
+                                        {showServiceDetailsByMechanicDate[
+                                          mechanic.name
+                                        ]?.[serviceName] && (
+                                          <div>
+                                            {carModelCounts.map(
+                                              ([carModel, carModelCount]) => (
+                                                <table className="reportmechanic-subrow">
+                                                  <tr key={carModel}>
+                                                    <td
+                                                      style={{
+                                                        paddingLeft: "20px",
+                                                      }}
+                                                    >
+                                                      {carModel}
+                                                    </td>
+                                                    <td
+                                                      style={{ width: "10%" }}
+                                                    >
+                                                      {carModelCount}
+                                                    </td>
+                                                  </tr>
+                                                </table>
+                                              )
+                                            )}
+                                          </div>
+                                        )}
+                                      </td>
+                                      <td>{serviceTotal}</td>
+                                    </tr>
+                                  );
+                                }
+                              )}
+                            </React.Fragment>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1864,7 +1820,7 @@ function Report() {
         )}
       </div>
 
-      <div className="report-filtered">
+      <div>
         {weekOn ? (
           <div>
             <div className="report-filtered-input">
@@ -1883,52 +1839,26 @@ function Report() {
                 <img src="./assets/image/next.png" />
               </div>
             </div>
-
-            {/* <div className="title-container">
-              <div className="title">สรุปจำนวนคัน</div>
-            </div> */}
-
             <div className="row">
-              <div className="col-container col-6">
-                <div className="col-car-cotainer">
-                  <div>
-                    <div>สรุปจำนวนรถตลอดทั้งสัปดาห์</div>
-                    {/* <DonutChart
-                  data={[
-                    {
-                      name: `รถที่รับเข้ามา`,
-                      value: sumCarsWithStartDateWeek,
-                      color: "#ec407a",
-                    },
-                    {
-                      name: `รถที่ส่งออก`,
-                      value: sumCarsWithEndDateWeek,
-                      color: "#29b6f6",
-                    },
-                    {
-                      name: `รถที่ยังอยู่ในอู่`,
-                      value: lastValueWeek,
-                      color: "##d7a421",
-                    },
-                  ]}
-                /> */}
-                    <div className="car-container">
-                      <div className="carWstart">
-                        รถที่รับเข้ามา: {sumCarsWithStartDateWeek}
-                      </div>
-                      <div className="carWend">
-                        รถที่ส่งออก: {sumCarsWithEndDateWeek}
-                      </div>
-                      <div className="carWOend">
-                        รถที่ยังอยู่ในอู่: {lastValueWeek}
-                      </div>
+              <div className="col-container">
+                <div className="in-col-container">
+                  <div className="title">สรุปจำนวนรถตลอดทั้งสัปดาห์</div>
+                  <div className="car-container">
+                    <div className="carWstart">
+                      รถที่รับเข้ามา: {sumCarsWithStartDateWeek}
+                    </div>
+                    <div className="carWend">
+                      รถที่ส่งออก: {sumCarsWithEndDateWeek}
+                    </div>
+                    <div className="carWOend">
+                      รถที่ยังอยู่ในอู่: {lastValueWeek}
                     </div>
                   </div>
-                  <div className="bar-container">
-                    <div className="bar-container-title">
+                  <div>
+                    <div className="title">
                       สรุปจำนวนรถแต่ละวันตลอดทั้งสัปดาห์
                     </div>
-                    <div>
+                    <div className="bar-container">
                       <BarChartPerDay
                         data1={{
                           name: "รถที่รับเข้ามา",
@@ -1951,221 +1881,213 @@ function Report() {
                   </div>
                 </div>
               </div>
-              {/* <div className="title-container">
-              <div className="title">สรุปรายได้</div>
-            </div> */}
-
-              <div className="col-container col-6">
-                <div className="col-car-cotainer">
-                  <div>สรุปรายได้ตลอดทั้งสัปดาห์</div>
-
-                  <div>
-                    <div className="total-container">
-                      <div className="total-flex">
-                        <div className="totalcost">
-                          รายได้ทั้งหมด : {sumTotalCostWeek}
-                        </div>
-                        <div className="totalspare">
-                          ค่าอะไหล่ทั้งหมด : {sumTotalSpareWeek}
-                        </div>
-                        <div className="totalfee">
-                          ค่าบริการทั้งหมด : {sumTotalFeeWeek}
-                        </div>
-                        <div className="donut">
-                          <DonutChart
-                            data={[
-                              {
-                                name: `ค่าอะไหล่ทั้งหมด`,
-                                value: sumTotalSpareWeek,
-                                color: "#ac1c1b",
-                              },
-                              {
-                                name: `ค่าบริการทั้งหมด`,
-                                value: sumTotalFeeWeek,
-                                color: "#17395c",
-                              },
-                            ]}
-                          />
-                        </div>
-                      </div>
+              <div className="col-container">
+                <div className="in-col-container">
+                  <div className="title">สรุปรายได้ตลอดทั้งสัปดาห์</div>
+                  <div className="total-flex">
+                    <div className="totalcost">
+                      รายได้ทั้งหมด : {sumTotalCostWeek}
+                    </div>
+                    <div className="totalspare">
+                      ค่าอะไหล่ : {sumTotalSpareWeek}
+                    </div>
+                    <div className="totalfee">
+                      ค่าบริการ : {sumTotalFeeWeek}
+                    </div>
+                    <div className="donut">
+                      <DonutChart
+                        data={[
+                          {
+                            name: `ค่าอะไหล่ทั้งหมด`,
+                            value: sumTotalSpareWeek,
+                            color: "#ac1c1b",
+                          },
+                          {
+                            name: `ค่าบริการทั้งหมด`,
+                            value: sumTotalFeeWeek,
+                            color: "#17395c",
+                          },
+                        ]}
+                      />
                     </div>
                   </div>
-                  <div className="bar-container">
-                    <div className="bar-container-title">
+                  <div>
+                    <div className="title">
                       สรุปรายได้แต่ละวันตลอดทั้งสัปดาห์
                     </div>
-                    <BarChartPerDay
-                      data1={{
-                        name: "รายได้ทั้งหมด",
-                        fill: "#688f4e",
-                        ...totalCostPerDayWeek,
-                      }}
-                      data2={{
-                        name: "ค่าอะไหล่",
-                        fill: "#ac1c1b",
-                        ...totalFeePerDayWeek,
-                      }}
-                      data3={{
-                        name: "ค่าบริการ",
-                        fill: "#17395c",
-                        ...totalSparePerDayWeek,
-                      }}
-                      data4={carsWithOutEndDateWeek}
-                    />
+                    <div className="bar-container">
+                      <BarChartPerDay
+                        data1={{
+                          name: "รายได้ทั้งหมด",
+                          fill: "#688f4e",
+                          ...totalCostPerDayWeek,
+                        }}
+                        data2={{
+                          name: "ค่าอะไหล่",
+                          fill: "#ac1c1b",
+                          ...totalFeePerDayWeek,
+                        }}
+                        data3={{
+                          name: "ค่าบริการ",
+                          fill: "#17395c",
+                          ...totalSparePerDayWeek,
+                        }}
+                        data4={carsWithOutEndDateWeek}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            {/* <div className="title-container">
-              <div className="title">สรุปรายการซ่อม</div>
-            </div> */}
             <div className="row">
-              <div className="col-container col-6">
+              <div className="col-container">
                 <div className="reportrepair-table-container">
-                  <div className="container-title">
-                    สรุปรายการซ่อมตลอดทั้งสัปดาห์
-                  </div>
-                  <table className="reportrepair-table">
-                    <thead>
-                      <tr>
-                        <th>รายการซ่อม</th>
-                        <th>จำนวน</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(servicesUsedWeek).map(
-                        ([serviceName, index]) => (
-                          <React.Fragment key={serviceName}>
-                            <tr>
-                              <td style={{ paddingLeft: "15px" }}>
-                                {serviceName}
-                                <img
-                                  onClick={() =>
-                                    toggleServiceDetailsWeek(serviceName)
-                                  }
-                                  src="./assets/image/down-arrow.png"
-                                />
-                              </td>
-                              <td>{servicesUsedWeek[serviceName].length}</td>
-                            </tr>
-                            {showServiceDetails[serviceName] && (
+                  <div className="title">สรุปรายการซ่อมตลอดทั้งสัปดาห์</div>
+                  <div className="table-container">
+                    <table className="reportrepair-table">
+                      <thead>
+                        <tr>
+                          <th>รายการซ่อม</th>
+                          <th>จำนวน</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(servicesUsedWeek).map(
+                          ([serviceName, index]) => (
+                            <React.Fragment key={serviceName}>
                               <tr>
-                                <td colSpan={2}>
-                                  {Object.entries(
-                                    getServiceWeek(serviceName)
-                                  ).map(([carModel, carModelCount]) => (
-                                    <div key={carModel}>
-                                      <table className="reportrepair-subrow">
-                                        <tr>
-                                          <td>{carModel}</td>
-                                          <td style={{ width: "20%" }}>
-                                            {carModelCount}
-                                          </td>
-                                          <td></td>
-                                        </tr>
-                                      </table>
-                                    </div>
-                                  ))}
+                                <td style={{ paddingLeft: "15px" }}>
+                                  {serviceName}
+                                  <img
+                                    onClick={() =>
+                                      toggleServiceDetailsWeek(serviceName)
+                                    }
+                                    src="./assets/image/down-arrow.png"
+                                  />
                                 </td>
+                                <td>{servicesUsedWeek[serviceName].length}</td>
                               </tr>
-                            )}
-                          </React.Fragment>
-                        )
-                      )}
-                    </tbody>
-                  </table>
+                              {showServiceDetails[serviceName] && (
+                                <tr>
+                                  <td colSpan={2}>
+                                    {Object.entries(
+                                      getServiceWeek(serviceName)
+                                    ).map(([carModel, carModelCount]) => (
+                                      <div key={carModel}>
+                                        <table className="reportrepair-subrow">
+                                          <tr>
+                                            <td>{carModel}</td>
+                                            <td style={{ width: "20%" }}>
+                                              {carModelCount}
+                                            </td>
+                                            <td></td>
+                                          </tr>
+                                        </table>
+                                      </div>
+                                    ))}
+                                  </td>
+                                </tr>
+                              )}
+                            </React.Fragment>
+                          )
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-
-              {/* <div className="title-container">
-              <div className="title">สรุปการทำงานของช่าง</div>
-            </div> */}
-              <div className="col-container col-6">
+              <div className="col-container">
                 <div className="reportmechanic-table-container">
-                  <div className="container-title">
-                    สรุปการซ่อมของช่างตลอดทั้งสัปดาห์
-                  </div>
-                  <table className="reportmechanic-table">
-                    <thead>
-                      <tr>
-                        <th>ช่าง</th>
-                        <th>รายการซ่อม</th>
-                        <th>จำนวน</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {mechanics.map((mechanic) => {
-                        const services = countServicesByMechanicWeek(
-                          mechanic.name
-                        );
+                  <div className="title">สรุปการซ่อมของช่างตลอดทั้งสัปดาห์</div>
+                  <div className="table-container">
+                    <table className="reportmechanic-table">
+                      <thead>
+                        <tr>
+                          <th>ช่าง</th>
+                          <th>รายการซ่อม</th>
+                          <th>จำนวน</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {mechanics.map((mechanic) => {
+                          const services = countServicesByMechanicWeek(
+                            mechanic.name
+                          );
 
-                        return (
-                          <React.Fragment key={mechanic._id}>
-                            {Object.keys(services).map((serviceName, index) => {
-                              const carModelCounts = Object.entries(
-                                getServiceCountsByCarModelWeek(
-                                  mechanic.name,
-                                  serviceName
-                                )
-                              );
-                              const serviceTotal = carModelCounts.reduce(
-                                (acc, [carModel, carModelCount]) =>
-                                  acc + carModelCount,
-                                0
-                              );
+                          return (
+                            <React.Fragment key={mechanic._id}>
+                              {Object.keys(services).map(
+                                (serviceName, index) => {
+                                  const carModelCounts = Object.entries(
+                                    getServiceCountsByCarModelWeek(
+                                      mechanic.name,
+                                      serviceName
+                                    )
+                                  );
+                                  const serviceTotal = carModelCounts.reduce(
+                                    (acc, [carModel, carModelCount]) =>
+                                      acc + carModelCount,
+                                    0
+                                  );
 
-                              return (
-                                <tr key={`${mechanic._id}-${serviceName}`}>
-                                  {index === 0 && (
-                                    <td rowSpan={Object.keys(services).length}>
-                                      {mechanic.name}
-                                    </td>
-                                  )}
-                                  <td style={{ textAlign: "left" }}>
-                                    {serviceName}
-                                    <img
-                                      onClick={() =>
-                                        toggleServiceDetailsByMechanicWeek(
-                                          mechanic.name,
-                                          serviceName
-                                        )
-                                      }
-                                      src="./assets/image/down-arrow.png"
-                                    />
-                                    {showServiceDetailsByMechanic[
-                                      mechanic.name
-                                    ]?.[serviceName] && (
-                                        <div>
-                                          {carModelCounts.map(
-                                            ([carModel, carModelCount]) => (
-                                              <table className="reportmechanic-subrow">
-                                                <tr key={carModel}>
-                                                  <td
-                                                    style={{
-                                                      paddingLeft: "20px",
-                                                    }}
-                                                  >
-                                                    {carModel}
-                                                  </td>
-                                                  <td style={{ width: "10%" }}>
-                                                    {carModelCount}
-                                                  </td>
-                                                </tr>
-                                              </table>
-                                            )
-                                          )}
-                                        </div>
+                                  return (
+                                    <tr key={`${mechanic._id}-${serviceName}`}>
+                                      {index === 0 && (
+                                        <td
+                                          rowSpan={Object.keys(services).length}
+                                        >
+                                          {mechanic.name}
+                                        </td>
                                       )}
-                                  </td>
-                                  <td>{serviceTotal}</td>
-                                </tr>
-                              );
-                            })}
-                          </React.Fragment>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                                      <td style={{ textAlign: "left" }}>
+                                        {serviceName}
+                                        <img
+                                          onClick={() =>
+                                            toggleServiceDetailsByMechanicWeek(
+                                              mechanic.name,
+                                              serviceName
+                                            )
+                                          }
+                                          src="./assets/image/down-arrow.png"
+                                        />
+                                        {showServiceDetailsByMechanic[
+                                          mechanic.name
+                                        ]?.[serviceName] && (
+                                          <div>
+                                            {carModelCounts.map(
+                                              ([carModel, carModelCount]) => (
+                                                <table className="reportmechanic-subrow">
+                                                  <tr key={carModel}>
+                                                    <td
+                                                      style={{
+                                                        paddingLeft: "20px",
+                                                      }}
+                                                    >
+                                                      {carModel}
+                                                    </td>
+                                                    <td
+                                                      style={{ width: "10%" }}
+                                                    >
+                                                      {carModelCount}
+                                                    </td>
+                                                  </tr>
+                                                </table>
+                                              )
+                                            )}
+                                          </div>
+                                        )}
+                                      </td>
+                                      <td>{serviceTotal}</td>
+                                    </tr>
+                                  );
+                                }
+                              )}
+                            </React.Fragment>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2175,7 +2097,7 @@ function Report() {
         )}
       </div>
 
-      <div className="report-filtered">
+      <div>
         {monthOn ? (
           <div>
             <div className="report-filtered-input">
@@ -2197,36 +2119,11 @@ function Report() {
                 <img src="./assets/image/next.png" />
               </div>
             </div>
-
-            {/* <div className="title-container">
-              <div className="title">สรุปจำนวนคัน</div>
-            </div> */}
-
             <div className="row">
-              <div className="col-container col-6">
-                <div className="col-car-cotainer">
+              <div className="col-container">
+                <div className="in-col-container">
                   <div>
-                    <div>สรุปจำนวนรถตลอดทั้งเดือน</div>
-                    {/* <DonutChart
-                  data={[
-                    {
-                      name: `รถที่รับเข้ามา`,
-                      value: sumCarsWithStartDate,
-                      color: "#ec407a",
-                    },
-                    {
-                      name: `รถที่ส่งออก`,
-                      value: sumCarsWithEndDate,
-                      color: "#29b6f6",
-                    },
-                    {
-                      name: `รถที่ยังอยู่ในอู่`,
-                      value: lastValue,
-                      color: "##d7a421",
-                    },
-                  ]}
-                /> */}
-
+                    <div className="title">สรุปจำนวนรถตลอดทั้งเดือน</div>
                     <div className="car-container">
                       <div className="carWstart">
                         รถที่รับเข้ามา: {sumCarsWithStartDate}
@@ -2235,16 +2132,15 @@ function Report() {
                         รถที่ส่งออก: {sumCarsWithEndDate}
                       </div>
                       <div className="carWOend">
-                        รถที่ยังอยู่ในอู่วันสุดท้ายของเดือน: {lastValue}
+                        รถที่ยังอยู่ในอู่: {lastValue}
                       </div>
                     </div>
                   </div>
-
-                  <div className="bar-container">
-                    <div className="bar-container-title">
+                  <div>
+                    <div className="title">
                       สรุปจำนวนรถแต่ละวันตลอดทั้งเดือน
                     </div>
-                    <div>
+                    <div className="bar-container">
                       <BarChartPerDay
                         data1={{
                           name: "รถที่รับเข้ามา",
@@ -2265,127 +2161,96 @@ function Report() {
                       />
                     </div>
                   </div>
-                  {/* <div className="bar-container">
-                <LineChartCar
-                  carsWithStartDate={carsWithStartDate}
-                  carsWithEndDate={carsWithEndDate}
-                  carsWithOutEndDate={carsWithOutEndDate}
-                />
-              </div> */}
                 </div>
               </div>
-              {/* <div className="title-container">
-              <div className="title">สรุปรายได้</div>
-            </div> */}
-              <div className="col-container col-6">
-                <div className="col-car-cotainer">
-                  <div>สรุปรายได้ตลอดทั้งเดือน</div>
-
+              <div className="col-container">
+                <div className="in-col-container">
+                  <div className="title">สรุปรายได้ตลอดทั้งเดือน</div>
+                  <div className="total-flex">
+                    <div className="totalcost">
+                      รายได้ทั้งหมด : {sumTotalCost}
+                    </div>
+                    <div className="totalspare">
+                      ค่าอะไหล่ : {sumTotalSpare}
+                    </div>
+                    <div className="totalfee">ค่าบริการ : {sumTotalFee}</div>
+                    <div className="donut">
+                      <DonutChart
+                        data={[
+                          {
+                            name: `ค่าอะไหล่ทั้งหมด`,
+                            value: sumTotalSpare,
+                            color: "#ac1c1b",
+                          },
+                          {
+                            name: `ค่าบริการทั้งหมด`,
+                            value: sumTotalFee,
+                            color: "#17395c",
+                          },
+                        ]}
+                      />
+                    </div>
+                  </div>
                   <div>
-                    <div className="total-container">
-                      <div className="total-flex">
-                        <div className="totalcost">
-                          รายได้ทั้งหมด : {sumTotalCost}
-                        </div>
-                        <div className="totalspare">
-                          ค่าอะไหล่ทั้งหมด : {sumTotalSpare}
-                        </div>
-                        <div className="totalfee">
-                          ค่าบริการทั้งหมด : {sumTotalFee}
-                        </div>
-                        <div className="donut">
-                          <DonutChart
-                            data={[
-                              {
-                                name: `ค่าอะไหล่ทั้งหมด`,
-                                value: sumTotalSpare,
-                                color: "#ac1c1b",
-                              },
-                              {
-                                name: `ค่าบริการทั้งหมด`,
-                                value: sumTotalFee,
-                                color: "#17395c",
-                              },
-                            ]}
-                          />
-                        </div>
-                      </div>
+                    <div className="title">สรุปรายได้แต่ละวันตลอดทั้งเดือน</div>
+                    <div className="bar-container">
+                      <BarChartPerDay
+                        data1={{
+                          name: "รายได้ทั้งหมด",
+                          fill: "#688f4e",
+                          ...totalCostPerDay,
+                        }}
+                        data2={{
+                          name: "ค่าอะไหล่",
+                          fill: "#ac1c1b",
+                          ...totalFeePerDay,
+                        }}
+                        data3={{
+                          name: "ค่าบริการ",
+                          fill: "#17395c",
+                          ...totalSparePerDay,
+                        }}
+                        data4={carsWithOutEndDate}
+                      />
                     </div>
                   </div>
-                  <div className="bar-container">
-                    <div className="bar-container-title">
-                      สรุปรายได้แต่ละวันตลอดทั้งเดือน
-                    </div>
-
-                    <BarChartPerDay
-                      data1={{
-                        name: "รายได้ทั้งหมด",
-                        fill: "#688f4e",
-                        ...totalCostPerDay,
-                      }}
-                      data2={{
-                        name: "ค่าอะไหล่",
-                        fill: "#ac1c1b",
-                        ...totalFeePerDay,
-                      }}
-                      data3={{
-                        name: "ค่าบริการ",
-                        fill: "#17395c",
-                        ...totalSparePerDay,
-                      }}
-                      data4={carsWithOutEndDate}
-                    />
-                  </div>
-                  {/* <div className="bar-container">
-                <LineChartCost
-                  TotalCost={totalCostPerDay}
-                  TotalFee={totalFeePerDay}
-                  TotalSpare={totalSparePerDay}
-                  carsWithOutEndDate={carsWithOutEndDate}
-                />
-              </div> */}
                 </div>
-                <div></div>
               </div>
-              {/* <div className="title-container">
-              <div className="title">สรุปรายการซ่อม</div>
-            </div> */}
             </div>
             <div className="row">
-              <div className="col-container col-6">
+              <div className="col-container">
                 <div className="reportrepair-table-container">
-                  <div className="container-title">
-                    สรุปรายการซ่อมตลอดทั้งเดือน
-                  </div>
-
-                  <table className="reportrepair-table">
-                    <thead>
-                      <tr>
-                        <th>รายการซ่อม</th>
-                        <th>จำนวน</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(servicesUsed).map(
-                        ([serviceName, index]) => (
-                          <React.Fragment key={serviceName}>
-                            <tr>
-                              <td style={{ paddingLeft: "15px" }}>
-                                {serviceName}
-                                <img
-                                  onClick={() =>
-                                    toggleServiceDetails(serviceName)
-                                  }
-                                  src="./assets/image/down-arrow.png"
-                                />
-                              </td>
-                              <td>{servicesUsed[serviceName].length}</td>
-                            </tr>
-                            {showServiceDetails[serviceName] && (
+                  <div className="title">สรุปรายการซ่อมตลอดทั้งเดือน</div>
+                  <div className="table-container">
+                    <table className="reportrepair-table">
+                      <thead>
+                        <tr>
+                          <th>รายการซ่อม</th>
+                          <th>จำนวน</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(servicesUsed).map(
+                          ([serviceName, index]) => (
+                            <React.Fragment key={serviceName}>
                               <tr>
-                                <td colSpan={2}>
-                                  {Object.entries(getService(serviceName)).map(
-                                    ([carModel, carModelCount]) => (
+                                <td style={{ paddingLeft: "15px" }}>
+                                  {serviceName}
+                                  <img
+                                    onClick={() =>
+                                      toggleServiceDetails(serviceName)
+                                    }
+                                    src="./assets/image/down-arrow.png"
+                                  />
+                                </td>
+                                <td>{servicesUsed[serviceName].length}</td>
+                              </tr>
+                              {showServiceDetails[serviceName] && (
+                                <tr>
+                                  <td colSpan={2}>
+                                    {Object.entries(
+                                      getService(serviceName)
+                                    ).map(([carModel, carModelCount]) => (
                                       <div key={carModel}>
                                         <table className="reportrepair-subrow">
                                           <tr>
@@ -2397,106 +2262,110 @@ function Report() {
                                           </tr>
                                         </table>
                                       </div>
-                                    )
-                                  )}
-                                </td>
-                              </tr>
-                            )}
-                          </React.Fragment>
-                        )
-                      )}
-                    </tbody>
-                  </table>
+                                    ))}
+                                  </td>
+                                </tr>
+                              )}
+                            </React.Fragment>
+                          )
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-              {/* <div className="title-container">
-              <div className="title">สรุปการทำงานของช่าง</div>
-            </div> */}
-              <div className="col-container col-6">
+              <div className="col-container">
                 <div className="reportmechanic-table-container">
-                  <div className="container-title">
-                    สรุปการซ่อมของช่างตลอดทั้งเดือน
-                  </div>
+                  <div className="title">สรุปการซ่อมของช่างตลอดทั้งเดือน</div>
+                  <div className="table-container">
+                    <table className="reportmechanic-table">
+                      <thead>
+                        <tr>
+                          <th>ช่าง</th>
+                          <th>รายการซ่อม</th>
+                          <th>จำนวน</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {mechanics.map((mechanic) => {
+                          const services = countServicesByMechanic(
+                            mechanic.name
+                          );
 
-                  <table className="reportmechanic-table">
-                    <thead>
-                      <tr>
-                        <th>ช่าง</th>
-                        <th>รายการซ่อม</th>
-                        <th>จำนวน</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {mechanics.map((mechanic) => {
-                        const services = countServicesByMechanic(mechanic.name);
+                          return (
+                            <React.Fragment key={mechanic._id}>
+                              {Object.keys(services).map(
+                                (serviceName, index) => {
+                                  const carModelCounts = Object.entries(
+                                    getServiceCountsByCarModel(
+                                      mechanic.name,
+                                      serviceName
+                                    )
+                                  );
+                                  const serviceTotal = carModelCounts.reduce(
+                                    (acc, [carModel, carModelCount]) =>
+                                      acc + carModelCount,
+                                    0
+                                  );
 
-                        return (
-                          <React.Fragment key={mechanic._id}>
-                            {Object.keys(services).map((serviceName, index) => {
-                              const carModelCounts = Object.entries(
-                                getServiceCountsByCarModel(
-                                  mechanic.name,
-                                  serviceName
-                                )
-                              );
-                              const serviceTotal = carModelCounts.reduce(
-                                (acc, [carModel, carModelCount]) =>
-                                  acc + carModelCount,
-                                0
-                              );
-
-                              return (
-                                <tr key={`${mechanic._id}-${serviceName}`}>
-                                  {index === 0 && (
-                                    <td rowSpan={Object.keys(services).length}>
-                                      {mechanic.name}
-                                    </td>
-                                  )}
-                                  <td style={{ textAlign: "left" }}>
-                                    {serviceName}
-                                    <img
-                                      onClick={() =>
-                                        toggleServiceDetailsByMechanic(
-                                          mechanic.name,
-                                          serviceName
-                                        )
-                                      }
-                                      src="./assets/image/down-arrow.png"
-                                    />
-                                    {showServiceDetailsByMechanic[
-                                      mechanic.name
-                                    ]?.[serviceName] && (
-                                        <div>
-                                          {carModelCounts.map(
-                                            ([carModel, carModelCount]) => (
-                                              <table className="reportmechanic-subrow">
-                                                <tr key={carModel}>
-                                                  <td
-                                                    style={{
-                                                      paddingLeft: "20px",
-                                                    }}
-                                                  >
-                                                    {carModel}
-                                                  </td>
-                                                  <td style={{ width: "10%" }}>
-                                                    {carModelCount}
-                                                  </td>
-                                                </tr>
-                                              </table>
-                                            )
-                                          )}
-                                        </div>
+                                  return (
+                                    <tr key={`${mechanic._id}-${serviceName}`}>
+                                      {index === 0 && (
+                                        <td
+                                          rowSpan={Object.keys(services).length}
+                                        >
+                                          {mechanic.name}
+                                        </td>
                                       )}
-                                  </td>
-                                  <td>{serviceTotal}</td>
-                                </tr>
-                              );
-                            })}
-                          </React.Fragment>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                                      <td style={{ textAlign: "left" }}>
+                                        {serviceName}
+                                        <img
+                                          onClick={() =>
+                                            toggleServiceDetailsByMechanic(
+                                              mechanic.name,
+                                              serviceName
+                                            )
+                                          }
+                                          src="./assets/image/down-arrow.png"
+                                        />
+                                        {showServiceDetailsByMechanic[
+                                          mechanic.name
+                                        ]?.[serviceName] && (
+                                          <div>
+                                            {carModelCounts.map(
+                                              ([carModel, carModelCount]) => (
+                                                <table className="reportmechanic-subrow">
+                                                  <tr key={carModel}>
+                                                    <td
+                                                      style={{
+                                                        paddingLeft: "20px",
+                                                      }}
+                                                    >
+                                                      {carModel}
+                                                    </td>
+                                                    <td
+                                                      style={{ width: "10%" }}
+                                                    >
+                                                      {carModelCount}
+                                                    </td>
+                                                  </tr>
+                                                </table>
+                                              )
+                                            )}
+                                          </div>
+                                        )}
+                                      </td>
+                                      <td>{serviceTotal}</td>
+                                    </tr>
+                                  );
+                                }
+                              )}
+                            </React.Fragment>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2506,7 +2375,7 @@ function Report() {
         )}
       </div>
 
-      <div className="report-filtered">
+      <div>
         {yearOn ? (
           <div>
             <div className="report-filtered-input">
@@ -2525,34 +2394,11 @@ function Report() {
                 <img src="./assets/image/next.png" />
               </div>
             </div>
-            {/* <div className="title-container">
-              <div className="title">สรุปจำนวนคัน</div>
-            </div> */}
             <div className="row">
-              <div className="col-container col-6">
-                <div className="col-car-cotainer">
+              <div className="col-container">
+                <div className="in-col-container">
                   <div>
-                    <div>สรุปจำนวนรถตลอดทั้งปี</div>
-                    {/* <DonutChart
-                  data={[
-                    {
-                      name: `รถที่รับเข้ามา`,
-                      value: sumCarsWithStartDateYear,
-                      color: "#ec407a",
-                    },
-                    {
-                      name: `รถที่ส่งออก`,
-                      value: sumCarsWithEndDateYear,
-                      color: "#29b6f6",
-                    },
-                    {
-                      name: `รถที่ยังอยู่ในอู่`,
-                      value: lastValueYear,
-                      color: "##d7a421",
-                    },
-                  ]}
-                /> */}
-
+                    <div className="title">สรุปจำนวนรถตลอดทั้งปี</div>
                     <div className="car-container">
                       <div className="carWstart">
                         รถที่รับเข้ามา: {sumCarsWithStartDateYear}
@@ -2565,74 +2411,64 @@ function Report() {
                       </div>
                     </div>
                   </div>
-                  <div className="bar-container">
-                    <div className="bar-container-title">
-                      สรุปจำนวนรถแต่ละเดือนตลอดทั้งปี
+                  <div>
+                    <div className="title">สรุปจำนวนรถแต่ละเดือนตลอดทั้งปี</div>
+                    <div className="bar-container">
+                      <BarChartPerMonth
+                        data1={{
+                          data: carsWithStartDateYear,
+                          name: "รถที่รับเข้ามา",
+                          fill: "#ec407a",
+                        }}
+                        data2={{
+                          data: carsWithEndDateYear,
+                          name: "รถที่ส่งออก",
+                          fill: "#29b6f6",
+                        }}
+                        data3={{
+                          data: carsWithOutEndDateYear,
+                          name: "รถที่ยังอยู่ในอู่",
+                          fill: "#d7a421",
+                        }}
+                        allMonths={allMonths}
+                      />
                     </div>
-                    <BarChartPerMonth
-                      data1={{
-                        data: carsWithStartDateYear,
-                        name: "รถที่รับเข้ามา",
-                        fill: "#ec407a",
-                      }}
-                      data2={{
-                        data: carsWithEndDateYear,
-                        name: "รถที่ส่งออก",
-                        fill: "#29b6f6",
-                      }}
-                      data3={{
-                        data: carsWithOutEndDateYear,
-                        name: "รถที่ยังอยู่ในอู่",
-                        fill: "#d7a421",
-                      }}
-                      allMonths={allMonths}
-                    />
                   </div>
                 </div>
               </div>
-              {/* <div className="title-container">
-              <div className="title">สรุปรายได้</div>
-            </div> */}
-              <div className="col-container col-6">
-                <div className="col-car-cotainer">
-                  <div>สรุปรายได้ตลอดทั้งปี</div>
-                  <div>
-                    <div className="total-container">
-                      <div className="total-flex">
-                        <div className="totalcost">
-                          รายได้ทั้งหมด : {sumTotalCostYear}
-                        </div>
-                        <div className="totalspare">
-                          ค่าอะไหล่ทั้งหมด : {sumTotalSpareYear}
-                        </div>
-                        <div className="totalfee">
-                          ค่าบริการทั้งหมด : {sumTotalFeeYear}
-                        </div>
-                        <div className="donut">
-                          <DonutChart
-                            data={[
-                              {
-                                name: `ค่าอะไหล่ทั้งหมด`,
-                                value: sumTotalSpareYear,
-                                color: "#ac1c1b",
-                              },
-                              {
-                                name: `ค่าบริการทั้งหมด`,
-                                value: sumTotalFeeYear,
-                                color: "#17395c",
-                              },
-                            ]}
-                          />
-                        </div>
-                      </div>
+              <div className="col-container">
+                <div className="in-col-container">
+                  <div className="title">สรุปรายได้ตลอดทั้งปี</div>
+                  <div className="total-flex">
+                    <div className="totalcost">
+                      รายได้ทั้งหมด : {sumTotalCostYear}
+                    </div>
+                    <div className="totalspare">
+                      ค่าอะไหล่ : {sumTotalSpareYear}
+                    </div>
+                    <div className="totalfee">
+                      ค่าบริการ : {sumTotalFeeYear}
+                    </div>
+                    <div className="donut">
+                      <DonutChart
+                        data={[
+                          {
+                            name: `ค่าอะไหล่ทั้งหมด`,
+                            value: sumTotalSpareYear,
+                            color: "#ac1c1b",
+                          },
+                          {
+                            name: `ค่าบริการทั้งหมด`,
+                            value: sumTotalFeeYear,
+                            color: "#17395c",
+                          },
+                        ]}
+                      />
                     </div>
                   </div>
-
-                  <div className="bar-container">
-                    <div className="bar-container-title">
-                      สรุปรายได้แต่ละเดือนตลอดทั้งปี
-                    </div>
-                    <div>
+                  <div>
+                    <div className="title">สรุปรายได้แต่ละเดือนตลอดทั้งปี</div>
+                    <div className="bar-container">
                       <BarChartPerMonth
                         data1={{
                           data: totalCostPerMonthYear,
@@ -2656,156 +2492,155 @@ function Report() {
                 </div>
               </div>
             </div>
-            {/* <div className="title-container">
-              <div className="title">สรุปรายการซ่อม</div>
-            </div> */}
             <div className="row">
-              <div className="col-container col-6">
+              <div className="col-container">
                 <div className="reportrepair-table-container">
-                  <div className="container-title">
-                    สรุปรายการซ่อมตลอดทั้งปี
-                  </div>
-                  <table className="reportrepair-table">
-                    <thead>
-                      <tr>
-                        <th>รายการซ่อม</th>
-                        <th>จำนวน</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(servicesUsedYear).map(
-                        ([serviceName, index]) => (
-                          <React.Fragment key={serviceName}>
-                            <tr>
-                              <td style={{ paddingLeft: "15px" }}>
-                                {serviceName}
-                                <img
-                                  onClick={() =>
-                                    toggleServiceDetailsYear(serviceName)
-                                  }
-                                  src="./assets/image/down-arrow.png"
-                                />
-                              </td>
-                              <td>{servicesUsedYear[serviceName].length}</td>
-                            </tr>
-                            {showServiceDetails[serviceName] && (
+                  <div className="title">สรุปรายการซ่อมตลอดทั้งปี</div>
+                  <div className="table-container">
+                    <table className="reportrepair-table">
+                      <thead>
+                        <tr>
+                          <th>รายการซ่อม</th>
+                          <th>จำนวน</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(servicesUsedYear).map(
+                          ([serviceName, index]) => (
+                            <React.Fragment key={serviceName}>
                               <tr>
-                                <td colSpan={2}>
-                                  {Object.entries(
-                                    getServiceYear(serviceName)
-                                  ).map(([carModel, carModelCount]) => (
-                                    <div key={carModel}>
-                                      <table className="reportrepair-subrow">
-                                        <tr>
-                                          <td>{carModel}</td>
-                                          <td style={{ width: "20%" }}>
-                                            {carModelCount}
-                                          </td>
-                                          <td></td>
-                                        </tr>
-                                      </table>
-                                    </div>
-                                  ))}
+                                <td style={{ paddingLeft: "15px" }}>
+                                  {serviceName}
+                                  <img
+                                    onClick={() =>
+                                      toggleServiceDetailsYear(serviceName)
+                                    }
+                                    src="./assets/image/down-arrow.png"
+                                  />
                                 </td>
+                                <td>{servicesUsedYear[serviceName].length}</td>
                               </tr>
-                            )}
-                          </React.Fragment>
-                        )
-                      )}
-                    </tbody>
-                  </table>
+                              {showServiceDetails[serviceName] && (
+                                <tr>
+                                  <td colSpan={2}>
+                                    {Object.entries(
+                                      getServiceYear(serviceName)
+                                    ).map(([carModel, carModelCount]) => (
+                                      <div key={carModel}>
+                                        <table className="reportrepair-subrow">
+                                          <tr>
+                                            <td>{carModel}</td>
+                                            <td style={{ width: "20%" }}>
+                                              {carModelCount}
+                                            </td>
+                                            <td></td>
+                                          </tr>
+                                        </table>
+                                      </div>
+                                    ))}
+                                  </td>
+                                </tr>
+                              )}
+                            </React.Fragment>
+                          )
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-              {/* <div className="title-container">
-              <div className="title">สรุปการทำงานของช่าง</div>
-            </div> */}
               <div className="col-container col-6">
                 <div className="reportmechanic-table-container">
-                  <div className="container-title">
-                    สรุปการซ่อมของช่างตลอดทั้งปี
-                  </div>
-                  <table className="reportmechanic-table">
-                    <thead>
-                      <tr>
-                        <th>ช่าง</th>
-                        <th>รายการซ่อม</th>
-                        <th>จำนวน</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {mechanics.map((mechanic) => {
-                        const services = countServicesByMechanicYear(
-                          mechanic.name
-                        );
+                  <div className="title">สรุปการซ่อมของช่างตลอดทั้งปี</div>
+                  <div className="table-container">
+                    <table className="reportmechanic-table">
+                      <thead>
+                        <tr>
+                          <th>ช่าง</th>
+                          <th>รายการซ่อม</th>
+                          <th>จำนวน</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {mechanics.map((mechanic) => {
+                          const services = countServicesByMechanicYear(
+                            mechanic.name
+                          );
 
-                        return (
-                          <React.Fragment key={mechanic._id}>
-                            {Object.keys(services).map((serviceName, index) => {
-                              const carModelCounts = Object.entries(
-                                getServiceCountsByCarModelYear(
-                                  mechanic.name,
-                                  serviceName
-                                )
-                              );
-                              const serviceTotal = carModelCounts.reduce(
-                                (acc, [carModel, carModelCount]) =>
-                                  acc + carModelCount,
-                                0
-                              );
+                          return (
+                            <React.Fragment key={mechanic._id}>
+                              {Object.keys(services).map(
+                                (serviceName, index) => {
+                                  const carModelCounts = Object.entries(
+                                    getServiceCountsByCarModelYear(
+                                      mechanic.name,
+                                      serviceName
+                                    )
+                                  );
+                                  const serviceTotal = carModelCounts.reduce(
+                                    (acc, [carModel, carModelCount]) =>
+                                      acc + carModelCount,
+                                    0
+                                  );
 
-                              return (
-                                <tr key={`${mechanic._id}-${serviceName}`}>
-                                  {index === 0 && (
-                                    <td rowSpan={Object.keys(services).length}>
-                                      {mechanic.name}
-                                    </td>
-                                  )}
-                                  <td style={{ textAlign: "left" }}>
-                                    {serviceName}
-                                    <img
-                                      onClick={() =>
-                                        toggleServiceDetailsByMechanicYear(
-                                          mechanic.name,
-                                          serviceName
-                                        )
-                                      }
-                                      src="./assets/image/down-arrow.png"
-                                    />
-                                    {showServiceDetailsByMechanic[
-                                      mechanic.name
-                                    ]?.[serviceName] && (
-                                        <div>
-                                          {carModelCounts.map(
-                                            ([carModel, carModelCount]) => (
-                                              <table className="reportmechanic-subrow">
-                                                <tr key={carModel}>
-                                                  <td
-                                                    style={{
-                                                      paddingLeft: "20px",
-                                                    }}
-                                                  >
-                                                    {carModel}
-                                                  </td>
-                                                  <td style={{ width: "10%" }}>
-                                                    {carModelCount}
-                                                  </td>
-                                                </tr>
-                                              </table>
-                                            )
-                                          )}
-                                        </div>
+                                  return (
+                                    <tr key={`${mechanic._id}-${serviceName}`}>
+                                      {index === 0 && (
+                                        <td
+                                          rowSpan={Object.keys(services).length}
+                                        >
+                                          {mechanic.name}
+                                        </td>
                                       )}
-                                  </td>
-                                  <td>{serviceTotal}</td>
-                                </tr>
-                              );
-                            })}
-                          </React.Fragment>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                  ;
+                                      <td style={{ textAlign: "left" }}>
+                                        {serviceName}
+                                        <img
+                                          onClick={() =>
+                                            toggleServiceDetailsByMechanicYear(
+                                              mechanic.name,
+                                              serviceName
+                                            )
+                                          }
+                                          src="./assets/image/down-arrow.png"
+                                        />
+                                        {showServiceDetailsByMechanic[
+                                          mechanic.name
+                                        ]?.[serviceName] && (
+                                          <div>
+                                            {carModelCounts.map(
+                                              ([carModel, carModelCount]) => (
+                                                <table className="reportmechanic-subrow">
+                                                  <tr key={carModel}>
+                                                    <td
+                                                      style={{
+                                                        paddingLeft: "20px",
+                                                      }}
+                                                    >
+                                                      {carModel}
+                                                    </td>
+                                                    <td
+                                                      style={{ width: "10%" }}
+                                                    >
+                                                      {carModelCount}
+                                                    </td>
+                                                  </tr>
+                                                </table>
+                                              )
+                                            )}
+                                          </div>
+                                        )}
+                                      </td>
+                                      <td>{serviceTotal}</td>
+                                    </tr>
+                                  );
+                                }
+                              )}
+                            </React.Fragment>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>

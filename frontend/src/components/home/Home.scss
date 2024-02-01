@@ -1,84 +1,171 @@
 @import "../../assets/styles";
 
 .home-container {
-  max-width: 100%;
-  padding: 0;
-
   .car-searchbox {
     input {
-      width: 30%;
       float: right;
-      border-radius: 15px;
-      padding: 10px;
-      margin: 25px 40px;
+      width: 26vw;
+      height: 3.3vw;
+      font-size: 1.3vw;
+      border-radius: 0.9vw;
+      padding: 0.7vw;
+      margin: 1.3vw 2vw;
+    }
+
+    @media only screen and (max-width: 1280px) {
+      input {
+        width: 333px;
+        height: 42px;
+        font-size: 16px;
+        border-radius: 12px;
+        padding: 9px;
+        margin: 16px 26px;
+      }
+    }
+
+    @media only screen and (max-width: 800px) {
+      input {
+        width: 300px;
+      }
     }
   }
 
-  .repair-title {
-    margin-top: 70px;
-    width: 450px;
-    height: 60px;
+  .repair-title-container {
+    margin-top: 4.8vw;
+    width: 30vw;
+    height: 4vw;
     background-color: $sixth-color;
-    border-radius: 0 30px 30px 0;
+    border-radius: 0 2vw 2vw 0;
     display: inline-block;
 
-    h2 {
+    .repair-title {
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100%;
       color: $second-color;
       letter-spacing: 1px;
+      font-size: 2vw;
       font-family: $font-family1;
+    }
+
+    @media only screen and (max-width: 1280px) {
+      .repair-title {
+        font-size: 26px;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 1280px) {
+    .repair-title-container {
+      width: 384px;
+      height: 51px;
+    }
+  }
+
+  @media only screen and (max-width: 960px) {
+    .repair-title-container {
+      margin-top: 70px;
+    }
+  }
+
+  @media only screen and (max-width: 800px) {
+    .repair-title-container {
+      width: 350px;
     }
   }
 
   .repair-table {
-    margin: 30px 80px;
-    width: 90%;
+    display: flex;
+    justify-content: center;
+    margin: 1vw 5vw;
+    width: 90vw;
     border-collapse: separate;
-    border-spacing: 20px 30px;
+    border-spacing: 1.5vw 1.5vw;
 
     .repair-car {
-      width: 500px;
-      height: 60px;
-      border-radius: 20px;
+      width: 35vw;
+      height: 4vw;
+      border-radius: 1.4vw;
+      padding: 5px;
       background-color: $fourth-color;
       letter-spacing: 1px;
       font-family: $font-family1;
       font-weight: 500;
-      font-size: 20px;
+      font-size: 1.4vw;
       text-align: center;
       cursor: pointer;
+    }
+
+    @media only screen and (max-width: 1024px) {
+      .repair-car {
+        width: 50vw;
+        font-size: 15px;
+      }
+    }
+
+    .repair-car-detail {
+      font-size: 1vw;
+      font-weight: 400;
+    }
+
+    @media only screen and (max-width: 1280px) {
+      .repair-car-detail {
+        font-size: 13px;
+      }
+    }
+
+    @media only screen and (max-width: 1024px) {
+      .repair-car-detail {
+        font-size: 12px;
+      }
     }
 
     .repait-edit {
       text-align: center;
 
       img {
-        width: 50px;
+        width: 3.5vw;
         cursor: pointer;
+      }
+
+      @media only screen and (max-width: 1024px) {
+        img {
+          width: 40px;
+        }
       }
     }
 
     .repait-service {
-      width: 200px;
-      height: 60px;
-      border-radius: 30px;
+      width: 13vw;
+      height: 4vw;
+      border-radius: 2vw;
       background-color: $seventh-color;
       font-weight: 500;
-      font-size: 20px;
+      font-size: 1.4vw;
       text-align: center;
       cursor: pointer;
     }
 
+    @media only screen and (max-width: 1280px) {
+      .repait-service {
+        border-radius: 26px;
+      }
+    }
+
+    @media only screen and (max-width: 1024px) {
+      .repait-service {
+        font-size: 14px;
+      }
+    }
+
     .repair-pay {
-      width: 200px;
-      height: 60px;
-      border-radius: 30px;
+      width: 13vw;
+      height: 4vw;
+      border-radius: 2vw;
       background-color: $seventh-color;
       font-weight: 500;
-      font-size: 20px;
+      font-size: 1.4vw;
       text-align: center;
       cursor: pointer;
 
@@ -88,236 +175,157 @@
       }
     }
 
+    @media only screen and (max-width: 1280px) {
+      .repair-pay {
+        border-radius: 26px;
+      }
+    }
+
+    @media only screen and (max-width: 1024px) {
+      .repair-pay {
+        font-size: 14px;
+      }
+    }
+
     .repair-mechanic {
-      width: 200px;
-      height: 60px;
-      border-radius: 30px;
+      width: 13vw;
+      height: 4vw;
+      border-radius: 2vw;
       background-color: $seventh-color;
       font-weight: 500;
-      font-size: 20px;
+      font-size: 1.4vw;
       text-align: center;
       cursor: pointer;
     }
 
-    .delete-carregis {
+    @media only screen and (max-width: 1280px) {
+      .repair-mechanic {
+        border-radius: 26px;
+      }
+    }
 
+    @media only screen and (max-width: 1024px) {
+      .repair-mechanic {
+        font-size: 14px;
+      }
+    }
+
+    .delete-carregis {
       img {
-        width: 50px;
+        width: 3.5vw;
         cursor: pointer;
+      }
+
+      @media only screen and (max-width: 1024px) {
+        img {
+          width: 40px;
+        }
       }
     }
   }
 
   .carregis-button {
-    width: 500px;
-    height: 60px;
-    border-radius: 30px;
-    background-color: $seventh-color;
-    letter-spacing: 1px;
-    font-family: $font-family1;
-    font-weight: 500;
-    font-size: 20px;
-    margin-left: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 34vw;
+    height: 4vw;
+    background-color: $seventh-color;
+    font-size: 1.4vw;
+    font-weight: 500;
+    font-family: $font-family1;
+    letter-spacing: 1px;
+    border-radius: 2vw;
+    margin-left: 6.5vw;
+    text-decoration: none;
+    color: inherit;
     cursor: pointer;
+  }
+
+  @media only screen and (max-width: 1024px) {
+    .carregis-button {
+      width: 39.5vw;
+      height: 41px;
+      font-size: 14px;
+    }
+  }
+
+  @media only screen and (max-width: 960px) {
+    .carregis-button {
+      width: 39vw;
+    }
   }
 }
 
 .confirmdeletecarmodal {
+  .modal-title {
+    font-size: 1.6vw;
+  }
+
+  @media only screen and (max-width: 1280px) {
+    .modal-title {
+      font-size: 20px;
+    }
+  }
+
   .modal-body {
-    font-size: 30px;
-    margin: 30px 0px;
+    font-size: 2vw;
+    margin: 1.5vw 0vw;
     text-align: center;
+  }
+
+  @media only screen and (max-width: 1280px) {
+    .modal-body {
+      font-size: 26px;
+      margin: 19px 0px;
+    }
   }
 
   .modal-footer {
     justify-content: center;
 
     .button-no {
-      width: 150px;
-      padding: 10px;
-      border-radius: 25px;
+      width: 10vw;
+      padding: 0.65vw;
+      border-radius: 1.6vw;
       background-color: $eighth-color;
       color: $second-color;
       text-align: center;
-      margin: 10px;
-      font-size: 18px;
+      margin: 0.6vw;
+      font-size: 1.2vw;
       cursor: pointer;
+    }
+
+    @media only screen and (max-width: 1280px) {
+      .button-no {
+        width: 128px;
+        padding: 8px;
+        border-radius: 20px;
+        margin: 8px;
+        font-size: 15px;
+      }
     }
 
     .button-yes {
-      width: 150px;
-      padding: 10px;
-      border-radius: 25px;
+      width: 10vw;
+      padding: 0.65vw;
+      border-radius: 1.6vw;
       background-color: $sixth-color;
       color: $second-color;
       text-align: center;
-      margin: 10px;
-      font-size: 18px;
+      margin: 0.6vw;
+      font-size: 1.2vw;
       cursor: pointer;
+    }
+
+    @media only screen and (max-width: 1280px) {
+      .button-yes {
+        width: 128px;
+        padding: 8px;
+        border-radius: 20px;
+        margin: 8px;
+        font-size: 15px;
+      }
     }
   }
 }
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-
-// .my-modal {
-//   width: 100vw;
-//   height: 100vh;
-// }
-
-// .form-container {
-//   padding: 40px 60px;
-// }
-
-// .button-container {
-//   display: flex;
-//   justify-content: center;
-// }
-
-// .button {
-//   width: 180px;
-//   border-radius: 50px;
-//   background-color: $fourth-color;
-// }
-
-
-// .modal-footer {
-//   // justify-content: flex-start;
-
-//   .cancel-button {
-//     background-color: $fourth-color;
-//     font-size: 20px;
-//     font-weight: bold;
-//     width: 120px;
-//     text-align: center;
-//     padding: 10px;
-//     border-radius: 15px;
-//     display: inline-block;
-//     cursor: pointer;
-//   }
-
-//   .save-button {
-//     background-color: $fourth-color;
-//     font-size: 20px;
-//     font-weight: bold;
-//     width: 120px;
-//     text-align: center;
-//     padding: 10px;
-//     border-radius: 15px;
-//     display: inline-block;
-//     margin: 0px 20px;
-//     cursor: pointer;
-//   }
-// }
-
-// .add-button {
-//   background-color: $fifth-color;
-//   font-size: 20px;
-//   font-weight: bold;
-//   width: 120px;
-//   text-align: center;
-//   padding: 10px;
-//   border-radius: 15px;
-//   margin: 15px 0px;
-//   cursor: pointer;
-// }
-
-
-// //-- status --//
-// .status-header-container {
-//   width: 100%;
-//   text-align: center;
-// }
-
-// .status-header {
-//   background-color: $fourth-color;
-//   // width: 20%;
-// }
-
-// .status-container {
-//   display: flex;
-//   justify-content: space-between;
-// }
-
-// .status {
-//   width: 200px;
-//   height: 200px;
-
-//   .state-circle1 {
-//     width: 200px;
-//     height: 200px;
-//     border-radius: 50%;
-//     border: 5px solid #c2c1c1;
-//     position: absolute;
-//   }
-
-//   .state-circle2 {
-//     width: 160px;
-//     height: 160px;
-//     border-radius: 50%;
-//     background-color: #c2c1c1;
-//     margin: 20px;
-//     position: absolute;
-
-//     img {
-//       width: 120px;
-//       margin: 20px;
-//     }
-//   }
-// }
-
-// .status-active {
-//   width: 200px;
-//   height: 200px;
-
-//   .state-circle1 {
-//     width: 200px;
-//     height: 200px;
-//     border-radius: 50%;
-//     border: 5px solid $third-color;
-//     position: absolute;
-//   }
-
-//   .state-circle2 {
-//     width: 160px;
-//     height: 160px;
-//     border-radius: 50%;
-//     background-color: $third-color;
-//     margin: 20px;
-//     position: absolute;
-
-//     img {
-//       width: 120px;
-//       margin: 20px;
-//     }
-//   }
-// }
-
-// .button-true {
-//   background-color: $sixth-color;
-//   color: white;
-//   margin-left: 20%;
-// }
-
-// .button-false {
-//   background-color: $seventh-color;
-//   color: white;
-//   margin-left: 20%;
-// }
-
-// .status-save {
-//   background-color: $sixth-color;
-//   width: 120px;
-// }
-
-// .status-cancel {
-//   background-color: $fourth-color;
-//   width: 120px;
-// }

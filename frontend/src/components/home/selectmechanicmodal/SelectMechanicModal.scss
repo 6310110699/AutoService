@@ -1,16 +1,60 @@
 @import "../../../assets/styles";
 
+.modal-xl {
+    --bs-modal-width: 72vw;
+}
+
+@media only screen and (max-width: 1024px) {
+    .modal-xl {
+        --bs-modal-width: 460px;
+    }
+}
+
 .selectmechanicmodal {
+    .modal-title {
+        font-size: 1.8vw;
+        padding-left: 1vw;
+    }
+
+    @media only screen and (max-width: 1280px) {
+        .modal-title {
+            font-size: 23px;
+        }
+    }
+
+    @media only screen and (max-width: 1024px) {
+        .modal-title {
+            padding-left: 10px;
+        }
+    }
+
     .modal-body {
         .mechanic-searchbox {
             input {
-              width: 40%;
-              height: 50px;
-              border-radius: 15px;
-              padding: 10px;
-              margin: 20px 35px;
+                width: 40%;
+                height: 3.2vw;
+                border-radius: 0.95vw;
+                padding: 0.65vw;
+                margin: 1.3vw 2.25vw;
+                font-size: 1.3vw;
             }
-          }
+
+            @media only screen and (max-width: 1280px) {
+                input {
+                    height: 41px;
+                    padding: 8px;
+                    font-size: 16px;
+                }
+            }
+
+            @media only screen and (max-width: 1024px) {
+                input {
+                    width: 250px;
+                    border-radius: 10px;
+                    margin: 13px 23px;
+                }
+            }
+        }
 
         .mechanic-choice {
             display: grid;
@@ -18,71 +62,187 @@
 
             .input-checkbox {
                 input {
-                    width: 30px;
-                    height: 30px;
+                    width: 1.95vw;
+                    height: 1.95vw;
                     cursor: pointer;
+                }
+
+                @media only screen and (max-width: 1280px) {
+                    input {
+                        height: 25px;
+                    }
+                }
+
+                @media only screen and (max-width: 1024px) {
+                    input {
+                        width: 25px;
+                    }
                 }
             }
 
             .mechanic-label {
                 display: inline-block;
-                margin: 10px 20px;
+                margin: 0.65vw 1.3vw;
 
                 .mechanic-name.not-selected {
                     background-color: $nineth-color;
-                    height: 55px;
-                    width: 400px;
-                    font-size: 20px;
+                    height: 3.5vw;
+                    width: 25.5vw;
+                    font-size: 1.5vw;
                     font-weight: 500;
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                }
+
+                @media only screen and (max-width: 1280px) {
+                    .mechanic-name.not-selected {
+                        height: 45px;
+                        font-size: 19px;
+                    }
+                }
+
+                @media only screen and (max-width: 1024px) {
+                    .mechanic-name.not-selected {
+                        width: 260px;
+                    }
                 }
 
                 .mechanic-name.selected {
                     background-color: $thirteenth-color;
-                    height: 55px;
-                    width: 400px;
-                    font-size: 20px;
+                    height: 3.5vw;
+                    width: 25.5vw;
+                    font-size: 1.5vw;
                     font-weight: 500;
                     display: flex;
                     justify-content: center;
                     align-items: center;
                 }
+
+                @media only screen and (max-width: 1280px) {
+                    .mechanic-name.selected {
+                        height: 45px;
+                        font-size: 19px;
+                    }
+                }
+
+                @media only screen and (max-width: 1024px) {
+                    .mechanic-name.selected {
+                        width: 260px;
+                    }
+                }
+            }
+
+            @media only screen and (max-width: 1024px) {
+                .mechanic-label {
+                    margin: 7px 13px;
+                }
             }
 
             .addoption {
-                margin: 10px 50px;
-                
+                margin: 0.65vw 0vw 0vw 3.9vw;
+
                 input {
-                    height: 55px;
-                    width: 300px;
-                    padding: 10px;
-                    border-radius: 5px;
+                    height: 3.5vw;
+                    width: 19.1vw;
+                    padding: 0.65vw;
+                    border-radius: 0.33vw;
+                    font-size: 1.2vw;
+                }
+
+                @media only screen and (max-width: 1280px) {
+                    input {
+                        height: 45px;
+                        padding: 8px;
+                        font-size: 15px;
+                    }
+                }
+
+                @media only screen and (max-width: 1024px) {
+                    input {
+                        width: 195px;
+                        border-radius: 3px;
+                    }
                 }
 
                 .addoption-button {
-                    width: 90px;
-                    padding: 12px;
-                    font-size: 18px;
-                    margin-left: 10px;
-                    border-radius: 8px;
+                    width: 5.75vw;
+                    padding: 0.75vw;
+                    font-size: 1.3vw;
+                    margin-left: 0.25vw;
+                    border-radius: 0.5vw;
                     text-align: center;
                     color: $second-color;
                     background-color: $fourth-color;
                     display: inline-block;
                     cursor: pointer;
                 }
+
+                @media only screen and (max-width: 1280px) {
+                    .addoption-button {
+                        padding: 9px;
+                        font-size: 16px;
+                    }
+                }
+
+                @media only screen and (max-width: 1024px) {
+                    .addoption-button {
+                        width: 60px;
+                        margin-left: 3px;
+                        border-radius: 5px;
+                    }
+                }
+            }
+
+            @media only screen and (max-width: 1024px) {
+                .addoption {
+                    margin: 7px 0px 0px 40px;
+                }
+            }
+        }
+
+        @media only screen and (max-width: 1024px) {
+            .mechanic-choice {
+                grid-template-columns: 1fr;
             }
         }
     }
 }
 
+.modal-lg {
+    --bs-modal-width: 50vw;
+}
+
+@media only screen and (max-width: 1280px) {
+    .modal-lg {
+        --bs-modal-width: 570px;
+    }
+}
+
 .confirmcanceleditmechanicmodal {
+    .modal-title {
+        font-size: 1.7vw;
+        padding-left: 0.7vw;
+    }
+
+    @media only screen and (max-width: 1280px) {
+        .modal-title {
+            font-size: 22px;
+            padding-left: 9px;
+        }
+    }
+
     .modal-body {
-        font-size: 30px;
-        margin: 30px 0px;
+        font-size: 1.9vw;
+        margin: 1.9vw 0vw;
         text-align: center;
+    }
+
+    @media only screen and (max-width: 1280px) {
+        .modal-body {
+            font-size: 24px;
+            margin: 24px 0px;
+        }
     }
 }
 
@@ -92,27 +252,47 @@
         justify-content: center;
 
         .button-no {
-            width: 150px;
-            padding: 10px;
-            border-radius: 25px;
+            width: 9.55vw;
+            padding: 0.65vw;
+            border-radius: 1.6vw;
             background-color: $eighth-color;
             color: $second-color;
             text-align: center;
-            margin: 10px;
-            font-size: 18px;
+            margin: 0.65vw;
+            font-size: 1.15vw;
             cursor: pointer;
         }
 
+        @media only screen and (max-width: 1280px) {
+            .button-no {
+                width: 122px;
+                padding: 8px;
+                border-radius: 20px;
+                margin: 8px;
+                font-size: 15px;
+            }
+        }
+
         .button-yes {
-            width: 150px;
-            padding: 10px;
-            border-radius: 25px;
+            width: 9.55vw;
+            padding: 0.65vw;
+            border-radius: 1.6vw;
             background-color: $sixth-color;
             color: $second-color;
             text-align: center;
-            margin: 10px;
-            font-size: 18px;
+            margin: 0.65vw;
+            font-size: 1.15vw;
             cursor: pointer;
+        }
+
+        @media only screen and (max-width: 1280px) {
+            .button-yes {
+                width: 122px;
+                padding: 8px;
+                border-radius: 20px;
+                margin: 8px;
+                font-size: 15px;
+            }
         }
     }
 }

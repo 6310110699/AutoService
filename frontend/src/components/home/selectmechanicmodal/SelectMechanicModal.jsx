@@ -113,7 +113,7 @@ const SelectMechanicModal = ({
               <div className='addoption'>
                 <input
                   type='text'
-                  placeholder='กรุณากรอกเพื่อเพิ่มตัวเลือกช่าง'
+                  placeholder='เพิ่มตัวเลือกช่าง'
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />

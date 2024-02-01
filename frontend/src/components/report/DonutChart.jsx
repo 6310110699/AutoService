@@ -9,10 +9,10 @@ const DonutChartComponent = ({ data }) => {
     <PieChart width={180} height={150}>
       <Pie
         data={data}
-        cx={80}
-        cy={65}
-        innerRadius={10}
-        outerRadius={55}
+        cx="50%"
+        cy="60%"
+        innerRadius="15%"
+        outerRadius="72%"
         fill="#8884d8"
         paddingAngle={2}
         dataKey="value"
@@ -31,5 +31,8 @@ const DonutChartComponent = ({ data }) => {
     </PieChart>
   );
 };
+
+
+
 
 export default DonutChartComponent;
