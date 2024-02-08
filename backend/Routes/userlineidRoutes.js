@@ -17,10 +17,21 @@ router.post('/', async (req, res) => {
             const messageText = event.message.text;
 
             // ตรวจสอบว่าข้อความมีคำว่า "lineid" ข้างหน้าหรือไม่
-            if (messageText.toLowerCase().startsWith('lineid')) {
+            if (messageText.toLowerCase().startsWith('lineid ')) {
                 const lineId = messageText.substring(7); // ตัดคำว่า "lineid" ทิ้ง เพื่อเก็บข้อมูลที่เหลือ
                 // เพิ่มข้อมูล Line ID ลงในฐานข้อมูล เช่น MongoDB
                 await addOrUpdateLineIdToDatabase(userId, lineId);
+
+                await client.replyMessage(event.replyToken, [
+                    {
+                        type: 'text',
+                        text: `Line ID: ${lineId} ถูกบันทึกเรียบร้อย`,
+                    },
+                    {
+                        type: 'text',
+                        text: 'หากต้องการแก้ไข ท่านสามารถพิมพ์\n"lineid ตามด้วยไลน์ไอดีของคุณ" อีกครั้งค่ะ\nเช่น lineid somchai1234',
+                    }
+                ]);
             }
         }
     }
@@ -46,8 +57,6 @@ async function addOrUpdateLineIdToDatabase(userId, lineId) {
                 userId,
                 lineId,
             });
-
-            res.status(201).json(newUserLineId);
         }
     } catch (error) {
         console.error('Error adding/updating Line ID to MongoDB:', error);

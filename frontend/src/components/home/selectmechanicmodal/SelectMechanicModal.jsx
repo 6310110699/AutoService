@@ -25,7 +25,7 @@ const SelectMechanicModal = ({
   const filteredMechanics = mechanics.filter((mechanic) => {
     return mechanic.name.toLowerCase().includes(searchMechanic.toLowerCase())
   });
-
+ 
   const selectedChoice = filteredMechanics.filter(mechanic => selectedMechanics.includes(mechanic.name));
   const unselectedChoice = filteredMechanics.filter(mechanic => !selectedMechanics.includes(mechanic.name));
 
