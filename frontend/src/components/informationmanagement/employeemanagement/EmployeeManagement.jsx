@@ -25,13 +25,13 @@ const EmployeeManagement = () => {
     });
 
     const sortByEmployee = (data) => {
-      return data.sort((a, b) => {
-        if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
-        if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
-        return 0;
-      });
+        return data.sort((a, b) => {
+            if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+            if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+            return 0;
+        });
     };
-  
+
     // นำฟังก์ชัน sortByBrand มาใช้กับข้อมูลที่ต้องการเรียง
     const sortedEmployees = sortByEmployee(filteredEmployees);
 
@@ -148,7 +148,7 @@ const EmployeeManagement = () => {
                 </div>
 
                 <div className='row'>
-                    <div className='col-10'>
+                    <div className='col-10 input-search'>
                         <input
                             type="text"
                             class="form-control"
@@ -162,7 +162,7 @@ const EmployeeManagement = () => {
                         เพิ่มพนักงาน
                     </div>
                 </div>
-                
+
                 <table>
                     <thead>
                         <tr>
@@ -212,14 +212,16 @@ const EmployeeManagement = () => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div>
-                        <label>ชื่อ-นามสกุล:</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
+                    <div className='row'>
+                        <div className='col col-12'>
+                            <label>ชื่อ-นามสกุล:</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                        </div>
                     </div>
                     <div className='row'>
                         <div className='col col-6'>
