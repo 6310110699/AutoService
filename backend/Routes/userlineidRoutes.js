@@ -61,7 +61,7 @@ async function addOrUpdateLineIdToDatabase(userId, lineId) {
         }
     } catch (error) {
         console.error('Error adding/updating Line ID to MongoDB:', error);
-        throw error;
+        // throw error;
     }
 }
 
