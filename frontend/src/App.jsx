@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Signup from './components/register/Signup'
-import { BrowserRouter, Routes, Route, Navigate, HashRouter } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Topbar from './components/topbar/Topbar'
 import Startpage from './components/startpage/Startpage'
 import Login from './components/login/Login'
@@ -25,7 +25,7 @@ function App() {
 
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Topbar isLoggedIn={isLoggedIn} onLogout={handleLogout} />
       <Routes>
         <Route path='/' element={<Startpage />}></Route>
@@ -40,7 +40,7 @@ function App() {
         <Route path='/carregis' element={isLoggedIn ? <CarRegistration /> : <Navigate to='/login' />}></Route>
         <Route path='/receipt/:customerId' element={isLoggedIn ? <Receipt /> : <Navigate to='/login' />}></Route>
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   )
 }
 
