@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const UserLineId = require('../models/UserLineId')
 const line = require('@line/bot-sdk');
+require('dotenv').config();
 
 // ในส่วนของ middleware หรือส่วนที่ใช้สร้าง client สำหรับการใช้งาน LINE Messaging API
 const config = {
-    channelAccessToken: '1xDrmtbLRDS5XlfTqzXjz0RoFUu0q4xMKsDVkydZGnw/14OfuyATRL7YuSCo62D98ZAW9zAktPBg19o0H3RaBqMCTiEcGTXaLbZeFSGJiD8UNs00rjR0omPFV+fFBggsmLPiqL+kD5DWlORr/Cck9AdB04t89/1O/w1cDnyilFU=', // ใส่ Channel Access Token ของคุณที่ได้จาก LINE Developers Console
+    channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
 };
 const client = new line.Client(config);
 

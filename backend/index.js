@@ -4,13 +4,16 @@ const cors = require("cors");
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
 
+const mongo_url = process.env.MONGO_URL;
+const port = process.env.PORT || 3001;
+
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
 // การเชื่อมต่อฐานข้อมูล MongoDB
-mongoose.connect("mongodb+srv://zulfa:Zulfa1234@cluster0.6xnlkvm.mongodb.net/AutoService", {
+mongoose.connect(mongo_url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
@@ -44,6 +47,6 @@ const sendlineRoutes = require('./Routes/sendlineRoutes');
 app.use('/send-message', sendlineRoutes);
 
 // กำหนดพอร์ตที่ใช้รัน Backend
-app.listen(3001, () => {
+app.listen(port, () => {
     console.log("server is running");
 });
