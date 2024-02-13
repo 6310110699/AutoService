@@ -18,7 +18,7 @@ const StartPage = () => {
   const handleSearch = async () => {
     if (searchQuery.length === 10) {
       try {
-        const response = await axios.get("https://autoservice-k7ez.onrender.com/repairs");
+        const response = await axios.get(`https://autoservice-k7ez.onrender.com/repairs`);
         setCustomers(response.data);
 
 
