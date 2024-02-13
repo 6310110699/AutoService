@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "prestart": "chmod +x node_modules/.bin/ts-node",
+    "start": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
