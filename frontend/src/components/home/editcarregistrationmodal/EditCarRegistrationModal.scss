@@ -1,16 +1,16 @@
 @import "../../../assets/styles";
 
-.modal-xl {
-    --bs-modal-width: 72vw;
-}
-
-@media only screen and (max-width: 1024px) {
-    .modal-xl {
-        --bs-modal-width: 55vw;
-    }
-}
-
 .editcarregismodal {
+    .modal-xl {
+        --bs-modal-width: 72vw;
+    }
+    
+    @media only screen and (max-width: 1024px) {
+        .modal-xl {
+            --bs-modal-width: 55vw;
+        }
+    }
+    
     .modal-title {
         font-size: 1.55vw;
         margin-left: 0.65vw;
@@ -160,6 +160,43 @@
     @media only screen and (max-width: 1600px) {
         .customer-form {
             margin-top: 20px;
+        }
+    }
+}
+
+.confirmbackmodal {
+    .modal-lg {
+        --bs-modal-width: 50vw;
+    }
+    
+    @media only screen and (max-width: 1280px) {
+        .modal-lg {
+            --bs-modal-width: 570px;
+        }
+    }
+    
+    .modal-title {
+        font-size: 1.7vw;
+        padding-left: 0.7vw;
+    }
+
+    @media only screen and (max-width: 1280px) {
+        .modal-title {
+            font-size: 22px;
+            padding-left: 9px;
+        }
+    }
+
+    .modal-body {
+        font-size: 1.9vw;
+        margin: 1.9vw 0vw;
+        text-align: center;
+    }
+
+    @media only screen and (max-width: 1280px) {
+        .modal-body {
+            font-size: 24px;
+            margin: 24px 0px;
         }
     }
 }

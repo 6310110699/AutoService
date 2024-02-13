@@ -1,16 +1,16 @@
 @import "../../../assets/styles";
 
-.modal-xl {
-    --bs-modal-width: 72vw;
-}
-
-@media only screen and (max-width: 1024px) {
-    .modal-xl {
-        --bs-modal-width: 460px;
-    }
-}
-
 .selectmechanicmodal {
+    .modal-xl {
+        --bs-modal-width: 72vw;
+    }
+    
+    @media only screen and (max-width: 1024px) {
+        .modal-xl {
+            --bs-modal-width: 650px;
+        }
+    }
+
     .modal-title {
         font-size: 1.8vw;
         padding-left: 1vw;
@@ -75,7 +75,7 @@
 
                 @media only screen and (max-width: 1024px) {
                     input {
-                        width: 25px;
+                        width: 20px;
                     }
                 }
             }
@@ -104,7 +104,7 @@
 
                 @media only screen and (max-width: 1024px) {
                     .mechanic-name.not-selected {
-                        width: 260px;
+                        width: 240px;
                     }
                 }
 
@@ -128,14 +128,14 @@
 
                 @media only screen and (max-width: 1024px) {
                     .mechanic-name.selected {
-                        width: 260px;
+                        width: 240px;
                     }
                 }
             }
 
             @media only screen and (max-width: 1024px) {
                 .mechanic-label {
-                    margin: 7px 13px;
+                    margin: 7px 5px;
                 }
             }
 
@@ -160,7 +160,7 @@
 
                 @media only screen and (max-width: 1024px) {
                     input {
-                        width: 195px;
+                        width: 180px;
                         border-radius: 3px;
                     }
                 }
@@ -187,8 +187,8 @@
 
                 @media only screen and (max-width: 1024px) {
                     .addoption-button {
-                        width: 60px;
-                        margin-left: 3px;
+                        width: 50px;
+                        margin-left: 1px;
                         border-radius: 5px;
                     }
                 }
@@ -196,30 +196,30 @@
 
             @media only screen and (max-width: 1024px) {
                 .addoption {
-                    margin: 7px 0px 0px 40px;
+                    margin: 7px 0px 0px 35px;
                 }
             }
         }
 
         @media only screen and (max-width: 1024px) {
             .mechanic-choice {
-                grid-template-columns: 1fr;
+                padding-left: 10px;
             }
         }
     }
 }
 
-.modal-lg {
-    --bs-modal-width: 50vw;
-}
-
-@media only screen and (max-width: 1280px) {
-    .modal-lg {
-        --bs-modal-width: 570px;
-    }
-}
-
 .confirmcanceleditmechanicmodal {
+    .modal-lg {
+        --bs-modal-width: 50vw;
+    }
+    
+    @media only screen and (max-width: 1280px) {
+        .modal-lg {
+            --bs-modal-width: 570px;
+        }
+    }
+    
     .modal-title {
         font-size: 1.7vw;
         padding-left: 0.7vw;

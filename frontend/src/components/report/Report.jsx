@@ -30,7 +30,7 @@ function Report() {
     loadCustomers();
     loadServices();
     loadMechanics();
-    handleMonthClick();
+    handleDayClick();
   }, []);
 
   const loadCustomers = async () => {
@@ -1675,8 +1675,9 @@ function Report() {
                         </tr>
                       </thead>
                       <tbody>
-                        {Object.entries(servicesUsedDate).map(
-                          ([serviceName, index]) => (
+                        {Object.entries(servicesUsedDate)
+                        .sort((a, b) => b[1].length - a[1].length) 
+                        .map(([serviceName, index]) => (
                             <React.Fragment key={serviceName}>
                               <tr>
                                 <td style={{ paddingLeft: "15px" }}>
@@ -1694,8 +1695,9 @@ function Report() {
                                 <tr>
                                   <td colSpan={2}>
                                     {Object.entries(
-                                      getServiceDate(serviceName)
-                                    ).map(([carModel, carModelCount]) => (
+                                      getServiceDate(serviceName))
+                                      .sort((a, b) => b[1] - a[1])
+                                    .map(([carModel, carModelCount]) => (
                                       <div key={carModel}>
                                         <table className="reportrepair-subrow">
                                           <tr>
@@ -1739,8 +1741,9 @@ function Report() {
 
                           return (
                             <React.Fragment key={mechanic._id}>
-                              {Object.keys(services).map(
-                                (serviceName, index) => {
+                              {Object.keys(services)
+                               .sort((a, b) => services[b] - services[a])
+                              .map((serviceName, index) => {
                                   const carModelCounts = Object.entries(
                                     getServiceCountsByCarModelDate(
                                       mechanic.name,
@@ -1777,8 +1780,9 @@ function Report() {
                                           mechanic.name
                                         ]?.[serviceName] && (
                                           <div>
-                                            {carModelCounts.map(
-                                              ([carModel, carModelCount]) => (
+                                            {carModelCounts
+                                            .sort((a, b) => b[1] - a[1])
+                                            .map( ([carModel, carModelCount]) => (
                                                 <table className="reportmechanic-subrow">
                                                   <tr key={carModel}>
                                                     <td
@@ -1952,8 +1956,9 @@ function Report() {
                         </tr>
                       </thead>
                       <tbody>
-                        {Object.entries(servicesUsedWeek).map(
-                          ([serviceName, index]) => (
+                        {Object.entries(servicesUsedWeek)
+                        .sort((a, b) => b[1].length - a[1].length)
+                        .map(([serviceName, index]) => (
                             <React.Fragment key={serviceName}>
                               <tr>
                                 <td style={{ paddingLeft: "15px" }}>
@@ -1971,8 +1976,9 @@ function Report() {
                                 <tr>
                                   <td colSpan={2}>
                                     {Object.entries(
-                                      getServiceWeek(serviceName)
-                                    ).map(([carModel, carModelCount]) => (
+                                      getServiceWeek(serviceName))
+                                      .sort((a, b) => b[1] - a[1])
+                                      .map(([carModel, carModelCount]) => (
                                       <div key={carModel}>
                                         <table className="reportrepair-subrow">
                                           <tr>
@@ -2016,8 +2022,9 @@ function Report() {
 
                           return (
                             <React.Fragment key={mechanic._id}>
-                              {Object.keys(services).map(
-                                (serviceName, index) => {
+                              {Object.keys(services)
+                              .sort((a, b) => services[b] - services[a])
+                              .map((serviceName, index) => {
                                   const carModelCounts = Object.entries(
                                     getServiceCountsByCarModelWeek(
                                       mechanic.name,
@@ -2054,8 +2061,9 @@ function Report() {
                                           mechanic.name
                                         ]?.[serviceName] && (
                                           <div>
-                                            {carModelCounts.map(
-                                              ([carModel, carModelCount]) => (
+                                            {carModelCounts
+                                            .sort((a, b) => b[1] - a[1])
+                                            .map(([carModel, carModelCount]) => (
                                                 <table className="reportmechanic-subrow">
                                                   <tr key={carModel}>
                                                     <td
@@ -2230,8 +2238,9 @@ function Report() {
                         </tr>
                       </thead>
                       <tbody>
-                        {Object.entries(servicesUsed).map(
-                          ([serviceName, index]) => (
+                        {Object.entries(servicesUsed)
+                        .sort((a, b) => b[1].length - a[1].length)
+                        .map(([serviceName, index]) => (
                             <React.Fragment key={serviceName}>
                               <tr>
                                 <td style={{ paddingLeft: "15px" }}>
@@ -2248,9 +2257,9 @@ function Report() {
                               {showServiceDetails[serviceName] && (
                                 <tr>
                                   <td colSpan={2}>
-                                    {Object.entries(
-                                      getService(serviceName)
-                                    ).map(([carModel, carModelCount]) => (
+                                    {Object.entries(getService(serviceName))
+                                    .sort((a, b) => b[1] - a[1])
+                                    .map(([carModel, carModelCount]) => (
                                       <div key={carModel}>
                                         <table className="reportrepair-subrow">
                                           <tr>
@@ -2294,8 +2303,9 @@ function Report() {
 
                           return (
                             <React.Fragment key={mechanic._id}>
-                              {Object.keys(services).map(
-                                (serviceName, index) => {
+                              {Object.keys(services)
+                              .sort((a, b) => services[b] - services[a])
+                              .map((serviceName, index) => {
                                   const carModelCounts = Object.entries(
                                     getServiceCountsByCarModel(
                                       mechanic.name,
@@ -2332,8 +2342,9 @@ function Report() {
                                           mechanic.name
                                         ]?.[serviceName] && (
                                           <div>
-                                            {carModelCounts.map(
-                                              ([carModel, carModelCount]) => (
+                                            {carModelCounts
+                                            .sort((a, b) => b[1] - a[1])
+                                            .map(([carModel, carModelCount]) => (
                                                 <table className="reportmechanic-subrow">
                                                   <tr key={carModel}>
                                                     <td
@@ -2505,8 +2516,9 @@ function Report() {
                         </tr>
                       </thead>
                       <tbody>
-                        {Object.entries(servicesUsedYear).map(
-                          ([serviceName, index]) => (
+                        {Object.entries(servicesUsedYear)
+                          .sort((a, b) => b[1].length - a[1].length)
+                          .map(([serviceName, index]) => (
                             <React.Fragment key={serviceName}>
                               <tr>
                                 <td style={{ paddingLeft: "15px" }}>
@@ -2523,27 +2535,26 @@ function Report() {
                               {showServiceDetails[serviceName] && (
                                 <tr>
                                   <td colSpan={2}>
-                                    {Object.entries(
-                                      getServiceYear(serviceName)
-                                    ).map(([carModel, carModelCount]) => (
-                                      <div key={carModel}>
-                                        <table className="reportrepair-subrow">
-                                          <tr>
-                                            <td>{carModel}</td>
-                                            <td style={{ width: "20%" }}>
-                                              {carModelCount}
-                                            </td>
-                                            <td></td>
-                                          </tr>
-                                        </table>
-                                      </div>
-                                    ))}
+                                    {Object.entries(getServiceYear(serviceName))
+                                      .sort((a, b) => b[1] - a[1]) // เรียงจากมากไปน้อยตามจำนวน carModelCount
+                                      .map(([carModel, carModelCount]) => (
+                                        <div key={carModel}>
+                                          <table className="reportrepair-subrow">
+                                            <tr>
+                                              <td>{carModel}</td>
+                                              <td style={{ width: "20%" }}>
+                                                {carModelCount}
+                                              </td>
+                                              <td></td>
+                                            </tr>
+                                          </table>
+                                        </div>
+                                      ))}
                                   </td>
                                 </tr>
                               )}
                             </React.Fragment>
-                          )
-                        )}
+                          ))}
                       </tbody>
                     </table>
                   </div>
@@ -2569,8 +2580,9 @@ function Report() {
 
                           return (
                             <React.Fragment key={mechanic._id}>
-                              {Object.keys(services).map(
-                                (serviceName, index) => {
+                              {Object.keys(services)
+                                .sort((a, b) => services[b] - services[a])
+                                .map((serviceName, index) => {
                                   const carModelCounts = Object.entries(
                                     getServiceCountsByCarModelYear(
                                       mechanic.name,
@@ -2607,34 +2619,34 @@ function Report() {
                                           mechanic.name
                                         ]?.[serviceName] && (
                                           <div>
-                                            {carModelCounts.map(
-                                              ([carModel, carModelCount]) => (
-                                                <table className="reportmechanic-subrow">
-                                                  <tr key={carModel}>
-                                                    <td
-                                                      style={{
-                                                        paddingLeft: "20px",
-                                                      }}
-                                                    >
-                                                      {carModel}
-                                                    </td>
-                                                    <td
-                                                      style={{ width: "10%" }}
-                                                    >
-                                                      {carModelCount}
-                                                    </td>
-                                                  </tr>
-                                                </table>
-                                              )
-                                            )}
+                                            {carModelCounts
+                                              .sort((a, b) => b[1] - a[1])
+                                              .map(([carModel, carModelCount]) => (
+                                                  <table className="reportmechanic-subrow">
+                                                    <tr key={carModel}>
+                                                      <td
+                                                        style={{
+                                                          paddingLeft: "20px",
+                                                        }}
+                                                      >
+                                                        {carModel}
+                                                      </td>
+                                                      <td
+                                                        style={{ width: "10%" }}
+                                                      >
+                                                        {carModelCount}
+                                                      </td>
+                                                    </tr>
+                                                  </table>
+                                                )
+                                              )}
                                           </div>
                                         )}
                                       </td>
                                       <td>{serviceTotal}</td>
                                     </tr>
                                   );
-                                }
-                              )}
+                                })}
                             </React.Fragment>
                           );
                         })}

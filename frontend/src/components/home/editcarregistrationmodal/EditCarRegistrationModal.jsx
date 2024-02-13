@@ -285,6 +285,7 @@ const EditCarRegistrationModal = ({
         backdrop="static"
         size="lg"
         centered
+        style={{ backgroundColor: "#7b7b7ba7" }}
       >
         <Modal.Header closeButton>
           <Modal.Title>ยกเลิกการแก้ไข</Modal.Title>

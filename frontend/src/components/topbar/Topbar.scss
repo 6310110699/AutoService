@@ -28,6 +28,13 @@
       }
     }
 
+    @media only screen and (max-width: 300px) {
+      img {
+        width: 45px;
+        height: 45px;
+      }
+    }
+
     .webname {
       font-size: 1.2vw;
     }
@@ -35,6 +42,12 @@
     @media only screen and (max-width: 1280px) {
       .webname {
         font-size: 15px;
+      }
+    }
+
+    @media only screen and (max-width: 300px) {
+      .webname {
+        font-size: 14px;
       }
     }
   }
@@ -166,6 +179,12 @@
       border-radius: 8px;
       padding: 6px 13px;
       margin-right: 13px;
+    }
+  }
+
+  @media only screen and (max-width: 767px) {
+    .login-button {
+      display: none;
     }
   }
 }

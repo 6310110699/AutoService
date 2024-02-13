@@ -22,8 +22,8 @@ const Topbar = ({ isLoggedIn, onLogout }) => {
     return (
         <div className="topbar">
             <div className="logo">
-                <img src='./assets/image/car.png' alt="Logo" />
-                <div className='webname'>AUTO SERVICE MANAGEMENT SYSTEM</div>
+                <img src='../assets/image/car.png' alt="Logo" />
+                <div className='webname'>AUTO SERVICE SYSTEM</div>
             </div>
 
             <div className="login-logout">

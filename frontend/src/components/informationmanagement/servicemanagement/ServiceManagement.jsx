@@ -173,7 +173,7 @@ const ServiceManagement = () => {
         </div>
 
         <div className='row'>
-          <div className='col-10'>
+          <div className='col-10 input-search'>
             <input
               type="text"
               class='form-control'

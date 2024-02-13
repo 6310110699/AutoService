@@ -81,7 +81,7 @@
     margin: 1vw 5vw;
     width: 90vw;
     border-collapse: separate;
-    border-spacing: 1.5vw 1.5vw;
+    border-spacing: 1vw 1.5vw;
 
     .repair-car {
       width: 35vw;
@@ -150,12 +150,19 @@
     @media only screen and (max-width: 1280px) {
       .repait-service {
         border-radius: 26px;
+        font-size: 18px;
       }
     }
 
     @media only screen and (max-width: 1024px) {
       .repait-service {
-        font-size: 14px;
+        font-size: 17px;
+      }
+    }
+
+    @media only screen and (max-width: 800px) {
+      .repait-service {
+        width: 110px;
       }
     }
 
@@ -178,12 +185,19 @@
     @media only screen and (max-width: 1280px) {
       .repair-pay {
         border-radius: 26px;
+        font-size: 18px;
       }
     }
 
     @media only screen and (max-width: 1024px) {
       .repair-pay {
-        font-size: 14px;
+        font-size: 17px;
+      }
+    }
+
+    @media only screen and (max-width: 800px) {
+      .repair-pay {
+        width: 110px;
       }
     }
 
@@ -201,12 +215,19 @@
     @media only screen and (max-width: 1280px) {
       .repair-mechanic {
         border-radius: 26px;
+        font-size: 18px;
       }
     }
 
     @media only screen and (max-width: 1024px) {
       .repair-mechanic {
-        font-size: 14px;
+        font-size: 17px;
+      }
+    }
+
+    @media only screen and (max-width: 800px) {
+      .repair-mechanic {
+        width: 110px;
       }
     }
 
@@ -221,6 +242,12 @@
           width: 40px;
         }
       }
+    }
+  }
+
+  @media only screen and (max-width: 800px) {
+    .repair-table {
+      margin: 1vw 4vw;
     }
   }
 

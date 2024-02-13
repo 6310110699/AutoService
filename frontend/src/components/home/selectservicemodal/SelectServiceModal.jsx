@@ -136,7 +136,7 @@ const SelectServiceModal = ({
                 <div className='addoption'>
                   <input
                     type='text'
-                    placeholder='กรุณากรอกเพื่อเพิ่มตัวเลือกบริการ'
+                    placeholder='เพิ่มตัวเลือกบริการ'
                     value={serviceName}
                     onChange={(e) => setServiceName(e.target.value)}
                   />

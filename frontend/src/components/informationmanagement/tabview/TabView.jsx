@@ -20,25 +20,25 @@ const TabView = () => {
 
       <div className='tabview'>
         <div
-          className={activeTab === 'employee' ? 'active' : 'non-active'}
+          className={activeTab === 'employee' ? 'col-2 active' : 'col-2 non-active'}
           onClick={() => handleTabClick('employee')}
         >
           จัดการข้อมูลพนักงาน
         </div>
         <div
-          className={activeTab === 'spare' ? 'active' : 'non-active'}
+          className={activeTab === 'spare' ? 'col-2 active' : 'col-2 non-active'}
           onClick={() => handleTabClick('spare')}
         >
           จัดการข้อมูลอะไหล่
         </div>
         <div
-          className={activeTab === 'service' ? 'active' : 'non-active'}
+          className={activeTab === 'service' ? 'col-2 active' : 'col-2 non-active'}
           onClick={() => handleTabClick('service')}
         >
           จัดการข้อมูลบริการ
         </div>
         <div
-          className={activeTab === 'brandmodel' ? 'active' : 'non-active'}
+          className={activeTab === 'brandmodel' ? 'col-2 active' : 'col-2 non-active'}
           onClick={() => handleTabClick('brandmodel')}
         >
           จัดการข้อมูลรุ่นและยี่ห้อรถ

@@ -20,9 +20,13 @@ const EmployeeManagement = () => {
     const [searchText, setSearchText] = useState('');
 
     const filteredEmployees = employees.filter((employee) => {
-        return employee.name.toLowerCase().includes(searchText.toLowerCase()) ||
-            employee.nickname.toLowerCase().includes(searchText.toLowerCase())
+        const employeeNameLowerCase = employee && employee.name ? employee.name.toLowerCase() : '';
+        const employeeNicknameLowerCase = employee && employee.nickname ? employee.nickname.toLowerCase() : '';
+
+        return employeeNameLowerCase.includes(searchText.toLowerCase()) ||
+            employeeNicknameLowerCase.includes(searchText.toLowerCase());
     });
+
 
     const sortByEmployee = (data) => {
         return data.sort((a, b) => {

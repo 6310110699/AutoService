@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./History.scss";
 
+
 function History() {
   const [customers, setCustomers] = useState([]);
   const [services, setServices] = useState([]);
@@ -10,15 +11,18 @@ function History() {
   const [searchResults, setSearchResults] = useState([]);
   const [numPlate, setNumPlate] = useState("");
 
+
   useEffect(() => {
     loadCustomers();
     loadServices();
     toggleShowAll();
   }, []);
 
+
   useEffect(() => {
     toggleShowAll();
   }, [customers]);
+
 
   const loadCustomers = async () => {
     try {
@@ -29,6 +33,7 @@ function History() {
     }
   };
 
+
   const loadServices = async () => {
     try {
       const response = await axios.get("http://localhost:3001/services");
@@ -38,10 +43,12 @@ function History() {
     }
   };
 
+
   const navigateToReceipt = (customerId) => {
-    const receiptUrl = /receipt/${customerId};
+    const receiptUrl = `/receipt/${customerId}`;
     window.location.href = receiptUrl;
   };
+
 
   const getServiceNameById = (serviceId) => {
     const matchedService = services.find(
@@ -50,22 +57,26 @@ function History() {
     return matchedService ? matchedService.serviceName : "ไม่พบบริการ";
   };
 
-  const startDateObject = new Date(${startDate}T00:00:00);
-  const endDateObject = new Date(${endDate}T23:59:59);
+
+  const startDateObject = new Date('${startDate}T00:00:00');
+  const endDateObject = new Date('${endDate}T23:59:59');
+
 
   const filterAndSortCustomers = () => {
     const filteredAndSortedCustomers = customers
       .filter((customer) => {
         const customerEndDate = new Date(customer.enddate);
-        const currentDate = new Date(); // เวลาปัจจุบัน
+        const currentDate = new Date();
+
 
         const isWithinDateRange =
           (!startDate || customerEndDate >= startDateObject) &&
-          (!endDate || customerEndDate <= endDateObject); // ตรวจสอบว่าอยู่ในช่วงวันที่หรือไม่
+          (!endDate || customerEndDate <= endDateObject);
+
 
         return (
           isWithinDateRange &&
-          (!numPlate || customer.car.numPlate.includes(numPlate)) && // ตรวจสอบเลขทะเบียน
+          (!numPlate || customer.car.numPlate.includes(numPlate)) &&
           customer.status.state5
         );
       })
@@ -75,8 +86,10 @@ function History() {
         return dateB - dateA;
       });
 
+
     setSearchResults(filteredAndSortedCustomers);
   };
+
 
   const toggleShowAll = () => {
     setStartDate("");
@@ -91,14 +104,17 @@ function History() {
       return dateB - dateA;
     });
 
+
     setSearchResults(sortedAllCustomers);
   };
+
 
   return (
     <div className="history">
       <div className="history-head">
         <div className="history-history">ประวัติการซ่อม</div>
       </div>
+
 
       <div className="history-filter">
         <div className="history-filter-sub-con row">
@@ -141,6 +157,7 @@ function History() {
         </div>
       </div>
 
+
       <div className="history-item">
         {searchResults.map((customer) => (
           <div
@@ -173,5 +190,6 @@ function History() {
     </div>
   );
 }
+
 
 export default History;

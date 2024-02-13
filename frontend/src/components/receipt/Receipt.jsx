@@ -11,16 +11,12 @@ const Receipt = () => {
 
     const [customers, setCustomers] = useState([]);
     const [spareParts, setSpareParts] = useState([]);
-    const [sparePrices, setSparePrices] = useState({});
-
-    const [mechanics, setMechanics] = useState([]);
 
     const [message, setMessage] = useState('');
 
     useEffect(() => {
         loadCustomers();
         loadSpareParts();
-        loadMechanics();
     }, []);
 
     const loadCustomers = async () => {
@@ -39,45 +35,19 @@ const Receipt = () => {
         try {
             const response = await axios.get('http://localhost:3001/spares');
             setSpareParts(response.data);
-
-            const prices = {};
-            response.data.forEach((sparePart) => {
-                prices[sparePart._id] = sparePart.sparePrice;
-            });
-
-            setSparePrices(prices);
         } catch (error) {
             console.error('Error loading spare parts:', error);
         }
     }
 
-    const getPartNameFromId = (sparePartId) => {
+    const getPartPriceFromId = (sparePartId) => {
         const sparePart = spareParts.find(
             (sparePart) => sparePart.spareName === sparePartId
         );
 
         return sparePart
-            ? `${sparePart.spareName}`
-            : "ไม่พบบริการ";
-    };
-
-    const loadMechanics = async () => {
-        try {
-            const response = await axios.get('http://localhost:3001/employees');
-            setMechanics(response.data);
-        } catch (error) {
-            console.error('Error loading mechanics:', error);
-        }
-    };
-
-    const getMechanicNameFromId = (mechanicId) => {
-        const mechanic = mechanics.find(
-            (mechanic) => mechanic.name === mechanicId
-        );
-
-        return mechanic
-            ? `${mechanic.name}`
-            : "ไม่พบบริการ";
+            ? `${sparePart.sparePrice}`
+            : "ไม่พบราคา";
     };
 
     const customer = customers.find((c) => c._id === customerId);
@@ -88,6 +58,17 @@ const Receipt = () => {
 
     return (
         <div className='receipt'>
+            <ReactToPrint
+                trigger={() =>
+                    <div className='receipt-print'>
+                        <div className='receipt-printbutton'>
+                            พิมพ์ใบเสร็จ
+                        </div>
+                    </div>
+                }
+                content={() => componentRef.current}
+            />
+            
             <div className='receipt-paper' ref={componentRef}>
                 <div className='receipt-title'>ใบเสร็จรับเงิน</div>
 
@@ -115,7 +96,7 @@ const Receipt = () => {
                         <div>ช่างที่เกี่ยวข้อง : </div>
                         {customer.mechanics.map((mechanicId) => (
                             <div className='receipt-mechanic' key={mechanicId}>
-                                {getMechanicNameFromId(mechanicId)}
+                                {customer.mechanics}
                             </div>
                         ))}
                     </div>
@@ -134,9 +115,9 @@ const Receipt = () => {
                         {customer.services.map((service) => (
                             service.spareParts.map((sparePart) => (
                                 <tr className='sparelast' key={sparePart.sparePartId}>
-                                    <td>{getPartNameFromId(sparePart.sparePartId)}</td>
+                                    <td>{sparePart.sparePartId}</td>
                                     <td>{sparePart.quantity}</td>
-                                    <td>{sparePrices[sparePart.sparePartId]}</td>
+                                    <td>{getPartPriceFromId(sparePart.sparePartId)}</td>
                                     <td>{sparePart.partCost}</td>
                                 </tr>
                             ))
@@ -156,16 +137,6 @@ const Receipt = () => {
                     ----- ขอบคุณที่ใช้บริการ -----
                 </div>
             </div>
-            <ReactToPrint
-                trigger={() =>
-                    <div className='receipt-print'>
-                        <div className='receipt-printbutton'>
-                            พิมพ์ใบเสร็จ
-                        </div>
-                    </div>
-                }
-                content={() => componentRef.current}
-            />
         </div>
 
     );

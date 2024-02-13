@@ -21,9 +21,13 @@ const SpareManagement = () => {
     const [searchText, setSearchText] = useState('');
 
     const filteredSpares = spares.filter((spare) => {
-        return spare.spareName.toLowerCase().includes(searchText.toLowerCase()) ||
-            spare.spareType.toLowerCase().includes(searchText.toLowerCase())
+        const spareNameLowerCase = spare && spare.spareName ? spare.spareName.toLowerCase() : '';
+        const spareTypeLowerCase = spare && spare.spareType ? spare.spareType.toLowerCase() : '';
+
+        return spareNameLowerCase.includes(searchText.toLowerCase()) ||
+            spareTypeLowerCase.includes(searchText.toLowerCase());
     });
+
 
     const sortBySpare = (data) => {
         return data.sort((a, b) => {
@@ -176,7 +180,7 @@ const SpareManagement = () => {
                 </div>
 
                 <div className='row'>
-                    <div className='col-10'>
+                    <div className='col-10 input-search'>
                         <input
                             type="text"
                             class='form-control'

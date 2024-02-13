@@ -117,13 +117,15 @@ const SelectSpareModal = ({
             <div className='addoption'>
               <input
                 type='text'
-                placeholder='กรุณากรอกรุ่นอะไหล่'
+                className='sparename-input'
+                placeholder='รุ่นอะไหล่'
                 value={spareName}
                 onChange={(e) => setSpareName(e.target.value)}
               />
               <input
                 type='number'
-                placeholder='กรุณากรอกราคา'
+                className='spareprice-input'
+                placeholder='ราคา'
                 value={sparePrice}
                 onChange={(e) => setSparePrice(e.target.value)}
               />
