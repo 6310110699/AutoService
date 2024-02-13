@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import "./History.scss";
 
 
 function History() {
+  const navigate = useNavigate();
+
   const [customers, setCustomers] = useState([]);
   const [services, setServices] = useState([]);
   const [startDate, setStartDate] = useState("");
@@ -45,8 +48,7 @@ function History() {
 
 
   const navigateToReceipt = (customerId) => {
-    const receiptUrl = `/receipt/${customerId}`;
-    window.location.href = receiptUrl;
+    navigate(`/receipt/${customerId}`);
   };
 
 
