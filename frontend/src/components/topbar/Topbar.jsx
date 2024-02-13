@@ -49,8 +49,14 @@ const Topbar = ({ isLoggedIn, onLogout }) => {
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     <Dropdown.Item>{localStorage.getItem('username')}</Dropdown.Item>
-                                    <Dropdown.Item href="/register">เพิ่มผู้ใช้งาน</Dropdown.Item>
-                                    <Dropdown.Item href="/infomanage">จัดการข้อมูล</Dropdown.Item>
+                                    <Dropdown.Item>
+                                        <Link to="/register">
+                                        เพิ่มผู้ใช้งาน
+                                        </Link>
+                                    </Dropdown.Item>
+                                    <Link to="/infomanage">
+                                        <Dropdown.Item>จัดการข้อมูล</Dropdown.Item>
+                                    </Link>
                                     <div className='logout' onClick={handleLogout}>Log out</div>
                                 </Dropdown.Menu>
                             </Dropdown>
