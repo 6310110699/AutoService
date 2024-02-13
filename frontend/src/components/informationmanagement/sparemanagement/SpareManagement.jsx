@@ -54,7 +54,7 @@ const SpareManagement = () => {
 
     const loadSpares = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/spares');
+            const response = await axios.get('https://autoservice-k7ez.onrender.com/spares');
             setSpares(response.data);
             setMessage('');
         } catch (error) {
@@ -65,7 +65,7 @@ const SpareManagement = () => {
 
     // const loadCompatibleCarModels = async () => {
     //     try {
-    //         const response = await axios.get('http://localhost:3001/brandmodels');
+    //         const response = await axios.get('https://autoservice-k7ez.onrender.com/brandmodels');
     //         const modelsData = response.data;
 
     //         // Group spares by category
@@ -104,7 +104,7 @@ const SpareManagement = () => {
 
     const handlePushSpare = async () => {
         try {
-            await axios.post('http://localhost:3001/spares', {
+            await axios.post('https://autoservice-k7ez.onrender.com/spares', {
                 spareName,
                 spareType,
                 sparePrice,
@@ -131,7 +131,7 @@ const SpareManagement = () => {
 
     const handleUpdateSpare = async (id) => {
         try {
-            await axios.put(`http://localhost:3001/spares/${id}`, {
+            await axios.put(`https://autoservice-k7ez.onrender.com/spares/${id}`, {
                 spareName,
                 spareType,
                 sparePrice,
@@ -149,7 +149,7 @@ const SpareManagement = () => {
 
     const handleDeleteSpare = async (id) => {
         try {
-            await axios.delete(`http://localhost:3001/spares/${id}`);
+            await axios.delete(`https://autoservice-k7ez.onrender.com/spares/${id}`);
             loadSpares();
             setMessage(error.response.data.message);
         } catch (error) {

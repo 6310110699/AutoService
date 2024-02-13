@@ -18,7 +18,7 @@ const StartPage = () => {
   const handleSearch = async () => {
     if (searchQuery.length === 10) {
       try {
-        const response = await axios.get("http://localhost:3001/repairs");
+        const response = await axios.get("https://autoservice-k7ez.onrender.com/repairs");
         setCustomers(response.data);
 
 
@@ -51,7 +51,7 @@ const StartPage = () => {
   };
   const loadServices = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/services");
+      const response = await axios.get("https://autoservice-k7ez.onrender.com/services");
       setServices(response.data);
     } catch (error) {
       console.error("Error loading services:", error);

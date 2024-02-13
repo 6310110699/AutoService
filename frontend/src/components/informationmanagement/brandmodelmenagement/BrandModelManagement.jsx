@@ -41,7 +41,7 @@ const BrandModelManagement = () => {
 
     const loadBrandModels = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/brandmodels');
+            const response = await axios.get('https://autoservice-k7ez.onrender.com/brandmodels');
             setBrandModels(response.data);
             setMessage('');
         } catch (error) {
@@ -60,7 +60,7 @@ const BrandModelManagement = () => {
 
     const handlePushBrandModel = async () => {
         try {
-            await axios.post('http://localhost:3001/brandmodels', {
+            await axios.post('https://autoservice-k7ez.onrender.com/brandmodels', {
                 model,
                 brand,
             });
@@ -83,7 +83,7 @@ const BrandModelManagement = () => {
 
     const handleUpdateBrandModel = async (id) => {
         try {
-            await axios.put(`http://localhost:3001/brandmodels/${id}`, {
+            await axios.put(`https://autoservice-k7ez.onrender.com/brandmodels/${id}`, {
                 model,
                 brand,
             });
@@ -99,7 +99,7 @@ const BrandModelManagement = () => {
 
     const handleDeleteBrandModel = async (id) => {
         try {
-            await axios.delete(`http://localhost:3001/brandmodels/${id}`);
+            await axios.delete(`https://autoservice-k7ez.onrender.com/brandmodels/${id}`);
             loadBrandModels();
             setMessage(error.response.data.message);
         } catch (error) {

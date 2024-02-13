@@ -21,7 +21,7 @@ const Receipt = () => {
 
     const loadCustomers = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/repairs');
+            const response = await axios.get('https://autoservice-k7ez.onrender.com/repairs');
             setCustomers(response.data);
 
             setMessage('');
@@ -33,7 +33,7 @@ const Receipt = () => {
 
     const loadSpareParts = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/spares');
+            const response = await axios.get('https://autoservice-k7ez.onrender.com/spares');
             setSpareParts(response.data);
         } catch (error) {
             console.error('Error loading spare parts:', error);

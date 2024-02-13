@@ -42,7 +42,7 @@ const ServiceManagement = () => {
 
   const loadServices = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/services');
+      const response = await axios.get('https://autoservice-k7ez.onrender.com/services');
       setServices(response.data);
       setMessage('');
     } catch (error) {
@@ -53,7 +53,7 @@ const ServiceManagement = () => {
 
   // const loadSpares = async () => {
   //   try {
-  //     const response = await axios.get('http://localhost:3001/spares');
+  //     const response = await axios.get('https://autoservice-k7ez.onrender.com/spares');
   //     const sparesData = response.data;
 
   //     // Group spares by category
@@ -82,7 +82,7 @@ const ServiceManagement = () => {
 
   // const loadSparePrices = async () => {
   //   try {
-  //     const response = await axios.get('http://localhost:3001/spares');
+  //     const response = await axios.get('https://autoservice-k7ez.onrender.com/spares');
   //     const prices = {};
   //     response.data.forEach((spare) => {
   //       prices[spare._id] = spare.sparePrice;
@@ -105,7 +105,7 @@ const ServiceManagement = () => {
 
   const handlePushService = async () => {
     try {
-      await axios.post('http://localhost:3001/services', {
+      await axios.post('https://autoservice-k7ez.onrender.com/services', {
         serviceName,
         // spares: selectedSpares,
       });
@@ -128,7 +128,7 @@ const ServiceManagement = () => {
 
   const handleUpdateService = async () => {
     try {
-      await axios.put(`http://localhost:3001/services/${editingServiceId}`, {
+      await axios.put(`https://autoservice-k7ez.onrender.com/services/${editingServiceId}`, {
         serviceName,
         // spares: selectedSpares,
       });
@@ -144,7 +144,7 @@ const ServiceManagement = () => {
 
   const handleDeleteService = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/services/${id}`);
+      await axios.delete(`https://autoservice-k7ez.onrender.com/services/${id}`);
       loadServices();
       setMessage(error.response.data.message);
     } catch (error) {

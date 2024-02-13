@@ -53,7 +53,7 @@ const SelectServiceModal = ({
 
   const handleAddOptionService = async () => {
     try {
-      await axios.post('http://localhost:3001/services', {
+      await axios.post('https://autoservice-k7ez.onrender.com/services', {
         serviceName,
       });
 

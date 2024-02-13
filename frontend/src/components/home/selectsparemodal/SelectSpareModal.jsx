@@ -49,7 +49,7 @@ const SelectSpareModal = ({
 
   const handleAddOptionSpare = async () => {
     try {
-      await axios.post('http://localhost:3001/spares', {
+      await axios.post('https://autoservice-k7ez.onrender.com/spares', {
         spareName,
         sppareType: '',
         sparePrice,

@@ -14,7 +14,7 @@ function Signup() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:3001/register',
+        axios.post('https://autoservice-k7ez.onrender.com/register',
             {
                 username, 
                 password, 

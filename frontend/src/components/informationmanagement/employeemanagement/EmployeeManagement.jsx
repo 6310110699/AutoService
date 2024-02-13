@@ -45,7 +45,7 @@ const EmployeeManagement = () => {
 
     const loadEmployees = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/employees');
+            const response = await axios.get('https://autoservice-k7ez.onrender.com/employees');
             setEmployees(response.data);
             setMessage('');
         } catch (error) {
@@ -68,7 +68,7 @@ const EmployeeManagement = () => {
 
     const handlePushEmployee = async () => {
         try {
-            await axios.post('http://localhost:3001/employees', {
+            await axios.post('https://autoservice-k7ez.onrender.com/employees', {
                 name,
                 nickname,
                 phone,
@@ -99,7 +99,7 @@ const EmployeeManagement = () => {
 
     const handleUpdateEmployee = async (id) => {
         try {
-            await axios.put(`http://localhost:3001/employees/${id}`, {
+            await axios.put(`https://autoservice-k7ez.onrender.com/employees/${id}`, {
                 name,
                 nickname,
                 phone,
@@ -119,7 +119,7 @@ const EmployeeManagement = () => {
 
     const handleDeleteEmployee = async (id) => {
         try {
-            await axios.delete(`http://localhost:3001/employees/${id}`);
+            await axios.delete(`https://autoservice-k7ez.onrender.com/employees/${id}`);
             loadEmployees();
             setMessage('ลบข้อมูลพนักงานเรียบร้อยแล้ว');
         } catch (error) {

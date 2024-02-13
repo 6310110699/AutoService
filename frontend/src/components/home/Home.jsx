@@ -114,7 +114,7 @@ const Repair = () => {
 
   const loadBrandModels = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/brandmodels');
+      const response = await axios.get('https://autoservice-k7ez.onrender.com/brandmodels');
       setBrandModels(response.data);
     } catch (error) {
       console.error('Error loading brand models:', error);
@@ -123,7 +123,7 @@ const Repair = () => {
 
   const loadColors = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/colors');
+      const response = await axios.get('https://autoservice-k7ez.onrender.com/colors');
       setColors(response.data);
     } catch (error) {
       console.error('Error loading colors:', error);
@@ -133,7 +133,7 @@ const Repair = () => {
 
   const loadCustomers = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/repairs');
+      const response = await axios.get('https://autoservice-k7ez.onrender.com/repairs');
       setCustomers(response.data);
 
       const uniqueNumplates = [...new Set(response.data.map((customer) => customer.car.numPlate))];
@@ -169,7 +169,7 @@ const Repair = () => {
 
   const loadServices = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/services');
+      const response = await axios.get('https://autoservice-k7ez.onrender.com/services');
       setServices(response.data);
     } catch (error) {
       console.error('Error loading services:', error);
@@ -178,7 +178,7 @@ const Repair = () => {
 
   const loadSpareParts = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/spares');
+      const response = await axios.get('https://autoservice-k7ez.onrender.com/spares');
       setSpareParts(response.data);
     } catch (error) {
       console.error('Error loading spare parts:', error);
@@ -187,7 +187,7 @@ const Repair = () => {
 
   const loadMechanics = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/employees');
+      const response = await axios.get('https://autoservice-k7ez.onrender.com/employees');
       setMechanics(response.data);
     } catch (error) {
       console.error('Error loading mechanics:', error);
@@ -227,7 +227,7 @@ const Repair = () => {
     }
 
     try {
-      await axios.put(`http://localhost:3001/repairs/${id}`, {
+      await axios.put(`https://autoservice-k7ez.onrender.com/repairs/${id}`, {
         numPlate,
         lineId,
         brand: customBrand || brand,
@@ -246,13 +246,13 @@ const Repair = () => {
       });
 
       if (customColor) {
-        await axios.post('http://localhost:3001/colors', {
+        await axios.post('https://autoservice-k7ez.onrender.com/colors', {
           colorname: customColor,
         });
       }
 
       if (customModel) {
-        await axios.post('http://localhost:3001/brandmodels', {
+        await axios.post('https://autoservice-k7ez.onrender.com/brandmodels', {
           brand: customBrand || brand,
           model: customModel,
         });
@@ -302,7 +302,7 @@ const Repair = () => {
 
   const handleDeleteCustomer = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/repairs/${id}`);
+      await axios.delete(`https://autoservice-k7ez.onrender.com/repairs/${id}`);
 
       setShowConfirmDeleteCarModal(false);
       loadCustomers();
@@ -371,7 +371,7 @@ const Repair = () => {
 
       let totalCost = parseFloat(serviceFee) + parseFloat(serviceCost);
 
-      await axios.put(`http://localhost:3001/repairs/${id}`, {
+      await axios.put(`https://autoservice-k7ez.onrender.com/repairs/${id}`, {
         numPlate,
         lineId,
         brand: customBrand || brand,
@@ -510,7 +510,7 @@ const Repair = () => {
 
   const handleAddMechanic = async (id) => {
     try {
-      await axios.put(`http://localhost:3001/repairs/${id}`, {
+      await axios.put(`https://autoservice-k7ez.onrender.com/repairs/${id}`, {
         numPlate,
         lineId,
         brand: customBrand || brand,
@@ -540,7 +540,7 @@ const Repair = () => {
 
   const handleUpdateStatus = async (id) => {
     try {
-      await axios.put(`http://localhost:3001/repairs/${id}`, {
+      await axios.put(`https://autoservice-k7ez.onrender.com/repairs/${id}`, {
         numPlate,
         lineId,
         brand: customBrand || brand,
@@ -557,11 +557,11 @@ const Repair = () => {
         state5,
       });
 
-      const repairResponse = await axios.get(`http://localhost:3001/repairs/${id}`);
+      const repairResponse = await axios.get(`https://autoservice-k7ez.onrender.com/repairs/${id}`);
       const repairData = repairResponse.data.customer.lineId;
       const totalCost = repairResponse.data.totalCost !== null ? repairResponse.data.totalCost : '-';
 
-      const lineIdResponse = await axios.get(`http://localhost:3001/webhook`);
+      const lineIdResponse = await axios.get(`https://autoservice-k7ez.onrender.com/webhook`);
       const lineIdData = lineIdResponse.data;
 
       const filteredUserLineIds = lineIdData
@@ -618,7 +618,7 @@ const Repair = () => {
 
   const sendFlexMessageToBackend = async (userId, flexMessage) => {
     try {
-      await axios.post('http://localhost:3001/send-message', {
+      await axios.post('https://autoservice-k7ez.onrender.com/send-message', {
         userId,
         flexMessage,
       });

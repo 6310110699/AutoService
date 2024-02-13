@@ -43,7 +43,7 @@ const SelectMechanicModal = ({
 
   const handleAddOptionMechanic = async () => {
     try {
-      await axios.post('http://localhost:3001/employees', {
+      await axios.post('https://autoservice-k7ez.onrender.com/employees', {
         name,
         nickname: '',
         phone: '',

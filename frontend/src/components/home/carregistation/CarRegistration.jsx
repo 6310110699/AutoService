@@ -42,7 +42,7 @@ const CarRegistration = () => {
 
     const loadCustomers = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/repairs');
+            const response = await axios.get('https://autoservice-k7ez.onrender.com/repairs');
 
             const uniqueNumplates = [...new Set(response.data.map((customer) => customer.car.numPlate))];
             setUniqueCustomerNumplates(uniqueNumplates);
@@ -62,7 +62,7 @@ const CarRegistration = () => {
 
     const loadBrandModels = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/brandmodels');
+            const response = await axios.get('https://autoservice-k7ez.onrender.com/brandmodels');
             setBrandModels(response.data);
         } catch (error) {
             console.error('Error loading brand models:', error);
@@ -71,7 +71,7 @@ const CarRegistration = () => {
 
     const loadColors = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/colors');
+            const response = await axios.get('https://autoservice-k7ez.onrender.com/colors');
             setColors(response.data);
         } catch (error) {
             console.error('Error loading colors:', error);
@@ -89,7 +89,7 @@ const CarRegistration = () => {
         }
 
         try {
-            await axios.post('http://localhost:3001/repairs', {
+            await axios.post('https://autoservice-k7ez.onrender.com/repairs', {
                 numPlate,
                 lineId,
                 brand: customBrand || brand,
@@ -103,13 +103,13 @@ const CarRegistration = () => {
             });
 
             if (customColor) {
-                await axios.post('http://localhost:3001/colors', {
+                await axios.post('https://autoservice-k7ez.onrender.com/colors', {
                     colorname: customColor,
                 });
             }
 
             if (customModel) {
-                await axios.post('http://localhost:3001/brandmodels', {
+                await axios.post('https://autoservice-k7ez.onrender.com/brandmodels', {
                     brand: customBrand || brand,
                     model: customModel,
                 });
