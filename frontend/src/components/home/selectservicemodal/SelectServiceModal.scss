@@ -260,7 +260,7 @@
                         width: 9.8vw;
                         font-size: 1.3vw;
                         background-color: $nineth-color;
-                        padding: 1.55vw;
+                        padding: 0.8vw;
                         border: none;
                         text-align: center;
                         border-radius: 1.3vw;
@@ -268,8 +268,9 @@
 
                     @media only screen and (max-width: 1280px) {
                         input {
+                            width: 11.7vw;
                             font-size: 17px;
-                            padding: 20px;
+                            padding: 10px;
                             border-radius: 17px;
                         }
                     }
@@ -389,7 +390,7 @@
                         width: 12.45vw;
                         font-size: 1.3vw;
                         background-color: $thirteenth-color;
-                        padding: 1.6vw;
+                        padding: 0.8vw;
                         border: none;
                         text-align: center;
                         border-radius: 1.3vw;
@@ -399,7 +400,7 @@
                         input {
                             width: 12.5vw;
                             font-size: 17px;
-                            padding: 20px;
+                            padding: 10px;
                             border-radius: 17px;
                         }
                     }
