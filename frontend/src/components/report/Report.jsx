@@ -6,8 +6,6 @@ import DonutChart from "./DonutChart";
 import BarChartPerMonth from "./BarChartPerMonth";
 import BarChartPerDay from "./BarChartPerDay";
 import TextField from "@mui/material/TextField";
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 
 function Report() {
   const [customers, setCustomers] = useState([]);
@@ -1834,11 +1832,18 @@ function Report() {
               <div className="previous-arrow" onClick={handlePreviousWeekClick}>
                 <img src="./assets/image/previous.png" />
               </div>
-              <DatePicker
-  selected={new Date(week)} // ตั้งค่า Date จาก state
-  onChange={(date) => setWeek(date.toISOString().slice(0, 7))} // บันทึกค่าเดือนและปีเข้า state
-  dateFormat="yyyy-MM"
-  showMonthYearPicker
+              <TextField
+  id="weekSelect"
+  label="Week"
+  type="text"
+  value={week}
+  onChange={(e) => setWeek(e.target.value)}
+  InputProps={{
+    inputMode: "numeric",
+  }}
+  InputLabelProps={{
+    shrink: true,
+  }}
 />
               <div className="next-arrow" onClick={handleNextWeekClick}>
                 <img src="./assets/image/next.png" />
