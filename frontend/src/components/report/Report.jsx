@@ -36,7 +36,7 @@ function Report() {
 
   const loadCustomers = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/repairs");
+      const response = await axios.get("https://autoservice-k7ez.onrender.com/repairs");
       setCustomers(response.data);
     } catch (error) {
       console.error("Error loading customer data:", error);
@@ -45,7 +45,7 @@ function Report() {
 
   const loadServices = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/services");
+      const response = await axios.get("https://autoservice-k7ez.onrender.com/services");
       setServices(response.data);
     } catch (error) {
       console.error("Error loading services:", error);
@@ -54,7 +54,7 @@ function Report() {
 
   const loadMechanics = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/employees");
+      const response = await axios.get("https://autoservice-k7ez.onrender.com/employees");
       setMechanics(response.data);
     } catch (error) {
       console.error("Error loading mechanics:", error);
