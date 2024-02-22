@@ -6,6 +6,8 @@ import DonutChart from "./DonutChart";
 import BarChartPerMonth from "./BarChartPerMonth";
 import BarChartPerDay from "./BarChartPerDay";
 import TextField from "@mui/material/TextField";
+import { LocalizationProvider, DatePicker } from '@mui/lab';
+import AdapterDateFns from '@date-io/date-fns';
 
 function Report() {
   const [customers, setCustomers] = useState([]);
@@ -1833,18 +1835,15 @@ function Report() {
                 <img src="./assets/image/previous.png" />
               </div>
               <TextField
-  id="weekSelect"
-  label="Week"
-  type="text"
-  value={week}
-  onChange={(e) => setWeek(e.target.value)}
-  InputProps={{
-    inputMode: "numeric",
-  }}
-  InputLabelProps={{
-    shrink: true,
-  }}
-/>
+                id="weekSelect"
+                label="Week"
+                type="week"
+                value={week}
+                onChange={(e) => setWeek(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
               <div className="next-arrow" onClick={handleNextWeekClick}>
                 <img src="./assets/image/next.png" />
               </div>
