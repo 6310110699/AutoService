@@ -1,5 +1,6 @@
 @import "../../assets/styles";
 
+
 .report {
   width: 100%;
   overflow: hidden;
@@ -11,6 +12,7 @@
   margin-top: 20px;
 }
 
+
 .report-head {
   width: 17vw;
   background-color: $fifth-color;
@@ -21,12 +23,14 @@
   text-align: center;
 }
 
+
 .report-filter {
   margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.2vw;
+
 
   .report-daily {
     width: 10vw;
@@ -43,6 +47,7 @@
     }
   }
 
+
   .report-weekly {
     width: 10vw;
     margin: 0px 10px;
@@ -58,6 +63,7 @@
     }
   }
 
+
   .report-monthly {
     width: 10vw;
     margin: 0px 10px;
@@ -72,6 +78,7 @@
       background-color: $fifth-color;
     }
   }
+
 
   .report-yearly {
     width: 10vw;
@@ -89,12 +96,14 @@
   }
 }
 
+
 .report-filtered-input {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 25px;
 }
+
 
 .previous-arrow {
   width: 1.3vw;
@@ -108,14 +117,6 @@
   }
 }
 
-input {
-  width: 15vw;
-  height: 2.2vw;
-  padding: 10px;
-  margin: 0 10px;
-  font-size: 1.3vw;
-  border-radius: 4px;
-}
 
 .next-arrow {
   width: 1.3vw;
@@ -129,16 +130,19 @@ input {
   }
 }
 
+
 .row {
   margin-left: auto;
   margin-right: auto;
   padding: 0.1vw 20px;
 }
 
+
 .col-container {
   width: 50%;
   padding: 0px;
 }
+
 
 .in-col-container {
   margin: 30px 15px;
@@ -147,6 +151,7 @@ input {
   padding: 20px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
+
 
 .title {
   display: flex;
@@ -162,6 +167,7 @@ input {
   margin-bottom: 35px;
 }
 
+
 .carWstart {
   font-size: 1.1vw;
   font-weight: 500;
@@ -169,6 +175,7 @@ input {
   padding: 15px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
+
 
 .carWend {
   font-size: 1.1vw;
@@ -179,6 +186,7 @@ input {
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
+
 .carWOend {
   font-size: 1.1vw;
   font-weight: 500;
@@ -188,6 +196,7 @@ input {
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
+
 .total-flex {
   height: 110px;
   display: flex;
@@ -195,6 +204,7 @@ input {
   text-align: center;
   align-self: center;
 }
+
 
 .totalcost {
   font-size: 1.1vw;
@@ -208,6 +218,7 @@ input {
   align-items: center;
   align-self: center;
 }
+
 
 .totalspare {
   font-size: 1.1vw;
@@ -223,6 +234,7 @@ input {
   align-self: center;
 }
 
+
 .totalfee {
   font-size: 1.1vw;
   font-weight: 500;
@@ -237,6 +249,7 @@ input {
   align-self: center;
 }
 
+
 .donut {
   margin-left: 15px;
   margin-top: -50px;
@@ -246,11 +259,13 @@ input {
   align-self: center;
 }
 
+
 .table-container {
   margin-top: 15px;
   height: 350px;
   overflow-y: scroll;
 }
+
 
 .reportrepair-table-container {
   width: 96%;
@@ -258,9 +273,11 @@ input {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   margin: 10px 15px;
 
+
   .reportrepair-table {
     width: 100%;
     font-size: 1.1vw;
+
 
     th {
       text-align: center;
@@ -270,18 +287,22 @@ input {
       padding: 10px;
     }
 
+
     td {
       border: 1px solid black;
       background-color: $fourteenth-color;
     }
+
 
     td:last-child {
       width: 20%;
       text-align: center;
     }
 
+
     .reportrepair-subrow {
       width: 100%;
+
 
       td {
         border-top: none;
@@ -289,10 +310,12 @@ input {
         background-color: $second-color;
       }
 
+
       td:first-child {
         padding-left: 50px;
         text-align: left;
       }
+
 
       td:last-child {
         border-right: none;
@@ -301,11 +324,13 @@ input {
       }
     }
 
+
     img {
       width: 30px;
     }
   }
 }
+
 
 .reportmechanic-table-container {
   width: 96%;
@@ -313,9 +338,11 @@ input {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   margin: 10px 15px;
 
+
   .reportmechanic-table {
     width: 100%;
     font-size: 1.1vw;
+
 
     th {
       text-align: center;
@@ -325,24 +352,29 @@ input {
       padding: 10px;
     }
 
+
     td {
       border: 1px solid black;
       background-color: $fourteenth-color;
       width: 50%;
     }
 
+
     td:first-child {
       width: 30%;
       text-align: center;
     }
+
 
     td:last-child {
       width: 20%;
       text-align: center;
     }
 
+
     .reportmechanic-subrow {
       width: 100%;
+
 
       td {
         border-bottom: none;
@@ -352,11 +384,13 @@ input {
         text-align: left;
       }
 
+
       td:last-child {
         border-left: 1px solid black;
         text-align: center;
       }
     }
+
 
     img {
       width: 30px;
@@ -364,9 +398,11 @@ input {
   }
 }
 
+
 .recharts-legend-item-text {
   font-size: 1.1vw;
 }
+
 
 @media only screen and (max-width: 1440px) {
   .title,
@@ -375,6 +411,7 @@ input {
   .recharts-legend-item-text {
     font-size: 15.5px;
   }
+
 
   .carWstart,
   .carWend,
@@ -386,6 +423,7 @@ input {
   }
 }
 
+
 @media only screen and (max-width: 1280px) {
   .report-head {
     width: 220px;
@@ -393,8 +431,10 @@ input {
     font-size: 20px;
   }
 
+
   .report-filter {
     font-size: 15.5px;
+
 
     .report-daily,
     .report-weekly,
@@ -404,21 +444,18 @@ input {
     }
   }
 
+
   .previous-arrow {
     width: 17px;
     height: 17px;
   }
 
-  input {
-    width: 192px;
-    height: 28px;
-    font-size: 17px;
-  }
 
   .next-arrow {
     width: 17px;
     height: 17px;
   }
+
 
   .col-container {
     width: 90%;
@@ -426,14 +463,17 @@ input {
     margin-right: auto;
   }
 
+
   .title {
     font-size: 15px;
   }
+
 
   .car-container {
     margin-top: 15px;
     margin-bottom: 20px;
   }
+
 
   .carWstart,
   .carWend,
@@ -443,6 +483,7 @@ input {
   .totalfee {
     font-size: 15px;
   }
+
 
   .bar-container {
     width: 90%;
@@ -455,11 +496,13 @@ input {
     font-size: 14px;
   }
 
+
   .reportrepair-table-container .reportrepair-table {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
   }
+
 
   .reportmechanic-table-container .reportmechanic-table {
     width: 90%;

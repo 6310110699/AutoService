@@ -5,6 +5,7 @@ import moment from "moment";
 import DonutChart from "./DonutChart";
 import BarChartPerMonth from "./BarChartPerMonth";
 import BarChartPerDay from "./BarChartPerDay";
+import TextField from "@mui/material/TextField";
 
 function Report() {
   const [customers, setCustomers] = useState([]);
@@ -35,7 +36,7 @@ function Report() {
 
   const loadCustomers = async () => {
     try {
-      const response = await axios.get("https://autoservice-k7ez.onrender.com/repairs");
+      const response = await axios.get("http://localhost:3001/repairs");
       setCustomers(response.data);
     } catch (error) {
       console.error("Error loading customer data:", error);
@@ -44,7 +45,7 @@ function Report() {
 
   const loadServices = async () => {
     try {
-      const response = await axios.get("https://autoservice-k7ez.onrender.com/services");
+      const response = await axios.get("http://localhost:3001/services");
       setServices(response.data);
     } catch (error) {
       console.error("Error loading services:", error);
@@ -53,7 +54,7 @@ function Report() {
 
   const loadMechanics = async () => {
     try {
-      const response = await axios.get("https://autoservice-k7ez.onrender.com/employees");
+      const response = await axios.get("http://localhost:3001/employees");
       setMechanics(response.data);
     } catch (error) {
       console.error("Error loading mechanics:", error);
@@ -1596,12 +1597,14 @@ function Report() {
               <div className="previous-arrow" onClick={handlePreviousDateClick}>
                 <img src="./assets/image/previous.png" />
               </div>
-              <input
-                type="date"
+              <TextField
                 id="dateSelect"
+                label="Date"
+                type="date"
                 value={date}
-                onChange={(e) => {
-                  setDate(e.target.value);
+                onChange={(e) => setDate(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
                 }}
               />
               <div className="next-arrow" onClick={handleNextDateClick}>
@@ -1676,8 +1679,8 @@ function Report() {
                       </thead>
                       <tbody>
                         {Object.entries(servicesUsedDate)
-                        .sort((a, b) => b[1].length - a[1].length) 
-                        .map(([serviceName, index]) => (
+                          .sort((a, b) => b[1].length - a[1].length)
+                          .map(([serviceName, index]) => (
                             <React.Fragment key={serviceName}>
                               <tr>
                                 <td style={{ paddingLeft: "15px" }}>
@@ -1694,28 +1697,26 @@ function Report() {
                               {showServiceDetails[serviceName] && (
                                 <tr>
                                   <td colSpan={2}>
-                                    {Object.entries(
-                                      getServiceDate(serviceName))
+                                    {Object.entries(getServiceDate(serviceName))
                                       .sort((a, b) => b[1] - a[1])
-                                    .map(([carModel, carModelCount]) => (
-                                      <div key={carModel}>
-                                        <table className="reportrepair-subrow">
-                                          <tr>
-                                            <td>{carModel}</td>
-                                            <td style={{ width: "20%" }}>
-                                              {carModelCount}
-                                            </td>
-                                            <td></td>
-                                          </tr>
-                                        </table>
-                                      </div>
-                                    ))}
+                                      .map(([carModel, carModelCount]) => (
+                                        <div key={carModel}>
+                                          <table className="reportrepair-subrow">
+                                            <tr>
+                                              <td>{carModel}</td>
+                                              <td style={{ width: "20%" }}>
+                                                {carModelCount}
+                                              </td>
+                                              <td></td>
+                                            </tr>
+                                          </table>
+                                        </div>
+                                      ))}
                                   </td>
                                 </tr>
                               )}
                             </React.Fragment>
-                          )
-                        )}
+                          ))}
                       </tbody>
                     </table>
                   </div>
@@ -1742,8 +1743,8 @@ function Report() {
                           return (
                             <React.Fragment key={mechanic._id}>
                               {Object.keys(services)
-                               .sort((a, b) => services[b] - services[a])
-                              .map((serviceName, index) => {
+                                .sort((a, b) => services[b] - services[a])
+                                .map((serviceName, index) => {
                                   const carModelCounts = Object.entries(
                                     getServiceCountsByCarModelDate(
                                       mechanic.name,
@@ -1781,34 +1782,34 @@ function Report() {
                                         ]?.[serviceName] && (
                                           <div>
                                             {carModelCounts
-                                            .sort((a, b) => b[1] - a[1])
-                                            .map( ([carModel, carModelCount]) => (
-                                                <table className="reportmechanic-subrow">
-                                                  <tr key={carModel}>
-                                                    <td
-                                                      style={{
-                                                        paddingLeft: "20px",
-                                                      }}
-                                                    >
-                                                      {carModel}
-                                                    </td>
-                                                    <td
-                                                      style={{ width: "10%" }}
-                                                    >
-                                                      {carModelCount}
-                                                    </td>
-                                                  </tr>
-                                                </table>
-                                              )
-                                            )}
+                                              .sort((a, b) => b[1] - a[1])
+                                              .map(
+                                                ([carModel, carModelCount]) => (
+                                                  <table className="reportmechanic-subrow">
+                                                    <tr key={carModel}>
+                                                      <td
+                                                        style={{
+                                                          paddingLeft: "20px",
+                                                        }}
+                                                      >
+                                                        {carModel}
+                                                      </td>
+                                                      <td
+                                                        style={{ width: "10%" }}
+                                                      >
+                                                        {carModelCount}
+                                                      </td>
+                                                    </tr>
+                                                  </table>
+                                                )
+                                              )}
                                           </div>
                                         )}
                                       </td>
                                       <td>{serviceTotal}</td>
                                     </tr>
                                   );
-                                }
-                              )}
+                                })}
                             </React.Fragment>
                           );
                         })}
@@ -1831,12 +1832,14 @@ function Report() {
               <div className="previous-arrow" onClick={handlePreviousWeekClick}>
                 <img src="./assets/image/previous.png" />
               </div>
-              <input
-                type="week"
+              <TextField
                 id="weekSelect"
+                label="Week"
+                type="week"
                 value={week}
-                onChange={(e) => {
-                  setWeek(e.target.value);
+                onChange={(e) => setWeek(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
                 }}
               />
               <div className="next-arrow" onClick={handleNextWeekClick}>
@@ -1957,8 +1960,8 @@ function Report() {
                       </thead>
                       <tbody>
                         {Object.entries(servicesUsedWeek)
-                        .sort((a, b) => b[1].length - a[1].length)
-                        .map(([serviceName, index]) => (
+                          .sort((a, b) => b[1].length - a[1].length)
+                          .map(([serviceName, index]) => (
                             <React.Fragment key={serviceName}>
                               <tr>
                                 <td style={{ paddingLeft: "15px" }}>
@@ -1975,28 +1978,26 @@ function Report() {
                               {showServiceDetails[serviceName] && (
                                 <tr>
                                   <td colSpan={2}>
-                                    {Object.entries(
-                                      getServiceWeek(serviceName))
+                                    {Object.entries(getServiceWeek(serviceName))
                                       .sort((a, b) => b[1] - a[1])
                                       .map(([carModel, carModelCount]) => (
-                                      <div key={carModel}>
-                                        <table className="reportrepair-subrow">
-                                          <tr>
-                                            <td>{carModel}</td>
-                                            <td style={{ width: "20%" }}>
-                                              {carModelCount}
-                                            </td>
-                                            <td></td>
-                                          </tr>
-                                        </table>
-                                      </div>
-                                    ))}
+                                        <div key={carModel}>
+                                          <table className="reportrepair-subrow">
+                                            <tr>
+                                              <td>{carModel}</td>
+                                              <td style={{ width: "20%" }}>
+                                                {carModelCount}
+                                              </td>
+                                              <td></td>
+                                            </tr>
+                                          </table>
+                                        </div>
+                                      ))}
                                   </td>
                                 </tr>
                               )}
                             </React.Fragment>
-                          )
-                        )}
+                          ))}
                       </tbody>
                     </table>
                   </div>
@@ -2023,8 +2024,8 @@ function Report() {
                           return (
                             <React.Fragment key={mechanic._id}>
                               {Object.keys(services)
-                              .sort((a, b) => services[b] - services[a])
-                              .map((serviceName, index) => {
+                                .sort((a, b) => services[b] - services[a])
+                                .map((serviceName, index) => {
                                   const carModelCounts = Object.entries(
                                     getServiceCountsByCarModelWeek(
                                       mechanic.name,
@@ -2062,34 +2063,34 @@ function Report() {
                                         ]?.[serviceName] && (
                                           <div>
                                             {carModelCounts
-                                            .sort((a, b) => b[1] - a[1])
-                                            .map(([carModel, carModelCount]) => (
-                                                <table className="reportmechanic-subrow">
-                                                  <tr key={carModel}>
-                                                    <td
-                                                      style={{
-                                                        paddingLeft: "20px",
-                                                      }}
-                                                    >
-                                                      {carModel}
-                                                    </td>
-                                                    <td
-                                                      style={{ width: "10%" }}
-                                                    >
-                                                      {carModelCount}
-                                                    </td>
-                                                  </tr>
-                                                </table>
-                                              )
-                                            )}
+                                              .sort((a, b) => b[1] - a[1])
+                                              .map(
+                                                ([carModel, carModelCount]) => (
+                                                  <table className="reportmechanic-subrow">
+                                                    <tr key={carModel}>
+                                                      <td
+                                                        style={{
+                                                          paddingLeft: "20px",
+                                                        }}
+                                                      >
+                                                        {carModel}
+                                                      </td>
+                                                      <td
+                                                        style={{ width: "10%" }}
+                                                      >
+                                                        {carModelCount}
+                                                      </td>
+                                                    </tr>
+                                                  </table>
+                                                )
+                                              )}
                                           </div>
                                         )}
                                       </td>
                                       <td>{serviceTotal}</td>
                                     </tr>
                                   );
-                                }
-                              )}
+                                })}
                             </React.Fragment>
                           );
                         })}
@@ -2115,12 +2116,14 @@ function Report() {
               >
                 <img src="./assets/image/previous.png" />
               </div>
-              <input
-                type="month"
+              <TextField
                 id="monthSelect"
+                label="Month"
+                type="month"
                 value={month}
-                onChange={(e) => {
-                  setMonth(e.target.value);
+                onChange={(e) => setMonth(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
                 }}
               />
               <div className="next-arrow" onClick={handleNextMonthClick}>
@@ -2239,8 +2242,8 @@ function Report() {
                       </thead>
                       <tbody>
                         {Object.entries(servicesUsed)
-                        .sort((a, b) => b[1].length - a[1].length)
-                        .map(([serviceName, index]) => (
+                          .sort((a, b) => b[1].length - a[1].length)
+                          .map(([serviceName, index]) => (
                             <React.Fragment key={serviceName}>
                               <tr>
                                 <td style={{ paddingLeft: "15px" }}>
@@ -2258,26 +2261,25 @@ function Report() {
                                 <tr>
                                   <td colSpan={2}>
                                     {Object.entries(getService(serviceName))
-                                    .sort((a, b) => b[1] - a[1])
-                                    .map(([carModel, carModelCount]) => (
-                                      <div key={carModel}>
-                                        <table className="reportrepair-subrow">
-                                          <tr>
-                                            <td>{carModel}</td>
-                                            <td style={{ width: "20%" }}>
-                                              {carModelCount}
-                                            </td>
-                                            <td></td>
-                                          </tr>
-                                        </table>
-                                      </div>
-                                    ))}
+                                      .sort((a, b) => b[1] - a[1])
+                                      .map(([carModel, carModelCount]) => (
+                                        <div key={carModel}>
+                                          <table className="reportrepair-subrow">
+                                            <tr>
+                                              <td>{carModel}</td>
+                                              <td style={{ width: "20%" }}>
+                                                {carModelCount}
+                                              </td>
+                                              <td></td>
+                                            </tr>
+                                          </table>
+                                        </div>
+                                      ))}
                                   </td>
                                 </tr>
                               )}
                             </React.Fragment>
-                          )
-                        )}
+                          ))}
                       </tbody>
                     </table>
                   </div>
@@ -2304,8 +2306,8 @@ function Report() {
                           return (
                             <React.Fragment key={mechanic._id}>
                               {Object.keys(services)
-                              .sort((a, b) => services[b] - services[a])
-                              .map((serviceName, index) => {
+                                .sort((a, b) => services[b] - services[a])
+                                .map((serviceName, index) => {
                                   const carModelCounts = Object.entries(
                                     getServiceCountsByCarModel(
                                       mechanic.name,
@@ -2343,34 +2345,34 @@ function Report() {
                                         ]?.[serviceName] && (
                                           <div>
                                             {carModelCounts
-                                            .sort((a, b) => b[1] - a[1])
-                                            .map(([carModel, carModelCount]) => (
-                                                <table className="reportmechanic-subrow">
-                                                  <tr key={carModel}>
-                                                    <td
-                                                      style={{
-                                                        paddingLeft: "20px",
-                                                      }}
-                                                    >
-                                                      {carModel}
-                                                    </td>
-                                                    <td
-                                                      style={{ width: "10%" }}
-                                                    >
-                                                      {carModelCount}
-                                                    </td>
-                                                  </tr>
-                                                </table>
-                                              )
-                                            )}
+                                              .sort((a, b) => b[1] - a[1])
+                                              .map(
+                                                ([carModel, carModelCount]) => (
+                                                  <table className="reportmechanic-subrow">
+                                                    <tr key={carModel}>
+                                                      <td
+                                                        style={{
+                                                          paddingLeft: "20px",
+                                                        }}
+                                                      >
+                                                        {carModel}
+                                                      </td>
+                                                      <td
+                                                        style={{ width: "10%" }}
+                                                      >
+                                                        {carModelCount}
+                                                      </td>
+                                                    </tr>
+                                                  </table>
+                                                )
+                                              )}
                                           </div>
                                         )}
                                       </td>
                                       <td>{serviceTotal}</td>
                                     </tr>
                                   );
-                                }
-                              )}
+                                })}
                             </React.Fragment>
                           );
                         })}
@@ -2393,12 +2395,14 @@ function Report() {
               <div className="previous-arrow" onClick={handlePreviousYearClick}>
                 <img src="./assets/image/previous.png" />
               </div>
-              <input
-                type="year"
+              <TextField
                 id="yearSelect"
+                label="Year"
+                type="number"
                 value={year}
-                onChange={(e) => {
-                  setYear(e.target.value);
+                onChange={(e) => setYear(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
                 }}
               />
               <div className="next-arrow" onClick={handleNextYearClick}>
@@ -2621,7 +2625,8 @@ function Report() {
                                           <div>
                                             {carModelCounts
                                               .sort((a, b) => b[1] - a[1])
-                                              .map(([carModel, carModelCount]) => (
+                                              .map(
+                                                ([carModel, carModelCount]) => (
                                                   <table className="reportmechanic-subrow">
                                                     <tr key={carModel}>
                                                       <td

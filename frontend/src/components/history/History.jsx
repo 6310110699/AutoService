@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { Pagination } from "@mui/material";
 import "./History.scss";
+import TextField from "@mui/material/TextField";
 
 
 function History() {
-  const navigate = useNavigate();
-
   const [customers, setCustomers] = useState([]);
   const [services, setServices] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [numPlate, setNumPlate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
 
 
   useEffect(() => {
@@ -29,7 +31,7 @@ function History() {
 
   const loadCustomers = async () => {
     try {
-      const response = await axios.get("https://autoservice-k7ez.onrender.com/repairs");
+      const response = await axios.get("http://localhost:3001/repairs");
       setCustomers(response.data);
     } catch (error) {
       console.error("Error loading customer data:", error);
@@ -39,7 +41,7 @@ function History() {
 
   const loadServices = async () => {
     try {
-      const response = await axios.get("https://autoservice-k7ez.onrender.com/services");
+      const response = await axios.get("http://localhost:3001/services");
       setServices(response.data);
     } catch (error) {
       console.error("Error loading services:", error);
@@ -48,7 +50,8 @@ function History() {
 
 
   const navigateToReceipt = (customerId) => {
-    navigate(`/receipt/${customerId}`);
+    const receiptUrl = `/receipt/${customerId}`;
+    window.location.href = receiptUrl;
   };
 
 
@@ -60,11 +63,17 @@ function History() {
   };
 
 
-  const startDateObject = new Date('${startDate}T00:00:00');
-  const endDateObject = new Date('${endDate}T23:59:59');
+  const startDateObject = new Date("${startDate}T00:00:00");
+  const endDateObject = new Date("${endDate}T23:59:59");
 
 
   const filterAndSortCustomers = () => {
+    const startDateObject = startDate
+      ? new Date(`${startDate}T00:00:00`)
+      : null;
+    const endDateObject = endDate ? new Date(`${endDate}T23:59:59`) : null;
+
+
     const filteredAndSortedCustomers = customers
       .filter((customer) => {
         const customerEndDate = new Date(customer.enddate);
@@ -90,6 +99,7 @@ function History() {
 
 
     setSearchResults(filteredAndSortedCustomers);
+    setTotalItems(filteredAndSortedCustomers.length);
   };
 
 
@@ -97,18 +107,23 @@ function History() {
     setStartDate("");
     setEndDate("");
     setNumPlate("");
-    const allCustomersFiltered = customers.filter(
-      (customer) => customer.status.state5
-    );
-    const sortedAllCustomers = allCustomersFiltered.sort((a, b) => {
-      const dateA = new Date(a.enddate);
-      const dateB = new Date(b.enddate);
-      return dateB - dateA;
-    });
-
-
-    setSearchResults(sortedAllCustomers);
+    filterAndSortCustomers();
   };
+
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      filterAndSortCustomers();
+    }
+  };
+
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = searchResults.slice(indexOfFirstItem, indexOfLastItem);
+
+
+  const paginate = (event, pageNumber) => setCurrentPage(pageNumber);
 
 
   return (
@@ -122,29 +137,32 @@ function History() {
         <div className="history-filter-sub-con row">
           <div className="col1">
             <label htmlFor="numPlateInput">ค้นหาด้วยป้ายทะเบียน : </label>
-            <input
-              type="text"
+            <TextField
               id="numPlateInput"
+              type="text"
               value={numPlate}
               onChange={(e) => setNumPlate(e.target.value)}
+              onKeyPress={handleKeyPress}
             />
           </div>
           <div className="col2">
             <label htmlFor="startDateSelect">วันเริ่มต้น : </label>
-            <input
-              type="date"
+            <TextField
               id="startDateSelect"
+              type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
+              onKeyPress={handleKeyPress}
             />
           </div>
           <div className="col2">
             <label htmlFor="endDateSelect">วันสิ้นสุด : </label>
-            <input
-              type="date"
+            <TextField
               id="endDateSelect"
+              type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
+              onKeyPress={handleKeyPress}
             />
           </div>
           <div
@@ -158,10 +176,13 @@ function History() {
           </div>
         </div>
       </div>
+      <div className="history-result">
+        ผลลัพธ์ที่ได้: {searchResults.length} รายการ
+      </div>
 
 
       <div className="history-item">
-        {searchResults.map((customer) => (
+        {currentItems.map((customer) => (
           <div
             className="history-customer row"
             onClick={() => navigateToReceipt(customer._id)}
@@ -188,6 +209,18 @@ function History() {
             </div>
           </div>
         ))}
+      </div>
+      <div className="pagination">
+        <Pagination
+          count={Math.ceil(searchResults.length / itemsPerPage)}
+          page={currentPage}
+          onChange={paginate}
+        />
+        <div className="history-pagination-detail">
+          Showing {indexOfFirstItem + 1} to{" "}
+          {indexOfLastItem > totalItems ? totalItems : indexOfLastItem} of{" "}
+          {totalItems} items
+        </div>
       </div>
     </div>
   );
