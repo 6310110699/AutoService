@@ -31,7 +31,7 @@ function History() {
 
   const loadCustomers = async () => {
     try {
-      const response = await axios.get("https://autoservice-k7ez.onrender.com/repairs");
+      const response = await axios.get("http://localhost:3001/repairs");
       setCustomers(response.data);
     } catch (error) {
       console.error("Error loading customer data:", error);
@@ -41,7 +41,7 @@ function History() {
 
   const loadServices = async () => {
     try {
-      const response = await axios.get("https://autoservice-k7ez.onrender.com/services");
+      const response = await axios.get("http://localhost:3001/services");
       setServices(response.data);
     } catch (error) {
       console.error("Error loading services:", error);
@@ -100,6 +100,7 @@ function History() {
 
     setSearchResults(filteredAndSortedCustomers);
     setTotalItems(filteredAndSortedCustomers.length);
+    setCurrentPage(1);
   };
 
 
@@ -126,6 +127,10 @@ function History() {
   const paginate = (event, pageNumber) => setCurrentPage(pageNumber);
 
 
+  const handlePaginationChange = (event, pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+ 
   return (
     <div className="history">
       <div className="history-head">
@@ -212,9 +217,9 @@ function History() {
       </div>
       <div className="pagination">
         <Pagination
-          count={Math.ceil(searchResults.length / itemsPerPage)}
-          page={currentPage}
-          onChange={paginate}
+         count={Math.ceil(searchResults.length / itemsPerPage)}
+         page={currentPage}
+         onChange={handlePaginationChange}
         />
         <div className="history-pagination-detail">
           Showing {indexOfFirstItem + 1} to{" "}
