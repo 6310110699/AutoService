@@ -1780,31 +1780,31 @@ function Report() {
                                         {showServiceDetailsByMechanicDate[
                                           mechanic.name
                                         ]?.[serviceName] && (
-                                          <div>
-                                            {carModelCounts
-                                              .sort((a, b) => b[1] - a[1])
-                                              .map(
-                                                ([carModel, carModelCount]) => (
-                                                  <table className="reportmechanic-subrow">
-                                                    <tr key={carModel}>
-                                                      <td
-                                                        style={{
-                                                          paddingLeft: "20px",
-                                                        }}
-                                                      >
-                                                        {carModel}
-                                                      </td>
-                                                      <td
-                                                        style={{ width: "10%" }}
-                                                      >
-                                                        {carModelCount}
-                                                      </td>
-                                                    </tr>
-                                                  </table>
-                                                )
-                                              )}
-                                          </div>
-                                        )}
+                                            <div>
+                                              {carModelCounts
+                                                .sort((a, b) => b[1] - a[1])
+                                                .map(
+                                                  ([carModel, carModelCount]) => (
+                                                    <table className="reportmechanic-subrow">
+                                                      <tr key={carModel}>
+                                                        <td
+                                                          style={{
+                                                            paddingLeft: "20px",
+                                                          }}
+                                                        >
+                                                          {carModel}
+                                                        </td>
+                                                        <td
+                                                          style={{ width: "10%" }}
+                                                        >
+                                                          {carModelCount}
+                                                        </td>
+                                                      </tr>
+                                                    </table>
+                                                  )
+                                                )}
+                                            </div>
+                                          )}
                                       </td>
                                       <td>{serviceTotal}</td>
                                     </tr>
@@ -1835,13 +1835,21 @@ function Report() {
               <TextField
                 id="weekSelect"
                 label="Week"
-                type="week"
+                type="text"
                 value={week}
-                onChange={(e) => setWeek(e.target.value)}
+                onChange={(e) => {
+                  // ทำการตรวจสอบหรือแปลงข้อมูลตามรูปแบบของ week
+                  const inputValue = e.target.value;
+                  // ตัวอย่าง: ตรวจสอบว่ามีรูปแบบของ week หรือไม่
+                  if (/^\d{4}-W\d{2}$/.test(inputValue)) {
+                    setWeek(inputValue);
+                  }
+                }}
                 InputLabelProps={{
                   shrink: true,
                 }}
               />
+
               <div className="next-arrow" onClick={handleNextWeekClick}>
                 <img src="./assets/image/next.png" />
               </div>
@@ -2061,31 +2069,31 @@ function Report() {
                                         {showServiceDetailsByMechanic[
                                           mechanic.name
                                         ]?.[serviceName] && (
-                                          <div>
-                                            {carModelCounts
-                                              .sort((a, b) => b[1] - a[1])
-                                              .map(
-                                                ([carModel, carModelCount]) => (
-                                                  <table className="reportmechanic-subrow">
-                                                    <tr key={carModel}>
-                                                      <td
-                                                        style={{
-                                                          paddingLeft: "20px",
-                                                        }}
-                                                      >
-                                                        {carModel}
-                                                      </td>
-                                                      <td
-                                                        style={{ width: "10%" }}
-                                                      >
-                                                        {carModelCount}
-                                                      </td>
-                                                    </tr>
-                                                  </table>
-                                                )
-                                              )}
-                                          </div>
-                                        )}
+                                            <div>
+                                              {carModelCounts
+                                                .sort((a, b) => b[1] - a[1])
+                                                .map(
+                                                  ([carModel, carModelCount]) => (
+                                                    <table className="reportmechanic-subrow">
+                                                      <tr key={carModel}>
+                                                        <td
+                                                          style={{
+                                                            paddingLeft: "20px",
+                                                          }}
+                                                        >
+                                                          {carModel}
+                                                        </td>
+                                                        <td
+                                                          style={{ width: "10%" }}
+                                                        >
+                                                          {carModelCount}
+                                                        </td>
+                                                      </tr>
+                                                    </table>
+                                                  )
+                                                )}
+                                            </div>
+                                          )}
                                       </td>
                                       <td>{serviceTotal}</td>
                                     </tr>
@@ -2343,31 +2351,31 @@ function Report() {
                                         {showServiceDetailsByMechanic[
                                           mechanic.name
                                         ]?.[serviceName] && (
-                                          <div>
-                                            {carModelCounts
-                                              .sort((a, b) => b[1] - a[1])
-                                              .map(
-                                                ([carModel, carModelCount]) => (
-                                                  <table className="reportmechanic-subrow">
-                                                    <tr key={carModel}>
-                                                      <td
-                                                        style={{
-                                                          paddingLeft: "20px",
-                                                        }}
-                                                      >
-                                                        {carModel}
-                                                      </td>
-                                                      <td
-                                                        style={{ width: "10%" }}
-                                                      >
-                                                        {carModelCount}
-                                                      </td>
-                                                    </tr>
-                                                  </table>
-                                                )
-                                              )}
-                                          </div>
-                                        )}
+                                            <div>
+                                              {carModelCounts
+                                                .sort((a, b) => b[1] - a[1])
+                                                .map(
+                                                  ([carModel, carModelCount]) => (
+                                                    <table className="reportmechanic-subrow">
+                                                      <tr key={carModel}>
+                                                        <td
+                                                          style={{
+                                                            paddingLeft: "20px",
+                                                          }}
+                                                        >
+                                                          {carModel}
+                                                        </td>
+                                                        <td
+                                                          style={{ width: "10%" }}
+                                                        >
+                                                          {carModelCount}
+                                                        </td>
+                                                      </tr>
+                                                    </table>
+                                                  )
+                                                )}
+                                            </div>
+                                          )}
                                       </td>
                                       <td>{serviceTotal}</td>
                                     </tr>
@@ -2622,31 +2630,31 @@ function Report() {
                                         {showServiceDetailsByMechanic[
                                           mechanic.name
                                         ]?.[serviceName] && (
-                                          <div>
-                                            {carModelCounts
-                                              .sort((a, b) => b[1] - a[1])
-                                              .map(
-                                                ([carModel, carModelCount]) => (
-                                                  <table className="reportmechanic-subrow">
-                                                    <tr key={carModel}>
-                                                      <td
-                                                        style={{
-                                                          paddingLeft: "20px",
-                                                        }}
-                                                      >
-                                                        {carModel}
-                                                      </td>
-                                                      <td
-                                                        style={{ width: "10%" }}
-                                                      >
-                                                        {carModelCount}
-                                                      </td>
-                                                    </tr>
-                                                  </table>
-                                                )
-                                              )}
-                                          </div>
-                                        )}
+                                            <div>
+                                              {carModelCounts
+                                                .sort((a, b) => b[1] - a[1])
+                                                .map(
+                                                  ([carModel, carModelCount]) => (
+                                                    <table className="reportmechanic-subrow">
+                                                      <tr key={carModel}>
+                                                        <td
+                                                          style={{
+                                                            paddingLeft: "20px",
+                                                          }}
+                                                        >
+                                                          {carModel}
+                                                        </td>
+                                                        <td
+                                                          style={{ width: "10%" }}
+                                                        >
+                                                          {carModelCount}
+                                                        </td>
+                                                      </tr>
+                                                    </table>
+                                                  )
+                                                )}
+                                            </div>
+                                          )}
                                       </td>
                                       <td>{serviceTotal}</td>
                                     </tr>
