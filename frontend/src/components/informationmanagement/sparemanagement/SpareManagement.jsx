@@ -2,16 +2,12 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './SpareManagement.scss';
 import Modal from 'react-bootstrap/Modal';
-// import Select from 'react-select';
 
 const SpareManagement = () => {
     const [spares, setSpares] = useState([]);
     const [spareName, setSpareName] = useState('');
     const [spareType, setSpareType] = useState('');
     const [sparePrice, setSparePrice] = useState('');
-    // const [selectedModels, setSelectedModels] = useState([]);
-    // const [compatibleCarModels, setCompatibleCarModels] = useState([]);
-    // const [modelsByCategory, setModelsByCategory] = useState([]);
 
     const [editingSpareId, setEditingSpareId] = useState(null);
     const [message, setMessage] = useState('');
@@ -28,7 +24,6 @@ const SpareManagement = () => {
             spareTypeLowerCase.includes(searchText.toLowerCase());
     });
 
-
     const sortBySpare = (data) => {
         return data.sort((a, b) => {
             if (!a.spareType && !b.spareType) return a.spareName.localeCompare(b.spareName);
@@ -44,12 +39,10 @@ const SpareManagement = () => {
         });
     };
 
-    // นำฟังก์ชัน sortByBrand มาใช้กับข้อมูลที่ต้องการเรียง
     const sortedSpares = sortBySpare(filteredSpares);
 
     useEffect(() => {
         loadSpares();
-        // loadCompatibleCarModels();
     }, []);
 
     const loadSpares = async () => {
@@ -63,42 +56,12 @@ const SpareManagement = () => {
         }
     };
 
-    // const loadCompatibleCarModels = async () => {
-    //     try {
-    //         const response = await axios.get('https://autoservice-k7ez.onrender.com/brandmodels');
-    //         const modelsData = response.data;
-
-    //         // Group spares by category
-    //         const modelsGroupedByCategory = {};
-    //         modelsData.forEach((model) => {
-    //             if (!modelsGroupedByCategory[model.brand]) {
-    //                 modelsGroupedByCategory[model.brand] = [];
-    //             }
-    //             modelsGroupedByCategory[model.brand].push(model);
-    //         });
-
-    //         // Convert the grouped data into an array
-    //         const modelsByCategory = Object.keys(modelsGroupedByCategory).map((brand) => ({
-    //             categoryName: brand,
-    //             compatibleCarModels: modelsGroupedByCategory[brand],
-    //         }));
-
-    //         setModelsByCategory(modelsByCategory);
-    //         setCompatibleCarModels(response.data);
-    //         setMessage('');
-    //     } catch (error) {
-    //         console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลรุ่นรถ:', error);
-    //         setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลรุ่นรถ');
-    //     }
-    // };
-
     const handleAddSpare = (spare) => {
         setShowAddEditSpareModal(true);
 
         setSpareName(spare.spareName);
         setSpareType(spare.spareType)
         setSparePrice(spare.sparePrice);
-        // setSelectedModels(spare.compatibleCarModels);
         setEditingSpareId(spare._id);
     };
 
@@ -113,7 +76,6 @@ const SpareManagement = () => {
                 spareName,
                 spareType,
                 sparePrice,
-                // compatibleCarModels: selectedModels,
             });
 
             setShowAddEditSpareModal(false);
@@ -130,7 +92,6 @@ const SpareManagement = () => {
         setSpareName(spare.spareName);
         setSpareType(spare.spareType)
         setSparePrice(spare.sparePrice);
-        // setSelectedModels(spare.compatibleCarModels);
         setEditingSpareId(spare._id);
     };
 
@@ -145,7 +106,6 @@ const SpareManagement = () => {
                 spareName,
                 spareType,
                 sparePrice,
-                // compatibleCarModels: selectedModels,
             });
 
             setShowAddEditSpareModal(false);
@@ -172,7 +132,6 @@ const SpareManagement = () => {
         setSpareName('');
         setSpareType('');
         setSparePrice('');
-        // setSelectedModels([]);
         setEditingSpareId(null);
         setMessage('');
     };
@@ -210,7 +169,6 @@ const SpareManagement = () => {
                         <tr>
                             <th>ชื่ออะไหล่</th>
                             <th>ประเภท</th>
-                            {/* <th>รุ่นรถที่ใช้ได้</th> */}
                             <th>ราคา</th>
                             <th>การดำเนินการ</th>
                         </tr>
@@ -220,16 +178,6 @@ const SpareManagement = () => {
                             <tr key={spare._id}>
                                 <td>{spare.spareName}</td>
                                 <td>{spare.spareType}</td>
-                                {/* <td>
-                                    {spare.compatibleCarModels.map((modelId) => {
-                                        const model = compatibleCarModels.find((model) => model._id === modelId);
-                                        return (
-                                            <div key={modelId}>
-                                                {model ? `${model.model}` : 'อะไหล่ไม่ถูกพบ'}
-                                            </div>
-                                        );
-                                    })}
-                                </td> */}
                                 <td>{spare.sparePrice}</td>
                                 <td>
                                     <div className='edit-button' onClick={() => handleEditSpare(spare)}>แก้ไข</div>
@@ -283,44 +231,6 @@ const SpareManagement = () => {
                             value={sparePrice}
                             onChange={(e) => setSparePrice(e.target.value)}
                         />
-                        {/* <label>รุ่นรถที่ใช้ได้:</label>
-                        <Select
-                            isMulti
-                            styles={{
-                                groupHeading: (defaultStyles) => ({
-                                    ...defaultStyles,
-                                    fontSize: "20px"
-                                }),
-
-                                option: (defaultStyles, state) => ({
-                                    ...defaultStyles,
-                                    fontSize: "18px"
-                                }),
-
-                                control: (defaultStyles) => ({
-                                    ...defaultStyles,
-                                    padding: "5px",
-                                    borderRadius: "8px",
-                                    fontSize: "20px"
-                                }),
-                            }}
-                            value={selectedModels.map((modelId) => ({
-                                value: modelId,
-                                label: compatibleCarModels.find((model) => model._id === modelId)?.model || 'รุ่นรถไม่ถูกพบ',
-                            }))}
-                            options={modelsByCategory.flatMap((category) => [
-                                {
-                                    label: category.categoryName,
-                                    options: category.compatibleCarModels.map((model) => ({
-                                        value: model._id,
-                                        label: model.model,
-                                    })),
-                                },
-                            ])}
-                            onChange={(selectedOptions) =>
-                                setSelectedModels(selectedOptions.map((option) => option.value))
-                            }
-                        /> */}
                     </div>
                     {message &&
                         <div className='error-form'>

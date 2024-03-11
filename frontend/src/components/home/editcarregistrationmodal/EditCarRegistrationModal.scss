@@ -4,13 +4,13 @@
     .modal-xl {
         --bs-modal-width: 72vw;
     }
-    
+
     @media only screen and (max-width: 1024px) {
         .modal-xl {
             --bs-modal-width: 55vw;
         }
     }
-    
+
     .modal-title {
         font-size: 1.55vw;
         margin-left: 0.65vw;
@@ -125,7 +125,6 @@
                 height: 46px;
                 margin-top: 10px;
                 padding-left: 8px;
-                // width: 250px;
                 font-size: 17px;
             }
         }
@@ -168,13 +167,13 @@
     .modal-lg {
         --bs-modal-width: 50vw;
     }
-    
+
     @media only screen and (max-width: 1280px) {
         .modal-lg {
             --bs-modal-width: 570px;
         }
     }
-    
+
     .modal-title {
         font-size: 1.7vw;
         padding-left: 0.7vw;

@@ -4,15 +4,14 @@ const Employee = require('../models/Employee');
 
 // To Get List Of Employees
 router.get('/', async (req, res) => {
-    try {
-      const employees = await Employee.find();
-      res.json(employees);
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลพนักงาน:', error);
-      res.status(500).json({ message: 'เกิดข้อผิดพลาดในการโหลดข้อมูลพนักงาน' });
-    }
-  });
-  
+  try {
+    const employees = await Employee.find();
+    res.json(employees);
+  } catch (error) {
+    console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลพนักงาน:', error);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการโหลดข้อมูลพนักงาน' });
+  }
+});
 
 // สร้างพนักงานใหม่
 router.post('/', async (req, res) => {
@@ -62,7 +61,7 @@ router.put('/:id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการแก้ไขข้อมูลพนักงาน' });
   }
-}); 
+});
 
 // ลบข้อมูลพนักงาน
 router.delete('/:id', async (req, res) => {

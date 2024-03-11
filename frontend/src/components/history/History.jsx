@@ -4,7 +4,6 @@ import { Pagination } from "@mui/material";
 import "./History.scss";
 import TextField from "@mui/material/TextField";
 
-
 function History() {
   const [customers, setCustomers] = useState([]);
   const [services, setServices] = useState([]);
@@ -16,18 +15,15 @@ function History() {
   const [itemsPerPage] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
 
-
   useEffect(() => {
     loadCustomers();
     loadServices();
     toggleShowAll();
   }, []);
 
-
   useEffect(() => {
     toggleShowAll();
   }, [customers]);
-
 
   const loadCustomers = async () => {
     try {
@@ -38,7 +34,6 @@ function History() {
     }
   };
 
-
   const loadServices = async () => {
     try {
       const response = await axios.get("https://autoservice-k7ez.onrender.com/services");
@@ -48,12 +43,10 @@ function History() {
     }
   };
 
-
   const navigateToReceipt = (customerId) => {
     const receiptUrl = `/receipt/${customerId}`;
     window.location.href = receiptUrl;
   };
-
 
   const getServiceNameById = (serviceId) => {
     const matchedService = services.find(
@@ -62,10 +55,8 @@ function History() {
     return matchedService ? matchedService.serviceName : "ไม่พบบริการ";
   };
 
-
   const startDateObject = new Date("${startDate}T00:00:00");
   const endDateObject = new Date("${endDate}T23:59:59");
-
 
   const filterAndSortCustomers = () => {
     const startDateObject = startDate
@@ -73,17 +64,14 @@ function History() {
       : null;
     const endDateObject = endDate ? new Date(`${endDate}T23:59:59`) : null;
 
-
     const filteredAndSortedCustomers = customers
       .filter((customer) => {
         const customerEndDate = new Date(customer.enddate);
         const currentDate = new Date();
 
-
         const isWithinDateRange =
           (!startDate || customerEndDate >= startDateObject) &&
           (!endDate || customerEndDate <= endDateObject);
-
 
         return (
           isWithinDateRange &&
@@ -97,12 +85,10 @@ function History() {
         return dateB - dateA;
       });
 
-
     setSearchResults(filteredAndSortedCustomers);
     setTotalItems(filteredAndSortedCustomers.length);
     setCurrentPage(1);
   };
-
 
   const toggleShowAll = () => {
     setStartDate("");
@@ -111,32 +97,27 @@ function History() {
     filterAndSortCustomers();
   };
 
-
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       filterAndSortCustomers();
     }
   };
 
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = searchResults.slice(indexOfFirstItem, indexOfLastItem);
 
-
   const paginate = (event, pageNumber) => setCurrentPage(pageNumber);
-
 
   const handlePaginationChange = (event, pageNumber) => {
     setCurrentPage(pageNumber);
   };
- 
+
   return (
     <div className="history">
       <div className="history-head">
         <div className="history-history">ประวัติการซ่อม</div>
       </div>
-
 
       <div className="history-filter">
         <div className="history-filter-sub-con row">
@@ -185,7 +166,6 @@ function History() {
         ผลลัพธ์ที่ได้: {searchResults.length} รายการ
       </div>
 
-
       <div className="history-item">
         {currentItems.map((customer) => (
           <div
@@ -217,9 +197,9 @@ function History() {
       </div>
       <div className="pagination">
         <Pagination
-         count={Math.ceil(searchResults.length / itemsPerPage)}
-         page={currentPage}
-         onChange={handlePaginationChange}
+          count={Math.ceil(searchResults.length / itemsPerPage)}
+          page={currentPage}
+          onChange={handlePaginationChange}
         />
         <div className="history-pagination-detail">
           Showing {indexOfFirstItem + 1} to{" "}
@@ -230,6 +210,5 @@ function History() {
     </div>
   );
 }
-
 
 export default History;

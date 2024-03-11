@@ -6,7 +6,6 @@ import axios from 'axios'
 function Signup() {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    // const [role, setRole] = useState('employee')
     const [message, setMessage] = useState('')
     const [error, setError] = useState('');
 
@@ -16,9 +15,8 @@ function Signup() {
         e.preventDefault()
         axios.post('https://autoservice-k7ez.onrender.com/register',
             {
-                username, 
-                password, 
-                // role
+                username,
+                password,
             })
             .then(result => {
                 setMessage('ลงทะเบียนผู้ใช้งานสำเร็จ')
@@ -61,18 +59,6 @@ function Signup() {
                         className="form-control"
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    {/* <label htmlFor="role">
-                        <strong>Role</strong>
-                    </label>
-                    <select
-                        name="role"
-                        className="form-control"
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                    >
-                        <option value="employee">Employee</option>
-                        <option value="boss">Boss</option>
-                    </select> */}
                     <div className="message-form">{message}</div>
                     <div className="error-form">{error}</div>
                     <button type="submit" className="button-register">

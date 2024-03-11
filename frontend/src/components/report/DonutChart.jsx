@@ -1,9 +1,6 @@
 import React from "react";
 import { PieChart, Pie, Tooltip, Cell, Legend } from "recharts";
 
-
-
-
 const DonutChartComponent = ({ data }) => {
   return (
     <PieChart width={180} height={150}>
@@ -31,8 +28,5 @@ const DonutChartComponent = ({ data }) => {
     </PieChart>
   );
 };
-
-
-
 
 export default DonutChartComponent;

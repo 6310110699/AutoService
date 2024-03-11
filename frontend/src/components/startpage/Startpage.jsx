@@ -4,7 +4,6 @@ import Modal from "react-bootstrap/Modal"; // Import Modal component
 import "./Startpage.scss";
 import '@fortawesome/fontawesome-free/css/all.css';
 
-
 const StartPage = () => {
   const [customers, setCustomers] = useState([]);
   const [services, setServices] = useState([]);
@@ -14,13 +13,11 @@ const StartPage = () => {
   const [searchResultsAll, setSearchResultsAll] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
-
   const handleSearch = async () => {
     if (searchQuery.length === 10) {
       try {
         const response = await axios.get(`https://autoservice-k7ez.onrender.com/repairs`);
         setCustomers(response.data);
-
 
         const updatedResultsWOEnd = response.data.filter(
           (customer) =>
@@ -29,14 +26,12 @@ const StartPage = () => {
         );
         setSearchResultsWOEnd(updatedResultsWOEnd);
 
-
         const updatedResults = response.data.filter(
           (customer) =>
             customer.customer.phoneNumber.includes(searchQuery) &&
             customer.status.state5
         );
         setSearchResults(updatedResults);
-
 
         const updatedResultsAll = response.data.filter((customer) =>
           customer.customer.phoneNumber.includes(searchQuery)
@@ -61,11 +56,9 @@ const StartPage = () => {
     return new Date(b.startdate) - new Date(a.startdate);
   });
 
-
   const sortedResults = searchResults.sort((a, b) => {
     return new Date(b.startdate) - new Date(a.startdate);
   });
-
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -73,16 +66,13 @@ const StartPage = () => {
     }
   };
 
-
   const handleShowModal = () => {
     setShowModal(true);
   };
 
-
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
 
   return (
     <div className="startpage">
@@ -99,14 +89,13 @@ const StartPage = () => {
         </span>
       </div>
 
-
       {searchResultsAll.length > 0 ? (
         <div>
           <div className="startpage-alldone-container">
             <div className="startpage-alldone-button">
-            <div className="startpage-alldone" onClick={handleShowModal}>
-              ประวัติการซ่อม  <i className="fas fa-history"></i>
-            </div></div>
+              <div className="startpage-alldone" onClick={handleShowModal}>
+                ประวัติการซ่อม  <i className="fas fa-history"></i>
+              </div></div>
             <Modal
               className="startpagemodal"
               show={showModal}
@@ -119,34 +108,31 @@ const StartPage = () => {
                 <Modal.Title>ประวัติการซ่อม</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                {/* Modal content */}
                 {sortedResults.map((customer, index) => (
                   <div className="status-history row" key={index}>
-                      <div className="status-detail-container">
-                        <div className="status-detail">
-                          <div className="status-detail1">{customer.car.brand} {customer.car.selectedModel}</div>
-                          <div className="status-detail2">{customer.car.color} {customer.car.numPlate}</div>
-                        </div>
-                        <div className="">
-                          รายการซ่อม :
-                          {customer.services.map((service, serviceIndex) => (
-                            <div className="status-repair" key={serviceIndex}>
-                              {service.serviceName}
-                            </div>
-                          ))}
-                        </div>
+                    <div className="status-detail-container">
+                      <div className="status-detail">
+                        <div className="status-detail1">{customer.car.brand} {customer.car.selectedModel}</div>
+                        <div className="status-detail2">{customer.car.color} {customer.car.numPlate}</div>
                       </div>
-                      <div className="status-date">
-                        <div>วันที่รับรถ {customer.startdate}</div>
-                        <div>วันที่ส่งมอบ {customer.enddate}</div>
+                      <div className="">
+                        รายการซ่อม :
+                        {customer.services.map((service, serviceIndex) => (
+                          <div className="status-repair" key={serviceIndex}>
+                            {service.serviceName}
+                          </div>
+                        ))}
                       </div>
+                    </div>
+                    <div className="status-date">
+                      <div>วันที่รับรถ {customer.startdate}</div>
+                      <div>วันที่ส่งมอบ {customer.enddate}</div>
+                    </div>
                   </div>
                 ))}
               </Modal.Body>
-              {/* <Modal.Footer></Modal.Footer> */}
             </Modal>
           </div>
-
 
           <div>
             {searchResultsWOEnd.length > 0 ? (
@@ -162,19 +148,16 @@ const StartPage = () => {
                       </div>
                     </div>
                   </div>
-                  {/* <div>วันที่รับรถ {customer.startdate}</div> */}
-
 
                   <div className="status-container">
                     <div className="row">
                       <div className="state">
                         <div className="status-image-container">
                           <div
-                            className={`state ${
-                              customer.status.state1
+                            className={`state ${customer.status.state1
                                 ? "status-active"
                                 : "status"
-                            }`}
+                              }`}
                           >
                             <div className="state-circle1"></div>
                             <div className="state-circle2">
@@ -186,11 +169,10 @@ const StartPage = () => {
                           <div className="state-label">รับรถ</div>
                           <div className="statebutton-container">
                             <div
-                              className={`state ${
-                                customer.status.state1
+                              className={`state ${customer.status.state1
                                   ? "button-true"
                                   : "button-false"
-                              }`}
+                                }`}
                             >
                               เรียบร้อย
                             </div>
@@ -200,11 +182,10 @@ const StartPage = () => {
                       <div className="state">
                         <div className="status-image-container">
                           <div
-                            className={`state ${
-                              customer.status.state2
+                            className={`state ${customer.status.state2
                                 ? "status-active"
                                 : "status"
-                            }`}
+                              }`}
                           >
                             <div className="state-circle1"></div>
                             <div className="state-circle2">
@@ -216,11 +197,10 @@ const StartPage = () => {
                           <div className="state-label">ตรวจสภาพรถ</div>
                           <div className="statebutton-container">
                             <div
-                              className={`state ${
-                                customer.status.state2
+                              className={`state ${customer.status.state2
                                   ? "button-true"
                                   : "button-false"
-                              }`}
+                                }`}
                             >
                               {customer.status.state2 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                             </div>
@@ -230,11 +210,10 @@ const StartPage = () => {
                       <div className="state">
                         <div className="status-image-container">
                           <div
-                            className={`state ${
-                              customer.status.state3
+                            className={`state ${customer.status.state3
                                 ? "status-active"
                                 : "status"
-                            }`}
+                              }`}
                           >
                             <div className="state-circle1"></div>
                             <div className="state-circle2">
@@ -246,11 +225,10 @@ const StartPage = () => {
                           <div className="state-label">หาอะไหล่</div>
                           <div className="statebutton-container">
                             <div
-                              className={`state ${
-                                customer.status.state3
+                              className={`state ${customer.status.state3
                                   ? "button-true"
                                   : "button-false"
-                              }`}
+                                }`}
                             >
                               {customer.status.state3 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                             </div>
@@ -260,11 +238,10 @@ const StartPage = () => {
                       <div className="state">
                         <div className="status-image-container">
                           <div
-                            className={`state ${
-                              customer.status.state4
+                            className={`state ${customer.status.state4
                                 ? "status-active"
                                 : "status"
-                            }`}
+                              }`}
                           >
                             <div className="state-circle1"></div>
                             <div className="state-circle2">
@@ -276,11 +253,10 @@ const StartPage = () => {
                           <div className="state-label">ดำเนินการซ่อม</div>
                           <div className="statebutton-container">
                             <div
-                              className={`state ${
-                                customer.status.state4
+                              className={`state ${customer.status.state4
                                   ? "button-true"
                                   : "button-false"
-                              }`}
+                                }`}
                             >
                               {customer.status.state4 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                             </div>
@@ -290,11 +266,10 @@ const StartPage = () => {
                       <div className="state">
                         <div className="status-image-container">
                           <div
-                            className={`state ${
-                              customer.status.state5
+                            className={`state ${customer.status.state5
                                 ? "status-active"
                                 : "status"
-                            }`}
+                              }`}
                           >
                             <div className="state-circle1"></div>
                             <div className="state-circle2">
@@ -306,11 +281,10 @@ const StartPage = () => {
                           <div className="state-label">ส่งมอบรถ</div>
                           <div className="statebutton-container">
                             <div
-                              className={`state ${
-                                customer.status.state5
+                              className={`state ${customer.status.state5
                                   ? "button-true"
                                   : "button-false"
-                              }`}
+                                }`}
                             >
                               {customer.status.state5 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                             </div>
@@ -346,6 +320,5 @@ const StartPage = () => {
     </div>
   );
 };
-
 
 export default StartPage;

@@ -73,32 +73,27 @@ const CarRegistration = () => {
             const selectedCustomers = customersData
                 .filter(customer => customer.car.numPlate === selectedNumPlate)
                 .sort((a, b) => {
-                    // ตรวจสอบว่า enddate มีค่าหรือไม่
                     const hasEndDateA = a.enddate !== null && a.enddate !== undefined;
                     const hasEndDateB = b.enddate !== null && b.enddate !== undefined;
-    
+
                     if (!hasEndDateA && !hasEndDateB) {
-                        // ถ้าทั้งคู่ไม่มี enddate ให้ไม่เปลี่ยนลำดับ
                         return 0;
                     } else if (!hasEndDateA) {
-                        // ถ้า a ไม่มี enddate และ b มี enddate ให้ a มาก่อน
                         return -1;
                     } else if (!hasEndDateB) {
-                        // ถ้า b ไม่มี enddate และ a มี enddate ให้ b มาก่อน
                         return 1;
                     } else {
-                        // ถ้าทั้งคู่มี enddate ให้เรียงลำดับตาม enddate
                         return new Date(b.enddate) - new Date(a.enddate);
                     }
                 });
-    
+
             if (selectedCustomers.length > 0) {
                 const selectedCustomer = selectedCustomers[0];
                 return selectedCustomer || null;
             } else {
                 return null;
             }
-    
+
         } catch (error) {
             console.error('Error loading customer data:', error);
         }

@@ -13,15 +13,13 @@ router.get('/', async (req, res) => {
   }
 });
 
-
 // สร้างใหม่
 router.post('/', async (req, res) => {
   try {
-    const { 
-      spareName, 
-      spareType, 
-      sparePrice, 
-      // compatibleCarModels 
+    const {
+      spareName,
+      spareType,
+      sparePrice,
     } = req.body;
 
     const existingSpare = await Spare.findOne({ spareName });
@@ -33,7 +31,6 @@ router.post('/', async (req, res) => {
       spareName,
       spareType,
       sparePrice,
-      // compatibleCarModels,
     });
     res.status(201).json(newSpare);
   } catch (error) {
@@ -45,11 +42,10 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { 
-      spareName, 
-      spareType, 
-      sparePrice, 
-      // compatibleCarModels 
+    const {
+      spareName,
+      spareType,
+      sparePrice,
     } = req.body;
 
     const existingSpare = await Spare.findOne({ $and: [{ _id: { $ne: id } }, { spareName }] });
@@ -64,7 +60,6 @@ router.put('/:id', async (req, res) => {
         spareName,
         spareType,
         sparePrice,
-        // compatibleCarModels,
       },
       { new: true, useFindAndModify: false }
     );

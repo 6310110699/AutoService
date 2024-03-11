@@ -11,7 +11,6 @@ import {
 } from "recharts";
 import "./Report.scss";
 
-
 function BarChartPerDay({ data1, data2, data3, data4 }) {
   const formattedData = Object.keys(data4).map((date) => ({
     date: date.split("-")[2],
@@ -19,7 +18,6 @@ function BarChartPerDay({ data1, data2, data3, data4 }) {
     data2: data2[date] || 0,
     data3: data3[date] || 0,
   }));
-
 
   return (
     <div>
@@ -31,9 +29,6 @@ function BarChartPerDay({ data1, data2, data3, data4 }) {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" tick={{ fontSize: 12 }} label={{ value: 'วันที่', position: 'insideRight', offset: -30, fontSize: 14 }} />
           <YAxis tick={{ fontSize: 12 }} label={{ value: 'จำนวน', angle: -90, position: 'insideLeft', fontSize: 14 }} />
-          {/* <XAxis dataKey="date" tick={{ fontSize: 14 }} />
-          <YAxis tick={{ fontSize: 14 }} /> */}
-
 
           <Tooltip />
           <Legend />
@@ -60,6 +55,5 @@ function BarChartPerDay({ data1, data2, data3, data4 }) {
     </div>
   );
 }
-
 
 export default BarChartPerDay;

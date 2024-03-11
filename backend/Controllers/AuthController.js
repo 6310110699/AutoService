@@ -16,12 +16,6 @@ const login = (req, res) => {
           }
           else if (isMatch) {
             const token = jwt.sign({ username: user.username }, secretKey);
-            // res.cookie("token", token, {
-            //   httpOnly: true,
-            //   sameSite: 'strict',
-            //   maxAge: 24 * 60 * 60 * 1000, // 1 วัน (หน่วยเป็นมิลลิวินาที)
-            //   // secure: true // หากทำงานบน HTTPS ควรเปิดใช้งานค่านี้
-            // });
             res.status(200).json({ message: "เข้าสู่ระบบสำเร็จ", token });
           }
           else {

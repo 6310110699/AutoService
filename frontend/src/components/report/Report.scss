@@ -1,6 +1,5 @@
 @import "../../assets/styles";
 
-
 .report {
   width: 100%;
   overflow: hidden;
@@ -14,7 +13,6 @@
   margin-top: 20px;
 }
 
-
 .report-head {
   width: 17vw;
   background-color: $fifth-color;
@@ -25,14 +23,12 @@
   text-align: center;
 }
 
-
 .report-filter {
   margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.2vw;
-
 
   .report-daily {
     width: 10vw;
@@ -44,11 +40,11 @@
     background-color: $nineth-color;
     display: inline-block;
     cursor: pointer;
+
     &.active {
       background-color: $fifth-color;
     }
   }
-
 
   .report-weekly {
     width: 10vw;
@@ -60,11 +56,11 @@
     background-color: $nineth-color;
     display: inline-block;
     cursor: pointer;
+
     &.active {
       background-color: $fifth-color;
     }
   }
-
 
   .report-monthly {
     width: 10vw;
@@ -76,11 +72,11 @@
     background-color: $nineth-color;
     display: inline-block;
     cursor: pointer;
+
     &.active {
       background-color: $fifth-color;
     }
   }
-
 
   .report-yearly {
     width: 10vw;
@@ -92,12 +88,12 @@
     background-color: $nineth-color;
     display: inline-block;
     cursor: pointer;
+
     &.active {
       background-color: $fifth-color;
     }
   }
 }
-
 
 .report-filtered-input {
   display: flex;
@@ -106,19 +102,18 @@
   margin-top: 25px;
 }
 
-
 .previous-arrow {
   width: 1.3vw;
   height: 1.3vw;
   margin-right: 6vw;
   margin-top: -8px;
   cursor: pointer;
+
   img {
     width: 100%;
     height: 100%;
   }
 }
-
 
 .next-arrow {
   width: 1.3vw;
@@ -126,12 +121,12 @@
   margin-left: 6vw;
   margin-top: -8px;
   cursor: pointer;
+
   img {
     width: 100%;
     height: 100%;
   }
 }
-
 
 .row {
   margin-left: auto;
@@ -139,12 +134,10 @@
   padding: 0.1vw 20px;
 }
 
-
 .col-container {
   width: 50%;
   padding: 0px;
 }
-
 
 .in-col-container {
   margin: 30px 15px;
@@ -154,13 +147,13 @@
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-
 .title {
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.05vw;
 }
+
 .car-container {
   display: flex;
   justify-content: center;
@@ -169,7 +162,6 @@
   margin-bottom: 35px;
 }
 
-
 .carWstart {
   font-size: 1.1vw;
   font-weight: 500;
@@ -177,7 +169,6 @@
   padding: 15px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
-
 
 .carWend {
   font-size: 1.1vw;
@@ -188,7 +179,6 @@
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
-
 .carWOend {
   font-size: 1.1vw;
   font-weight: 500;
@@ -198,7 +188,6 @@
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
-
 .total-flex {
   height: 110px;
   display: flex;
@@ -206,7 +195,6 @@
   text-align: center;
   align-self: center;
 }
-
 
 .totalcost {
   font-size: 1.1vw;
@@ -220,7 +208,6 @@
   align-items: center;
   align-self: center;
 }
-
 
 .totalspare {
   font-size: 1.1vw;
@@ -236,7 +223,6 @@
   align-self: center;
 }
 
-
 .totalfee {
   font-size: 1.1vw;
   font-weight: 500;
@@ -251,7 +237,6 @@
   align-self: center;
 }
 
-
 .donut {
   margin-left: 15px;
   margin-top: -50px;
@@ -261,13 +246,11 @@
   align-self: center;
 }
 
-
 .table-container {
   margin-top: 15px;
   height: 350px;
   overflow-y: scroll;
 }
-
 
 .reportrepair-table-container {
   width: 96%;
@@ -275,11 +258,9 @@
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   margin: 10px 15px;
 
-
   .reportrepair-table {
     width: 100%;
     font-size: 1.1vw;
-
 
     th {
       text-align: center;
@@ -289,22 +270,18 @@
       padding: 10px;
     }
 
-
     td {
       border: 1px solid black;
       background-color: $fourteenth-color;
     }
-
 
     td:last-child {
       width: 20%;
       text-align: center;
     }
 
-
     .reportrepair-subrow {
       width: 100%;
-
 
       td {
         border-top: none;
@@ -312,12 +289,10 @@
         background-color: $second-color;
       }
 
-
       td:first-child {
         padding-left: 50px;
         text-align: left;
       }
-
 
       td:last-child {
         border-right: none;
@@ -326,13 +301,11 @@
       }
     }
 
-
     img {
       width: 30px;
     }
   }
 }
-
 
 .reportmechanic-table-container {
   width: 96%;
@@ -340,11 +313,9 @@
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   margin: 10px 15px;
 
-
   .reportmechanic-table {
     width: 100%;
     font-size: 1.1vw;
-
 
     th {
       text-align: center;
@@ -354,29 +325,24 @@
       padding: 10px;
     }
 
-
     td {
       border: 1px solid black;
       background-color: $fourteenth-color;
       width: 50%;
     }
 
-
     td:first-child {
       width: 30%;
       text-align: center;
     }
-
 
     td:last-child {
       width: 20%;
       text-align: center;
     }
 
-
     .reportmechanic-subrow {
       width: 100%;
-
 
       td {
         border-bottom: none;
@@ -386,13 +352,11 @@
         text-align: left;
       }
 
-
       td:last-child {
         border-left: 1px solid black;
         text-align: center;
       }
     }
-
 
     img {
       width: 30px;
@@ -400,20 +364,18 @@
   }
 }
 
-
 .recharts-legend-item-text {
   font-size: 1.1vw;
 }
 
-
 @media only screen and (max-width: 1440px) {
+
   .title,
   .reportrepair-table-container .reportrepair-table,
   .reportmechanic-table-container .reportmechanic-table,
   .recharts-legend-item-text {
     font-size: 15.5px;
   }
-
 
   .carWstart,
   .carWend,
@@ -425,7 +387,6 @@
   }
 }
 
-
 @media only screen and (max-width: 1280px) {
   .report-head {
     width: 220px;
@@ -433,10 +394,8 @@
     font-size: 20px;
   }
 
-
   .report-filter {
     font-size: 15.5px;
-
 
     .report-daily,
     .report-weekly,
@@ -446,18 +405,15 @@
     }
   }
 
-
   .previous-arrow {
     width: 17px;
     height: 17px;
   }
 
-
   .next-arrow {
     width: 17px;
     height: 17px;
   }
-
 
   .col-container {
     width: 90%;
@@ -465,17 +421,14 @@
     margin-right: auto;
   }
 
-
   .title {
     font-size: 15px;
   }
-
 
   .car-container {
     margin-top: 15px;
     margin-bottom: 20px;
   }
-
 
   .carWstart,
   .carWend,
@@ -486,25 +439,23 @@
     font-size: 15px;
   }
 
-
   .bar-container {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
   }
+
   .reportrepair-table-container .reportrepair-table,
   .reportmechanic-table-container .reportmechanic-table,
   .recharts-legend-item-text {
     font-size: 14px;
   }
 
-
   .reportrepair-table-container .reportrepair-table {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
   }
-
 
   .reportmechanic-table-container .reportmechanic-table {
     width: 90%;

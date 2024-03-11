@@ -68,7 +68,7 @@ const Receipt = () => {
                 }
                 content={() => componentRef.current}
             />
-            
+
             <div className='receipt-paper' ref={componentRef}>
                 <div className='receipt-title'>ใบเรียกเก็บเงิน</div>
 
@@ -138,9 +138,7 @@ const Receipt = () => {
                 </div>
             </div>
         </div>
-
     );
-
 };
 
 export default Receipt;

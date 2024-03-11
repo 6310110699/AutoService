@@ -12,7 +12,6 @@ import {
 import moment from 'moment';
 import "./Report.scss";
 
-
 function BarChartPerMonth({ data1, data2, data3, allMonths, width = "100%", height = 300 }) {
   const data = allMonths.map((date) => ({
     month: moment(date).format("MMM"),
@@ -20,7 +19,6 @@ function BarChartPerMonth({ data1, data2, data3, allMonths, width = "100%", heig
     data2: data2.data[date] || 0,
     data3: data3.data[date] || 0,
   }));
-
 
   return (
     <div>
@@ -45,6 +43,5 @@ function BarChartPerMonth({ data1, data2, data3, allMonths, width = "100%", heig
     </div>
   );
 }
-
 
 export default BarChartPerMonth;

@@ -1,10 +1,10 @@
 @import '../../../assets/styles';
 
-.spare-management{
+.spare-management {
 
     .sparemanagement-data {
         margin: 2.3vw 6.55vw;
-    
+
         .search-title {
             font-size: 1.45vw;
             font-weight: 600;
@@ -16,7 +16,7 @@
             }
         }
 
-        .input-search{
+        .input-search {
             input {
                 margin: 0.65vw 0vw;
                 width: 39.25vw;
@@ -44,10 +44,10 @@
 
         @media only screen and (max-width: 960px) {
             .input-search {
-               width: 81.5%;
+                width: 81.5%;
             }
         }
-    
+
         .add-button {
             display: flex;
             justify-content: center;
@@ -86,7 +86,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-    
+
             th {
                 background-color: $fourth-color;
                 padding: 1vw;
@@ -111,7 +111,7 @@
                 width: 40%;
                 text-align: center;
             }
-    
+
             th:last-child {
                 width: 20%;
                 text-align: center;
@@ -122,7 +122,7 @@
                     width: 25%;
                 }
             }
-    
+
             td {
                 font-size: 1.2vw;
                 border-bottom: 1px solid $nineth-color;
@@ -146,7 +146,7 @@
                 text-align: left;
                 padding: 1vw 1vw 1vw 3vw;
             }
-    
+
             td:last-child {
                 text-align: center;
 
@@ -169,7 +169,7 @@
                         border-radius: 3px;
                     }
                 }
-            
+
                 .delete-button {
                     width: 4.6vw;
                     margin-right: 0.35vw;
@@ -198,13 +198,13 @@
     .modal-lg {
         --bs-modal-width: 55vw;
     }
-    
+
     @media only screen and (max-width: 1024px) {
         .modal-lg {
             --bs-modal-width: 563px;
         }
     }
-    
+
     .modal-title {
         font-size: 1.5vw;
         margin-left: 0.65vw;

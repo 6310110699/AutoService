@@ -5,11 +5,11 @@
   .modal-xl {
     --bs-modal-width: 75vw;
   }
+
   .status-header-container {
     display: flex;
     justify-content: center;
     margin: 1.4vw;
-
 
     .status-header {
       text-align: center;
@@ -21,15 +21,14 @@
     }
   }
 
-
   .status-container {
     .row {
       padding: 0 0;
     }
+
     .col-2 {
       width: 20%;
     }
-
 
     .status {
       width: 100%;
@@ -37,7 +36,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-
 
       .state-circle1 {
         width: 11vw;
@@ -47,7 +45,6 @@
         position: absolute;
       }
 
-
       .state-circle2 {
         width: 8.6vw;
         height: 8.6vw;
@@ -56,7 +53,6 @@
         margin: 20px;
         position: absolute;
 
-
         img {
           width: 6.25vw;
           margin: 1.175vw;
@@ -64,14 +60,12 @@
       }
     }
 
-
     .status-active {
       width: 100%;
       height: 12.5vw;
       display: flex;
       justify-content: center;
       align-items: center;
-
 
       .state-circle1 {
         width: 11vw;
@@ -81,7 +75,6 @@
         position: absolute;
       }
 
-
       .state-circle2 {
         width: 8.6vw;
         height: 8.6vw;
@@ -90,14 +83,12 @@
         margin: 20px;
         position: absolute;
 
-
         img {
           width: 6.25vw;
           margin: 1.175vw;
         }
       }
     }
-
 
     .state-label {
       text-align: center;
@@ -106,12 +97,10 @@
       margin-top: 0.7vw;
     }
 
-
     .statebutton-container {
       display: flex;
       justify-content: center;
       margin-top: 0.8vw;
-
 
       .button-true {
         background-color: $sixth-color;
@@ -123,7 +112,6 @@
         font-weight: 500;
         cursor: pointer;
       }
-
 
       .button-false {
         background-color: $seventh-color;
@@ -138,10 +126,8 @@
     }
   }
 
-
   .modal-footer {
     justify-content: center;
-
 
     .button-no {
       width: 7.8vw;
@@ -155,7 +141,6 @@
       display: inline-block;
       cursor: pointer;
     }
-
 
     .button-yes {
       width: 7.8vw;
@@ -171,7 +156,6 @@
     }
   }
 
-
   .status-price-container {
     display: flex;
     justify-content: center;
@@ -180,19 +164,21 @@
     margin-bottom: 0.4vw;
   }
 
-
   @media only screen and (max-width: 1280px) {
     .status-header-container {
       margin: 18px;
+
       .status-header {
         padding: 10px 35px;
         font-size: 19.2px;
       }
     }
+
     .status-container {
       .state-label {
         font-size: 17px;
       }
+
       .statebutton-container {
         margin-top: 10px;
 
@@ -204,7 +190,9 @@
         }
       }
     }
+
     .modal-footer {
+
       .button-no,
       .button-yes {
         width: 100px;
@@ -213,22 +201,27 @@
         font-size: 15.5px;
       }
     }
+
     .status-price-container {
       font-size: 23px;
       margin-top: 13px;
       margin-bottom: 5px;
     }
   }
+
   @media only screen and (max-width: 1024px) {
     .status-container {
       margin: 0 0 12px 0;
+
       .status {
         height: 128px;
+
         .state-circle1 {
           width: 115px;
           height: 115px;
           border: 3.6px solid #c2c1c1;
         }
+
         .state-circle2 {
           width: 90px;
           height: 90px;
@@ -240,13 +233,16 @@
           }
         }
       }
+
       .status-active {
         height: 128px;
+
         .state-circle1 {
           width: 115px;
           height: 115px;
           border: 3.6px solid $third-color;
         }
+
         .state-circle2 {
           width: 90px;
           height: 90px;
@@ -260,6 +256,7 @@
       }
     }
   }
+
   @media only screen and (max-width: 960px) {
     .modal-xl {
       --bs-modal-width: 720px;

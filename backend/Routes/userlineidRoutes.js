@@ -4,7 +4,6 @@ const UserLineId = require('../models/UserLineId')
 const line = require('@line/bot-sdk');
 require('dotenv').config();
 
-// ในส่วนของ middleware หรือส่วนที่ใช้สร้าง client สำหรับการใช้งาน LINE Messaging API
 const config = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
 };
@@ -17,10 +16,9 @@ router.post('/', async (req, res) => {
             const userId = event.source.userId;
             const messageText = event.message.text;
 
-            // ตรวจสอบว่าข้อความมีคำว่า "lineid" ข้างหน้าหรือไม่
             if (messageText.toLowerCase().startsWith('lineid ')) {
-                const lineId = messageText.substring(7); // ตัดคำว่า "lineid" ทิ้ง เพื่อเก็บข้อมูลที่เหลือ
-                // เพิ่มข้อมูล Line ID ลงในฐานข้อมูล เช่น MongoDB
+                const lineId = messageText.substring(7);
+
                 await addOrUpdateLineIdToDatabase(userId, lineId);
 
                 await client.replyMessage(event.replyToken, [
@@ -42,18 +40,15 @@ router.post('/', async (req, res) => {
 // ฟังก์ชันสำหรับการเพิ่มข้อมูล Line ID ลงในฐานข้อมูล
 async function addOrUpdateLineIdToDatabase(userId, lineId) {
     try {
-        // ตรวจสอบว่า userId นี้มีอยู่ในฐานข้อมูลหรือไม่
         const existingUser = await UserLineId.findOne({ userId: userId });
 
         if (existingUser) {
-            // ถ้า userId มีอยู่แล้วในฐานข้อมูล ให้ทำการอัปเดต lineIdData
             const updatedResult = await UserLineId.updateOne(
                 { userId: userId },
                 { $set: { lineId: lineId } }
             );
             console.log('Line ID updated in MongoDB:', updatedResult.modifiedCount);
         } else {
-            // ถ้า userId ยังไม่มีอยู่ในฐานข้อมูล ให้ทำการเพิ่ม userId และ lineIdData
             const newUserLineId = await UserLineId.create({
                 userId,
                 lineId,
@@ -61,7 +56,6 @@ async function addOrUpdateLineIdToDatabase(userId, lineId) {
         }
     } catch (error) {
         console.error('Error adding/updating Line ID to MongoDB:', error);
-        // throw error;
     }
 }
 

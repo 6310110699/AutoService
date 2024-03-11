@@ -32,7 +32,6 @@ const BrandModelManagement = () => {
         });
     };
 
-    // นำฟังก์ชัน sortByBrand มาใช้กับข้อมูลที่ต้องการเรียง
     const sortedBrandModels = sortByBrand(filteredBrandModels);
 
     useEffect(() => {

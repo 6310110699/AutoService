@@ -4,15 +4,14 @@ const Color = require('../models/color');
 
 // To Get List Of Spares
 router.get('/', async (req, res) => {
-    try {
-      const Colors = await Color.find();
-      res.json(Colors);
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลสีรถ:', error);
-      res.status(500).json({ message: 'เกิดข้อผิดพลาดในการโหลดข้อมูลสีรถ' });
-    }
-  });
-  
+  try {
+    const Colors = await Color.find();
+    res.json(Colors);
+  } catch (error) {
+    console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลสีรถ:', error);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการโหลดข้อมูลสีรถ' });
+  }
+});
 
 // สร้างใหม่
 router.post('/', async (req, res) => {
@@ -32,6 +31,5 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการเพิ่มสี' });
   }
 });
-
 
 module.exports = router;

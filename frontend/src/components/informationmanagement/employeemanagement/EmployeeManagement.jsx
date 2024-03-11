@@ -36,7 +36,6 @@ const EmployeeManagement = () => {
         });
     };
 
-    // นำฟังก์ชัน sortByBrand มาใช้กับข้อมูลที่ต้องการเรียง
     const sortedEmployees = sortByEmployee(filteredEmployees);
 
     useEffect(() => {
@@ -107,7 +106,7 @@ const EmployeeManagement = () => {
             setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูลพนักงาน');
             return;
         }
-        
+
         try {
             await axios.put(`https://autoservice-k7ez.onrender.com/employees/${id}`, {
                 name,

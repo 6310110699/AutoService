@@ -44,7 +44,7 @@
 
         @media only screen and (max-width: 960px) {
             .input-search {
-               width: 81.5%;
+                width: 81.5%;
             }
         }
 
@@ -197,13 +197,13 @@
     .modal-lg {
         --bs-modal-width: 55vw;
     }
-    
+
     @media only screen and (max-width: 1024px) {
         .modal-lg {
             --bs-modal-width: 563px;
         }
     }
-    
+
     .modal-title {
         font-size: 1.5vw;
         margin-left: 0.65vw;

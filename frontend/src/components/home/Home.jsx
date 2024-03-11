@@ -933,7 +933,6 @@ const Repair = () => {
         handleUpdateStatus={handleUpdateStatus}
         editingCustomerId={editingCustomerId}
       />
-
     </div>
   );
 };

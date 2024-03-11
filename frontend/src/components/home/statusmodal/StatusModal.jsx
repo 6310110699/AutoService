@@ -81,7 +81,6 @@ const StatusModal = ({
                   {state2 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                 </div>
               </div>
-
             </div>
             <div className="state col col-2">
               <div className={`state ${state3 ? "status-active" : "status"}`}>

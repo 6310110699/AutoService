@@ -4,15 +4,14 @@ const BrandModel = require('../models/BrandModel');
 
 // To Get List Of Spares
 router.get('/', async (req, res) => {
-    try {
-      const BrandModels = await BrandModel.find();
-      res.json(BrandModels);
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลรุ่นรถ:', error);
-      res.status(500).json({ message: 'เกิดข้อผิดพลาดในการโหลดข้อมูลรุ่นรถ' });
-    }
-  });
-  
+  try {
+    const BrandModels = await BrandModel.find();
+    res.json(BrandModels);
+  } catch (error) {
+    console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลรุ่นรถ:', error);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการโหลดข้อมูลรุ่นรถ' });
+  }
+});
 
 // สร้างใหม่
 router.post('/', async (req, res) => {
@@ -50,7 +49,7 @@ router.put('/:id', async (req, res) => {
       id,
       {
         model,
-      brand,
+        brand,
       },
       { new: true, useFindAndModify: false }
     );

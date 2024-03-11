@@ -53,7 +53,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-
 // แก้ไขข้อมูลรถ
 router.put('/:id', async (req, res) => {
   try {
@@ -64,7 +63,7 @@ router.put('/:id', async (req, res) => {
       services, serviceFee, totalCost, mechanics, startdate, enddate,
       state1, state2, state3, state4, state5
     } = req.body;
-    
+
     const updatedCustomer = await Customer.findByIdAndUpdate(
       id,
       {

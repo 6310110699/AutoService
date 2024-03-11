@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Service = require('../models/Service');
- 
+
 router.get('/', async (req, res) => {
   try {
     const services = await Service.find();
@@ -14,9 +14,8 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { 
-      serviceName, 
-      // spares 
+    const {
+      serviceName,
     } = req.body;
 
     const existingService = await Service.findOne({ serviceName });
@@ -27,7 +26,6 @@ router.post('/', async (req, res) => {
 
     const newService = await Service.create({
       serviceName,
-      // spares,
     });
 
     res.status(201).json(newService);
@@ -40,9 +38,8 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { 
-      serviceName, 
-      // spares 
+    const {
+      serviceName,
     } = req.body;
 
     const existingService = await Service.findOne({ $and: [{ _id: { $ne: id } }, { serviceName }] });
@@ -55,7 +52,6 @@ router.put('/:id', async (req, res) => {
       id,
       {
         serviceName,
-        // spares,
       },
       { new: true, useFindAndModify: false }
     );

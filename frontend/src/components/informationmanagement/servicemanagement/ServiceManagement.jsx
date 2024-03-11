@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// import Select from 'react-select';
 import './ServiceManagement.scss';
 import Modal from 'react-bootstrap/Modal';
 
 const ServiceManagement = () => {
   const [services, setServices] = useState([]);
   const [serviceName, setServiceName] = useState('');
-  // const [selectedSpares, setSelectedSpares] = useState([]);
-  // const [spares, setSpares] = useState([]);
-  // const [sparesByCategory, setSparesByCategory] = useState([]);
-  // const [sparePrices, setSparePrices] = useState({});
 
   const [editingServiceId, setEditingServiceId] = useState(null);
   const [message, setMessage] = useState('');
@@ -31,13 +26,10 @@ const ServiceManagement = () => {
     });
   };
 
-  // นำฟังก์ชัน sortByBrand มาใช้กับข้อมูลที่ต้องการเรียง
   const sortedServices = sortByService(filteredServices);
 
   useEffect(() => {
     loadServices();
-    // loadSpares();
-    // loadSparePrices();
   }, []);
 
   const loadServices = async () => {
@@ -51,55 +43,10 @@ const ServiceManagement = () => {
     }
   };
 
-  // const loadSpares = async () => {
-  //   try {
-  //     const response = await axios.get('https://autoservice-k7ez.onrender.com/spares');
-  //     const sparesData = response.data;
-
-  //     // Group spares by category
-  //     const sparesGroupedByCategory = {};
-  //     sparesData.forEach((spare) => {
-  //       if (!sparesGroupedByCategory[spare.spareType]) {
-  //         sparesGroupedByCategory[spare.spareType] = [];
-  //       }
-  //       sparesGroupedByCategory[spare.spareType].push(spare);
-  //     });
-
-  //     // Convert the grouped data into an array
-  //     const sparesByCategory = Object.keys(sparesGroupedByCategory).map((spareType) => ({
-  //       categoryName: spareType,
-  //       spares: sparesGroupedByCategory[spareType],
-  //     }));
-
-  //     setSparesByCategory(sparesByCategory);
-  //     setSpares(response.data);
-  //     setMessage('');
-  //   } catch (error) {
-  //     console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลอะไหล่:', error);
-  //     setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลอะไหล่');
-  //   }
-  // };
-
-  // const loadSparePrices = async () => {
-  //   try {
-  //     const response = await axios.get('https://autoservice-k7ez.onrender.com/spares');
-  //     const prices = {};
-  //     response.data.forEach((spare) => {
-  //       prices[spare._id] = spare.sparePrice;
-  //     });
-  //     setSparePrices(prices);
-  //     setMessage('');
-  //   } catch (error) {
-  //     console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลราคาอะไหล่:', error);
-  //     setMessage('เกิดข้อผิดพลาดในการดึงข้อมูลราคาอะไหล่');
-  //   }
-  // };
-
   const handleAddService = (service) => {
     setShowAddEditServiceModal(true);
 
     setServiceName(service.serviceName);
-    // setSelectedModels(spare.compatibleCarModels);
     setEditingServiceId(service._id);
   };
 
@@ -112,7 +59,6 @@ const ServiceManagement = () => {
     try {
       await axios.post('https://autoservice-k7ez.onrender.com/services', {
         serviceName,
-        // spares: selectedSpares,
       });
 
       setShowAddEditServiceModal(false);
@@ -127,7 +73,6 @@ const ServiceManagement = () => {
   const handleEditService = (service) => {
     setShowAddEditServiceModal(true);
     setServiceName(service.serviceName);
-    // setSelectedSpares(service.spares);
     setEditingServiceId(service._id);
   };
 
@@ -140,7 +85,6 @@ const ServiceManagement = () => {
     try {
       await axios.put(`https://autoservice-k7ez.onrender.com/services/${editingServiceId}`, {
         serviceName,
-        // spares: selectedSpares,
       });
 
       setShowAddEditServiceModal(false);
@@ -165,7 +109,6 @@ const ServiceManagement = () => {
 
   const clearForm = () => {
     setServiceName('');
-    // setSelectedSpares([]);
     setEditingServiceId(null);
     setMessage('');
   };
@@ -202,8 +145,6 @@ const ServiceManagement = () => {
           <thead>
             <tr>
               <th>ชื่อบริการ</th>
-              {/* <th>อะไหล่ที่ใช้ในบริการ</th>
-              <th>ราคา</th> */}
               <th>การดำเนินการ</th>
             </tr>
           </thead>
@@ -211,26 +152,6 @@ const ServiceManagement = () => {
             {sortedServices.map((service) => (
               <tr key={service._id}>
                 <td>{service.serviceName}</td>
-                {/* <td>
-                  {service.spares.map((spareId) => {
-                    const spare = spares.find((spare) => spare._id === spareId);
-                    return (
-                      <div key={spareId}>
-                        {spare ? `${spare.spareName}` : 'อะไหล่ไม่ถูกพบ'}
-                      </div>
-                    );
-                  })}
-                </td>
-                <td>
-                  {service.spares.map((spareId) => {
-                    const sparePrice = sparePrices[spareId];
-                    return (
-                      <div key={spareId}>
-                        {sparePrice ? `${sparePrice} บาท` : '-'}
-                      </div>
-                    );
-                  })}
-                </td> */}
                 <td>
                   <div className='edit-button' onClick={() => handleEditService(service)}>แก้ไข</div>
                   <div className='delete-button' onClick={() => handleDeleteService(service._id)}>ลบ</div>
@@ -266,44 +187,6 @@ const ServiceManagement = () => {
             value={serviceName}
             onChange={(e) => setServiceName(e.target.value)}
           />
-          {/* <label>อะไหล่ที่ใช้ในบริการ:</label>
-        <Select
-          isMulti
-          styles={{
-            groupHeading: (defaultStyles) => ({
-              ...defaultStyles,
-              fontSize: "20px"
-            }),
-
-            option: (defaultStyles, state) => ({
-              ...defaultStyles,
-              fontSize: "18px"
-            }),
-
-            control: (defaultStyles) => ({
-              ...defaultStyles,
-              padding: "5px",
-              borderRadius: "8px",
-              fontSize: "20px"
-            }),
-          }}
-          value={selectedSpares.map((spareId) => ({
-            value: spareId,
-            label: spares.find((spare) => spare._id === spareId)?.spareName || 'อะไหล่ไม่ถูกพบ',
-          }))}
-          options={sparesByCategory.flatMap((category) => [
-            {
-              label: category.categoryName,
-              options: category.spares.map((spare) => ({
-                value: spare._id,
-                label: spare.spareName,
-              })),
-            },
-          ])}
-          onChange={(selectedOptions) =>
-            setSelectedSpares(selectedOptions.map((option) => option.value))
-          }
-        /> */}
 
           {message &&
             <div className='error-form'>
