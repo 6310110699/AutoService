@@ -78,7 +78,7 @@ const StatusModal = ({
                   }}
                   className={state2 ? "button-true" : "button-false"}
                 >
-                  เรียบร้อย
+                  {state2 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                 </div>
               </div>
 
@@ -105,7 +105,7 @@ const StatusModal = ({
                   }}
                   className={state3 ? "button-true" : "button-false"}
                 >
-                  เรียบร้อย
+                  {state3 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                 </div>
               </div>
             </div>
@@ -130,7 +130,7 @@ const StatusModal = ({
                   }}
                   className={state4 ? "button-true" : "button-false"}
                 >
-                  เรียบร้อย
+                  {state4 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                 </div>
               </div>
             </div>
@@ -151,7 +151,7 @@ const StatusModal = ({
                   }}
                   className={state5 ? "button-true" : "button-false"}
                 >
-                  เรียบร้อย
+                  {state5 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                 </div>
               </div>
             </div>

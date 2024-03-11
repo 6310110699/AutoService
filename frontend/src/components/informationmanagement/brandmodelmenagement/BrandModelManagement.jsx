@@ -59,6 +59,11 @@ const BrandModelManagement = () => {
     };
 
     const handlePushBrandModel = async () => {
+        if (!model || !model.trim() || !brand || !brand.trim()) {
+            setMessage('เกิดข้อผิดพลาดในการเพิ่มข้อมูลรุ่นและยี่ห้อรถ');
+            return;
+        }
+
         try {
             await axios.post('https://autoservice-k7ez.onrender.com/brandmodels', {
                 model,
@@ -69,7 +74,7 @@ const BrandModelManagement = () => {
             loadBrandModels();
             clearForm();
         } catch (error) {
-            console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลรุ่นรถ:', error);
+            console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลรุ่นและยี่ห้อรถ:', error);
             setMessage(error.response.data.message);
         }
     };
@@ -82,6 +87,11 @@ const BrandModelManagement = () => {
     };
 
     const handleUpdateBrandModel = async (id) => {
+        if (!model.trim() || !brand.trim()) {
+            setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูลรุ่นรถ');
+            return;
+        }
+
         try {
             await axios.put(`https://autoservice-k7ez.onrender.com/brandmodels/${id}`, {
                 model,
@@ -92,7 +102,7 @@ const BrandModelManagement = () => {
             loadBrandModels();
             clearForm();
         } catch (error) {
-            console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูลรุ่นรถ:', error);
+            console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูลรุ่นและยี่ห้อรถ:', error);
             setMessage(error.response.data.message);
         }
     };
@@ -103,7 +113,7 @@ const BrandModelManagement = () => {
             loadBrandModels();
             setMessage(error.response.data.message);
         } catch (error) {
-            console.error('เกิดข้อผิดพลาดในการลบข้อมูลรุ่นรถ:', error);
+            console.error('เกิดข้อผิดพลาดในการลบข้อมูลรุ่นและยี่ห้อรถ:', error);
             setMessage(error.response.data.message);
         }
     };
@@ -192,14 +202,18 @@ const BrandModelManagement = () => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <label>รุ่นรถ:</label>
+                    <label>
+                        รุ่นรถ: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                    </label>
                     <input
                         type="text"
                         class="form-control"
                         value={model}
                         onChange={(e) => setModel(e.target.value)}
                     />
-                    <label>ยี่ห้อ:</label>
+                    <label>
+                        ยี่ห้อ: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                    </label>
                     <input
                         type="text"
                         class="form-control"

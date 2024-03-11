@@ -29,10 +29,10 @@ function BarChartPerDay({ data1, data2, data3, data4 }) {
           margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          {/* <XAxis dataKey="date" tick={{ fontSize: 12 }} label={{ value: 'วันที่', position: 'insideBottom', offset: 0, fontSize: 14 }} /> */}
-          {/* <YAxis tick={{ fontSize: 12 }} label={{ value: 'จำนวน', angle: -90, position: 'insideLeft', fontSize: 14 }} /> */}
-          <XAxis dataKey="date" tick={{ fontSize: 14 }} />
-          <YAxis tick={{ fontSize: 14 }} />
+          <XAxis dataKey="date" tick={{ fontSize: 12 }} label={{ value: 'วันที่', position: 'insideRight', offset: -30, fontSize: 14 }} />
+          <YAxis tick={{ fontSize: 12 }} label={{ value: 'จำนวน', angle: -90, position: 'insideLeft', fontSize: 14 }} />
+          {/* <XAxis dataKey="date" tick={{ fontSize: 14 }} />
+          <YAxis tick={{ fontSize: 14 }} /> */}
 
 
           <Tooltip />

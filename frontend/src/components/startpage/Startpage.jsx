@@ -222,7 +222,7 @@ const StartPage = () => {
                                   : "button-false"
                               }`}
                             >
-                              เรียบร้อย
+                              {customer.status.state2 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                             </div>
                           </div>
                         </div>
@@ -252,7 +252,7 @@ const StartPage = () => {
                                   : "button-false"
                               }`}
                             >
-                              เรียบร้อย
+                              {customer.status.state3 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                             </div>
                           </div>
                         </div>
@@ -282,7 +282,7 @@ const StartPage = () => {
                                   : "button-false"
                               }`}
                             >
-                              เรียบร้อย
+                              {customer.status.state4 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                             </div>
                           </div>
                         </div>
@@ -312,7 +312,7 @@ const StartPage = () => {
                                   : "button-false"
                               }`}
                             >
-                              เรียบร้อย
+                              {customer.status.state5 ? "เรียบร้อย" : "ไม่เรียบร้อย"}
                             </div>
                           </div>
                         </div>

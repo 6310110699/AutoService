@@ -2,8 +2,10 @@
 
 .home-container {
   .car-searchbox {
+    display: flex;
+    justify-content: flex-end;
+
     input {
-      float: right;
       width: 26vw;
       height: 3.3vw;
       font-size: 1.3vw;
@@ -30,48 +32,55 @@
     }
   }
 
-  .repair-title-container {
-    margin-top: 4.8vw;
-    width: 30vw;
-    height: 4vw;
-    background-color: $sixth-color;
-    border-radius: 0 2vw 2vw 0;
-    display: inline-block;
+  .row {
+    padding: 0px;
 
-    .repair-title {
+    .repair-title-container {
+      padding: 0px;
+
+      .repair-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30vw;
+        height: 4vw;
+        border-radius: 0 2vw 2vw 0;
+        color: $second-color;
+        background-color: $sixth-color;
+        letter-spacing: 1px;
+        font-size: 2vw;
+        font-family: $font-family1;
+      }
+
+      @media only screen and (max-width: 1280px) {
+        .repair-title {
+          width: 384px;
+          height: 51px;
+          font-size: 26px;
+        }
+      }
+
+      @media only screen and (max-width: 800px) {
+        .repair-title {
+          width: 350px;
+        }
+      }
+    }
+
+    .carregis-result {
       display: flex;
+      justify-content: end;
       align-items: center;
-      justify-content: center;
-      height: 100%;
-      color: $second-color;
-      letter-spacing: 1px;
-      font-size: 2vw;
-      font-family: $font-family1;
+      font-size: 1.3vw;
+      font-weight: 600;
+      padding: 0px 2vw;
     }
 
     @media only screen and (max-width: 1280px) {
-      .repair-title {
-        font-size: 26px;
+      .carregis-result {
+        font-size: 17px;
+        padding: 0px 26px;
       }
-    }
-  }
-
-  @media only screen and (max-width: 1280px) {
-    .repair-title-container {
-      width: 384px;
-      height: 51px;
-    }
-  }
-
-  @media only screen and (max-width: 960px) {
-    .repair-title-container {
-      margin-top: 70px;
-    }
-  }
-
-  @media only screen and (max-width: 800px) {
-    .repair-title-container {
-      width: 350px;
     }
   }
 
@@ -264,6 +273,7 @@
     letter-spacing: 1px;
     border-radius: 2vw;
     margin-left: 6.5vw;
+    margin-bottom: 20px;
     text-decoration: none;
     color: inherit;
     cursor: pointer;
@@ -280,6 +290,12 @@
   @media only screen and (max-width: 960px) {
     .carregis-button {
       width: 39vw;
+    }
+  }
+
+  @media only screen and (max-width: 800px) {
+    .carregis-button {
+      margin-left: 5vw;
     }
   }
 }

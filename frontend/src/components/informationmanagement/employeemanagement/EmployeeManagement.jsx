@@ -67,6 +67,11 @@ const EmployeeManagement = () => {
     };
 
     const handlePushEmployee = async () => {
+        if (!name || !name.trim()) {
+            setMessage('เกิดข้อผิดพลาดในการเพิ่มข้อมูลพนักงาน');
+            return;
+        }
+
         try {
             await axios.post('https://autoservice-k7ez.onrender.com/employees', {
                 name,
@@ -98,6 +103,11 @@ const EmployeeManagement = () => {
     };
 
     const handleUpdateEmployee = async (id) => {
+        if (!name.trim()) {
+            setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูลพนักงาน');
+            return;
+        }
+        
         try {
             await axios.put(`https://autoservice-k7ez.onrender.com/employees/${id}`, {
                 name,
@@ -218,7 +228,9 @@ const EmployeeManagement = () => {
                 <Modal.Body>
                     <div className='row'>
                         <div className='col col-12'>
-                            <label>ชื่อ-นามสกุล:</label>
+                            <label>
+                                ชื่อ-นามสกุล: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                            </label>
                             <input
                                 type="text"
                                 class="form-control"

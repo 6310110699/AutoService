@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import "./CarRegistration.scss";
 import Modal from 'react-bootstrap/Modal';
+import moment from 'moment';
 
 const CarRegistration = () => {
 
@@ -36,8 +37,10 @@ const CarRegistration = () => {
 
     useEffect(() => {
         loadCustomers();
+        loadCarCustomers();
         loadBrandModels();
         loadColors();
+        setStartDate(moment().format('YYYY-MM-DDTHH:mm'));
     }, []);
 
     const loadCustomers = async () => {
@@ -54,9 +57,50 @@ const CarRegistration = () => {
             setUniqueCustomerNames(uniqueNames);
 
             setMessage('');
+
         } catch (error) {
             console.error('Error loading customer data:', error);
             setMessage('Error loading customer data');
+        }
+    };
+
+    const loadCarCustomers = async (selectedNumPlate) => {
+        try {
+            const response = await axios.get('https://autoservice-k7ez.onrender.com/repairs');
+
+            const customersData = response.data;
+
+            const selectedCustomers = customersData
+                .filter(customer => customer.car.numPlate === selectedNumPlate)
+                .sort((a, b) => {
+                    // ตรวจสอบว่า enddate มีค่าหรือไม่
+                    const hasEndDateA = a.enddate !== null && a.enddate !== undefined;
+                    const hasEndDateB = b.enddate !== null && b.enddate !== undefined;
+    
+                    if (!hasEndDateA && !hasEndDateB) {
+                        // ถ้าทั้งคู่ไม่มี enddate ให้ไม่เปลี่ยนลำดับ
+                        return 0;
+                    } else if (!hasEndDateA) {
+                        // ถ้า a ไม่มี enddate และ b มี enddate ให้ a มาก่อน
+                        return -1;
+                    } else if (!hasEndDateB) {
+                        // ถ้า b ไม่มี enddate และ a มี enddate ให้ b มาก่อน
+                        return 1;
+                    } else {
+                        // ถ้าทั้งคู่มี enddate ให้เรียงลำดับตาม enddate
+                        return new Date(b.enddate) - new Date(a.enddate);
+                    }
+                });
+    
+            if (selectedCustomers.length > 0) {
+                const selectedCustomer = selectedCustomers[0];
+                return selectedCustomer || null;
+            } else {
+                return null;
+            }
+    
+        } catch (error) {
+            console.error('Error loading customer data:', error);
         }
     };
 
@@ -85,6 +129,20 @@ const CarRegistration = () => {
         if (!phonePattern.test(phoneNumber)) {
             setError('เบอร์โทรศัพท์ไม่ตรงตามรูปแบบที่ถูกต้อง');
             setMessage('ลงทะเบียนรถไม่สำเร็จ');
+            return;
+        }
+
+        if (!numPlate.trim() || !customerName.trim() || !brand.trim() || !selectedModel.trim() || !selectedColor.trim() || !startdate.trim()) {
+            setMessage('ลงทะเบียนรถไม่สำเร็จ');
+            return;
+        }
+
+        console.log(numPlate);
+
+        const CustomerCar = await loadCarCustomers(numPlate);
+
+        if (CustomerCar && CustomerCar.status && CustomerCar.status.state5 === false) {
+            setMessage('รถคันนี้ถูกเพิ่มแล้ว');
             return;
         }
 
@@ -119,6 +177,32 @@ const CarRegistration = () => {
         } catch (error) {
             console.error('Error adding customer:', error);
             setMessage('ลงทะเบียนรถไม่สำเร็จ');
+        }
+    };
+
+    const handleNumPlateChange = async ({ value, isFormEdited }) => {
+        setNumPlate(value);
+
+        if (isFormEdited) {
+            setIsFormEdited(true);
+        }
+
+        const selectedData = await loadCarCustomers(value);
+
+        if (selectedData) {
+            setLineId(selectedData.customer.lineId);
+            setCustomerName(selectedData.customer.customerName);
+            setPhoneNumber(selectedData.customer.phoneNumber);
+            setBrand(selectedData.car.brand);
+            setSelectedModel(selectedData.car.selectedModel);
+            setSelectedColor(selectedData.car.selectedColor);
+        } else {
+            setLineId('');
+            setCustomerName('');
+            setPhoneNumber('');
+            setBrand('');
+            setSelectedModel('');
+            setSelectedColor('');
         }
     };
 
@@ -178,16 +262,18 @@ const CarRegistration = () => {
             <form className='customer-form'>
                 <div className='row'>
                     <div className='col col-6'>
-                        <label>ป้ายทะเบียน เช่น XX 0000 NARATHIWAT</label>
+                        <label>
+                            ป้ายทะเบียน เช่น XX 0000 NARATHIWAT <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                        </label>
                         <input
                             type="text"
                             className="form-control"
                             value={numPlate}
                             onChange={(e) => {
-                                setNumPlate(e.target.value)
-                                if (e.target.value !== numPlate) {
-                                    setIsFormEdited(true);
-                                }
+                                handleNumPlateChange({
+                                    value: e.target.value,
+                                    isFormEdited: e.target.value !== numPlate,
+                                });
                             }}
                             list='customerNumplatesList'
                         />
@@ -220,7 +306,9 @@ const CarRegistration = () => {
                 </div>
                 <div className='row'>
                     <div className='col col-6'>
-                        <label>ยี่ห้อรถ:</label>
+                        <label>
+                            ยี่ห้อรถ: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                        </label>
                         <select className="form-control" value={brand} onChange={handleBrandChange}>
                             <option value="">กรุณาเลือก</option>
                             {Array.from(new Set(brandmodels.map((brandmodel) => brandmodel.brand))).map((uniqueBrand) => (
@@ -241,7 +329,9 @@ const CarRegistration = () => {
                         )}
                     </div>
                     <div className='col col-6'>
-                        <label>ชื่อลูกค้า:</label>
+                        <label>
+                            ชื่อลูกค้า: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                        </label>
                         <input
                             type="text"
                             className="form-control"
@@ -263,7 +353,9 @@ const CarRegistration = () => {
                 </div>
                 <div className='row'>
                     <div className='col col-6'>
-                        <label>รุ่นรถ:</label>
+                        <label>
+                            รุ่นรถ: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                        </label>
                         <select className="form-control" value={selectedModel} onChange={handleModelChange}>
                             <option value="">กรุณาเลือก</option>
                             {brandmodels
@@ -290,7 +382,9 @@ const CarRegistration = () => {
                         )}
                     </div>
                     <div className='col col-6'>
-                        <label>เบอร์โทรศัพท์ (0812345678):</label>
+                        <label>
+                            เบอร์โทรศัพท์ (0812345678): <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                        </label>
                         <input
                             type="tel"
                             className="form-control"
@@ -313,7 +407,9 @@ const CarRegistration = () => {
                 </div>
                 <div className='row'>
                     <div className='col col-6'>
-                        <label>สี:</label>
+                        <label>
+                            สี: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                        </label>
                         <select
                             className="form-control"
                             value={selectedColor}
@@ -342,7 +438,9 @@ const CarRegistration = () => {
                         )}
                     </div>
                     <div className='col col-6'>
-                        <label>วันที่:</label>
+                        <label>
+                            วันที่: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                        </label>
                         <input
                             type="datetime-local"
                             className="form-control"

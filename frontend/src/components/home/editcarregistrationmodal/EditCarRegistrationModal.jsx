@@ -82,7 +82,9 @@ const EditCarRegistrationModal = ({
             <form className='editcustomer-form'>
               <div className='row'>
                 <div className='col col-6'>
-                  <label>ป้ายทะเบียน เช่น XX 0000 NARATHIWAT</label>
+                  <label>
+                    ป้ายทะเบียน เช่น XX 0000 NARATHIWAT <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                  </label>
                   <input
                     type="text"
                     className="form-control"
@@ -124,7 +126,9 @@ const EditCarRegistrationModal = ({
               </div>
               <div className='row'>
                 <div className='col col-6'>
-                  <label>ยี่ห้อรถ:</label>
+                  <label>
+                    ยี่ห้อรถ: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                  </label>
                   <select className="form-control" value={brand} onChange={handleBrandChange}>
                     <option value="">กรุณาเลือก</option>
                     {Array.from(new Set(brandmodels.map((brandmodel) => brandmodel.brand))).map((uniqueBrand) => (
@@ -145,7 +149,8 @@ const EditCarRegistrationModal = ({
                   )}
                 </div>
                 <div className='col col-6'>
-                  <label>ชื่อลูกค้า:</label>
+                  <label>
+                    ชื่อลูกค้า: <span style={{ color: 'red', fontSize: '18px' }}>*</span></label>
                   <input
                     type="text"
                     className="form-control"
@@ -167,7 +172,9 @@ const EditCarRegistrationModal = ({
               </div>
               <div className='row'>
                 <div className='col col-6'>
-                  <label>รุ่นรถ:</label>
+                  <label>
+                    รุ่นรถ: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                  </label>
                   <select
                     className="form-control"
                     value={selectedModel}
@@ -198,7 +205,9 @@ const EditCarRegistrationModal = ({
                   )}
                 </div>
                 <div className='col col-6'>
-                  <label>เบอร์โทรศัพท์ (0812345678):</label>
+                  <label>
+                    เบอร์โทรศัพท์ (0812345678): <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                  </label>
                   <input
                     type="tel"
                     className="form-control"
@@ -221,7 +230,9 @@ const EditCarRegistrationModal = ({
               </div>
               <div className='row'>
                 <div className='col col-6'>
-                  <label>สี:</label>
+                  <label>
+                    สี: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                  </label>
                   <select
                     className="form-control"
                     value={selectedColor}
@@ -251,7 +262,9 @@ const EditCarRegistrationModal = ({
                   )}
                 </div>
                 <div className='col col-6'>
-                  <label>วันที่:</label>
+                  <label>
+                    วันที่: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                  </label>
                   <input
                     type="datetime-local"
                     value={startdate}

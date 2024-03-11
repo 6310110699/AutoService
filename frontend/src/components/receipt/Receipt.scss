@@ -78,7 +78,7 @@
 
     .receipt-print {
         margin: 0 auto;
-        width: 13.1vw;
+        width: 15.5vw;
 
         .receipt-printbutton {
             background-color: $fourth-color;
@@ -101,7 +101,7 @@
 
     @media only screen and (max-width: 960px) {
         .receipt-print {
-            width: 130px;
+            width: 150px;
         }
     }
 

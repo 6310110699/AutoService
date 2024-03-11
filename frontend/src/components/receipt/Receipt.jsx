@@ -62,7 +62,7 @@ const Receipt = () => {
                 trigger={() =>
                     <div className='receipt-print'>
                         <div className='receipt-printbutton'>
-                            พิมพ์ใบเสร็จ
+                            พิมพ์ใบเรียกเก็บเงิน
                         </div>
                     </div>
                 }
@@ -70,7 +70,7 @@ const Receipt = () => {
             />
             
             <div className='receipt-paper' ref={componentRef}>
-                <div className='receipt-title'>ใบเสร็จรับเงิน</div>
+                <div className='receipt-title'>ใบเรียกเก็บเงิน</div>
 
                 <div className='row'>
                     <div className='col col-6 receipt-company'>
@@ -96,7 +96,7 @@ const Receipt = () => {
                         <div>ช่างที่เกี่ยวข้อง : </div>
                         {customer.mechanics.map((mechanicId) => (
                             <div className='receipt-mechanic' key={mechanicId}>
-                                {customer.mechanics}
+                                {mechanicId}
                             </div>
                         ))}
                     </div>

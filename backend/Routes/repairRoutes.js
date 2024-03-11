@@ -62,7 +62,9 @@ router.put('/:id', async (req, res) => {
       numPlate, lineId, customerName, phoneNumber,
       brand, selectedModel, selectedColor,
       services, serviceFee, totalCost, mechanics, startdate, enddate,
-      state1, state2, state3, state4, state5 } = req.body;
+      state1, state2, state3, state4, state5
+    } = req.body;
+    
     const updatedCustomer = await Customer.findByIdAndUpdate(
       id,
       {

@@ -226,6 +226,11 @@ const Repair = () => {
       return;
     }
 
+    if (!numPlate.trim() || !customerName.trim() || !brand.trim() || !selectedModel.trim() || !selectedColor.trim() || !startdate.trim()) {
+      setMessage('ลงทะเบียนรถไม่สำเร็จ');
+      return;
+    }
+
     try {
       await axios.put(`https://autoservice-k7ez.onrender.com/repairs/${id}`, {
         numPlate,
@@ -731,9 +736,15 @@ const Repair = () => {
         />
       </div>
 
-      <div className='repair-title-container'>
-        <div className="repair-title">
-          รายการรถที่อยู่ในอู่ ณ ขณะนี้
+      <div className='row'>
+        <div className='col-8 repair-title-container'>
+          <div className=" repair-title">
+            รายการรถที่อยู่ในอู่ ณ ขณะนี้
+          </div>
+        </div>
+
+        <div className='col-4 carregis-result'>
+          ผลลัพธ์ที่ได้ {filteredCars.filter((customer) => !customer.status.state5).length} รายการ
         </div>
       </div>
 
@@ -745,12 +756,12 @@ const Repair = () => {
               <tr key={index}>
                 <td className="repair-car" onClick={() => handleEditStatus(customer)}>
                   <div>
-                  {customer.car.numPlate}
+                    {customer.car.numPlate}
                   </div>
                   <div className='repair-car-detail'>
-                    {customer.car.brand} {customer.car.selectedModel} {customer.car.selectedColor} 
+                    {customer.car.brand} {customer.car.selectedModel} {customer.car.selectedColor}
                   </div>
-                   </td>
+                </td>
                 <td className="repait-edit">
                   <img onClick={() => handleEditCustomer(customer)} src='./assets/image/edit.png' />
                 </td>
@@ -772,7 +783,7 @@ const Repair = () => {
       </table>
       <Link className='carregis-button' to="/carregis">
         <div>
-          ลงทะเบียนรถ
+          เพิ่มรถ
         </div>
       </Link>
 

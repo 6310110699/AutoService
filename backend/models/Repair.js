@@ -60,7 +60,6 @@ const customerSchema = new mongoose.Schema({
   }],
   startdate: {
     type: String,
-    required: true,
   },
   enddate: {
     type: String,

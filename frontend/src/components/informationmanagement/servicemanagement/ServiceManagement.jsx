@@ -104,6 +104,11 @@ const ServiceManagement = () => {
   };
 
   const handlePushService = async () => {
+    if (!serviceName || !serviceName.trim()) {
+      setMessage('เกิดข้อผิดพลาดในการเพิ่มข้อมูลบริการ');
+      return;
+    }
+
     try {
       await axios.post('https://autoservice-k7ez.onrender.com/services', {
         serviceName,
@@ -127,6 +132,11 @@ const ServiceManagement = () => {
   };
 
   const handleUpdateService = async () => {
+    if (!serviceName.trim()) {
+      setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูลบริการ');
+      return;
+    }
+
     try {
       await axios.put(`https://autoservice-k7ez.onrender.com/services/${editingServiceId}`, {
         serviceName,
@@ -247,7 +257,9 @@ const ServiceManagement = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <label>ชื่อบริการ:</label>
+          <label>
+            ชื่อบริการ: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+          </label>
           <input
             type='text'
             class="form-control"

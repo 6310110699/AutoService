@@ -103,6 +103,11 @@ const SpareManagement = () => {
     };
 
     const handlePushSpare = async () => {
+        if (!spareName || !spareName.trim() || !sparePrice) {
+            setMessage('เกิดข้อผิดพลาดในการเพิ่มข้อมูลอะไหล่');
+            return;
+        }
+
         try {
             await axios.post('https://autoservice-k7ez.onrender.com/spares', {
                 spareName,
@@ -130,6 +135,11 @@ const SpareManagement = () => {
     };
 
     const handleUpdateSpare = async (id) => {
+        if (!spareName.trim() || !sparePrice) {
+            setMessage('เกิดข้อผิดพลาดในการแก้ไขข้อมูลอะไหล่');
+            return;
+        }
+
         try {
             await axios.put(`https://autoservice-k7ez.onrender.com/spares/${id}`, {
                 spareName,
@@ -248,7 +258,9 @@ const SpareManagement = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <div>
-                        <label>ชื่ออะไหล่:</label>
+                        <label>
+                            ชื่ออะไหล่: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                        </label>
                         <input
                             type="text"
                             class="form-control"
@@ -262,7 +274,9 @@ const SpareManagement = () => {
                             value={spareType}
                             onChange={(e) => setSpareType(e.target.value)}
                         />
-                        <label>ราคา:</label>
+                        <label>
+                            ราคา: <span style={{ color: 'red', fontSize: '18px' }}>*</span>
+                        </label>
                         <input
                             type="number"
                             class="form-control"
